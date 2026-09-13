@@ -1,6 +1,6 @@
 {
-  "installCommand": "npm install",
-  "buildCommand": "npm run build",
+  "installCommand": "npm install -g pnpm@10.15.0 && pnpm install --no-frozen-lockfile",
+  "buildCommand": "pnpm --filter @assetveyra/web build",
   "framework": "nextjs",
   "outputDirectory": "apps/web/.next"
 }
