@@ -3,11 +3,12 @@
   "private": true,
   "version": "0.1.0",
   "packageManager": "pnpm@10.15.0",
+  "workspaces": ["apps/*"],
   "scripts": {
-    "dev": "pnpm --filter @assetveyra/web dev",
-    "build": "pnpm --filter @assetveyra/web build",
-    "lint": "pnpm --filter @assetveyra/web lint",
-    "typecheck": "pnpm --filter @assetveyra/web typecheck"
+    "dev": "npm --workspace @assetveyra/web run dev",
+    "build": "npm --workspace @assetveyra/web run build",
+    "lint": "npm --workspace @assetveyra/web run lint",
+    "typecheck": "npm --workspace @assetveyra/web run typecheck"
   },
   "dependencies": {
     "next": "^16.0.0",
