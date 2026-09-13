@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { headers } from 'next/headers';
 import { Cairo, Inter } from 'next/font/google';
 import './globals.css';
+import './locale-overrides.css';
 import LocaleShell from '@/components/LocaleShell';
 import { detectLocaleFromLanguages } from '@/lib/i18n';
 
