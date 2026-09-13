@@ -49,8 +49,17 @@ export default function HomePage() {
     </section>
 
     <section id="details" className="av-page"><h2>Opportunity Details</h2><p>Detailed opportunity information is available to registered users and approved participants.</p></section>
-    <section id="dashboard" className="av-page"><h2>User Dashboard</h2><p>Registered users can review saved opportunities and access controlled information.</p></section>
-    <section id="about" className="av-page"><h2>About AssetVeyra</h2><p>Global marketplace for high-value investment opportunities.</p></section>
+    <section id="dashboard" className="av-page"><h2>User Dashboard</h2><p>Registered users can review saved opportunities and access controlled information.</p><a className="av-btn av-primary" href="/dashboard">View Dashboard</a></section>
+
+    <section id="about" className="av-page">
+      <h2>About AssetVeyra</h2>
+      <p>AssetVeyra is a global marketplace for high-value investment opportunities.</p>
+      <p>We connect qualified investors with high-value assets and opportunities worldwide, including luxury estates, commercial projects, hospitality assets and strategic opportunities.</p>
+      <p>Access is structured in levels. Public visitors can review limited opportunity information; registered and approved users can access additional information, while sensitive ownership, legal, financial and technical information remains controlled and may require confidentiality protocols.</p>
+      <p>AssetVeyra supports Arabic, English, Spanish, French and Chinese, with the interface adapting to the user's preferred language and direction.</p>
+      <a className="av-btn av-primary" href="#opportunities">Explore Opportunities</a>
+    </section>
+
     <section id="contact" className="av-page"><h2>Contact Us</h2><p>Contact AssetVeyra for access and investment requirements.</p><a className="av-btn av-primary" href="/contact">Contact</a></section>
     <section id="legal" className="av-page"><h2>Legal Information</h2><p>Terms of Service and Privacy Policy apply.</p></section>
 
