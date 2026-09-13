@@ -3,6 +3,7 @@
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { detectLocaleFromLanguages, LOCALE_LABELS, normalizeLocale, RTL_LOCALES, SUPPORTED_LOCALES, translate, type Locale } from '@/lib/i18n';
 import { translateExtra } from '@/lib/i18n-extra';
+import { translateHome } from '@/lib/i18n-home';
 
 function translateTextNodes(root: HTMLElement, locale: Locale, originals: Map<Text, string>) {
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
@@ -10,7 +11,7 @@ function translateTextNodes(root: HTMLElement, locale: Locale, originals: Map<Te
   let node: Node | null;
   while ((node = walker.nextNode())) {
     const parent = node.parentElement;
-    if (!parent || parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE' || parent.closest('.language-switcher')) continue;
+    if (!parent || parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE' || parent.closest('.language-switcher') || parent.closest('[data-no-translate]')) continue;
     if ((node.textContent ?? '').trim().length > 1) nodes.push(node as Text);
   }
 
@@ -20,8 +21,9 @@ function translateTextNodes(root: HTMLElement, locale: Locale, originals: Map<Te
     originals.set(textNode, original);
     const leading = original.match(/^\s*/)?.[0] ?? '';
     const trailing = original.match(/\s*$/)?.[0] ?? '';
-    const base = translate(original.trim(), locale);
-    const translated = `${leading}${base === original.trim() ? translateExtra(original.trim(), locale) : base}${trailing}`;
+    const key = original.trim();
+    const base = translate(key, locale);
+    const translated = `${leading}${base !== key ? base : translateHome(key, locale) !== key ? translateHome(key, locale) : translateExtra(key, locale)}${trailing}`;
     if (current !== translated) textNode.textContent = translated;
   }
 }
