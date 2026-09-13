@@ -1,0 +1,4 @@
+begin;
+drop policy if exists org_members_admin_insert on public.organization_members;drop policy if exists org_members_creator_insert on public.organization_members;
+create policy org_members_insert on public.organization_members for insert to authenticated with check((select public.has_org_role(organization_id,array['seller_admin'::member_role,'investor_admin'::member_role,'platform_admin'::member_role,'operations_admin'::member_role])) or(user_id=(select auth.uid()) and role in('seller_admin','investor_admin','advisor','broker','legal_reviewer','external_reviewer') and exists(select 1 from public.organizations o where o.id=organization_id and o.created_by=(select auth.uid()))));
+commit;
