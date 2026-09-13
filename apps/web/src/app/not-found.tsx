@@ -1,0 +1,1 @@
+export default function NotFound(){return <main className="auth-page"><section className="auth-card"><div className="eyebrow">404 · NOT FOUND</div><h1>Record unavailable.</h1><p>The requested public record does not exist, is not published, or is no longer available.</p><a className="button primary" href="/opportunities">Return to marketplace</a></section></main>}
