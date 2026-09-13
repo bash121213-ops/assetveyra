@@ -23,6 +23,7 @@ export default function HomePage() {
           <a href="#market">Market</a>
           <a href="#platform">Platform</a>
           <a href="#workflow">Workflow</a>
+          <a href="/contact">Contact</a>
           <a href="/login">Sign in</a>
           <a className="nav-cta" href="/submit">Submit an asset</a>
         </nav>
@@ -45,7 +46,7 @@ export default function HomePage() {
           <p className="hero-copy">Discover high-value commercial opportunities, understand the asset, control disclosure and move from qualified interest to executable transaction in one institutional workspace.</p>
           <div className="hero-actions">
             <a className="button primary" href="#market">Explore the market</a>
-            <a className="button secondary" href="/submit">Submit an asset</a>
+            <a className="button secondary" href="/contact">Request information</a>
           </div>
           <div className="hero-note">Public market discovery is separated from private diligence, compliance and deal records.</div>
         </div>
@@ -84,7 +85,7 @@ export default function HomePage() {
                 <div className="card-data"><span>AREA</span><strong>{item.area}</strong></div>
                 {item.note && <p className="market-warning">{item.note}</p>}
                 <div className="card-actions">
-                  <a className="button small primary" href="#contact">Request through AssetVeyra</a>
+                  <a className="button small primary" href="/contact">Request information</a>
                 </div>
               </div>
             </article>
@@ -143,19 +144,19 @@ export default function HomePage() {
         <div>
           <div className="eyebrow">CONTROLLED INTRODUCTION</div>
           <h2>Interested in an opportunity?</h2>
-          <p>Start with AssetVeyra. We capture the opportunity request first, then route the appropriate information and transaction workflow through the platform.</p>
+          <p>Tell us what you are looking for. We review the request first, then route the appropriate information and transaction workflow through AssetVeyra.</p>
         </div>
         <div className="contact-card">
           <span>ASSETVEYRA</span>
-          <strong>Request property information</strong>
-          <a className="button primary" href="/login">Start a request</a>
-          <small>No seller or broker contact details are exposed on this public interface.</small>
+          <strong>Request information</strong>
+          <a className="button primary" href="/contact">Contact AssetVeyra</a>
+          <small>Seller and broker contact details are not exposed on this public interface.</small>
         </div>
       </section>
 
       <footer className="footer">
         <div><strong>ASSETVEYRA</strong><span>Global real-asset transaction infrastructure</span></div>
-        <div className="footer-links"><a href="#platform">Platform</a><a href="#market">Market</a><a href="/security">Security</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></div>
+        <div className="footer-links"><a href="#platform">Platform</a><a href="#market">Market</a><a href="/contact">Contact</a><a href="/security">Security</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></div>
       </footer>
     </main>
   );
