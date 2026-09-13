@@ -1,0 +1,9 @@
+import { redirect } from 'next/navigation';
+import { createClient } from '@/lib/supabase/server';
+
+export default async function AssetsWorkspacePage(){
+ const s=await createClient(); const {data:{user}}=await s.auth.getUser(); if(!user)redirect('/login');
+ const {data:members}=await s.from('organization_members').select('organization_id').eq('user_id',user.id); const ids=(members??[]).map((m:any)=>m.organization_id);
+ const {data:assets}=ids.length?await s.from('assets').select('id,title,status,asset_type,country_code,city,area_sqm,asking_price,currency,updated_at,opportunities(slug,status)').in('organization_id',ids).order('updated_at',{ascending:false}):{data:[] as any[]};
+ return <main className="app-shell"><header className="app-header"><a className="brand" href="/">ASSETVEYRA</a><nav><a href="/workspace">Workspace</a><a href="/opportunities">Marketplace</a><a className="button primary" href="/submit">Submit asset</a></nav></header><section className="page-head"><div className="eyebrow">SELLER OPERATIONS</div><h1>Assets & verification.</h1><p>Publication is a controlled state transition. An asset is never exposed publicly merely because it was created.</p></section><section className="panel"><div className="table">{(assets??[]).map((a:any)=><div className="row" key={a.id}><div><strong>{a.title}</strong><div style={{color:'var(--muted)',fontSize:11,marginTop:5}}>{[a.city,a.country_code].filter(Boolean).join(', ')||'Location pending'}</div></div><span>{a.asset_type}</span><span>{a.status}</span><span>{a.opportunities?.[0]?.status||'No opportunity'}</span></div>)}{!(assets?.length)&&<div className="empty-state"><strong>No assets yet.</strong><span>Start the controlled intake process.</span><a className="button primary" href="/submit">Submit an asset</a></div>}</div></section></main>;
+}
