@@ -1,0 +1,12 @@
+{
+  "name": "assetveyra",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@10.15.0",
+  "scripts": {
+    "dev": "pnpm --filter @assetveyra/web dev",
+    "build": "pnpm --filter @assetveyra/web build",
+    "lint": "pnpm --filter @assetveyra/web lint",
+    "typecheck": "pnpm --filter @assetveyra/web typecheck"
+  }
+}
