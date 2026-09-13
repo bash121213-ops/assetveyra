@@ -3,21 +3,20 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { detectLocaleFromLanguages, LOCALE_LABELS, normalizeLocale, RTL_LOCALES, SUPPORTED_LOCALES, translate, type Locale } from '@/lib/i18n';
 
-function translateTextNodes(root: HTMLElement, locale: Locale) {
+function translateTextNodes(root: HTMLElement, locale: Locale, originals: Map<Text, string>) {
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
   const nodes: Text[] = [];
   let node: Node | null;
   while ((node = walker.nextNode())) {
     const parent = node.parentElement;
     if (!parent || parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE' || parent.closest('.language-switcher')) continue;
-    const text = node.textContent ?? '';
-    if (text.trim().length > 1) nodes.push(node as Text);
+    if ((node.textContent ?? '').trim().length > 1) nodes.push(node as Text);
   }
 
   for (const textNode of nodes) {
-    const raw = textNode.textContent ?? '';
-    const original = textNode.parentElement?.dataset.avOriginalText ?? raw;
-    if (textNode.parentElement) textNode.parentElement.dataset.avOriginalText = original;
+    const current = textNode.textContent ?? '';
+    const original = originals.get(textNode) ?? current;
+    originals.set(textNode, original);
     const leading = original.match(/^\s*/)?.[0] ?? '';
     const trailing = original.match(/\s*$/)?.[0] ?? '';
     const translated = translate(original.trim(), locale);
@@ -40,9 +39,12 @@ export default function LocaleShell({ children, initialLocale }: { children: Rea
     document.documentElement.dataset.locale = locale;
     document.documentElement.classList.toggle('rtl', RTL_LOCALES.has(locale));
     window.localStorage.setItem('assetveyra-locale', locale);
-    translateTextNodes(document.body, locale);
 
-    const observer = new MutationObserver(() => translateTextNodes(document.body, locale));
+    const originals = new Map<Text, string>();
+    const apply = () => translateTextNodes(document.body, locale, originals);
+    apply();
+
+    const observer = new MutationObserver(apply);
     observer.observe(document.body, { childList: true, subtree: true });
     return () => observer.disconnect();
   }, [locale]);
