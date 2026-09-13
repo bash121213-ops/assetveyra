@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { detectLocaleFromLanguages, LOCALE_LABELS, normalizeLocale, RTL_LOCALES, SUPPORTED_LOCALES, translate, type Locale } from '@/lib/i18n';
 
 function translateTextNodes(root: HTMLElement, locale: Locale, originals: Map<Text, string>) {
@@ -26,6 +26,7 @@ function translateTextNodes(root: HTMLElement, locale: Locale, originals: Map<Te
 
 export default function LocaleShell({ children, initialLocale }: { children: ReactNode; initialLocale: Locale }) {
   const [locale, setLocale] = useState<Locale>(initialLocale);
+  const originalsRef = useRef(new Map<Text, string>());
 
   useEffect(() => {
     const saved = window.localStorage.getItem('assetveyra-locale');
@@ -40,8 +41,7 @@ export default function LocaleShell({ children, initialLocale }: { children: Rea
     document.documentElement.classList.toggle('rtl', RTL_LOCALES.has(locale));
     window.localStorage.setItem('assetveyra-locale', locale);
 
-    const originals = new Map<Text, string>();
-    const apply = () => translateTextNodes(document.body, locale, originals);
+    const apply = () => translateTextNodes(document.body, locale, originalsRef.current);
     apply();
 
     const observer = new MutationObserver(apply);
