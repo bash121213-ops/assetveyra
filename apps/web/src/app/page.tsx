@@ -1,64 +1,83 @@
-const pillars = [
-  ["01", "Verified Opportunities", "Structured opportunities with controlled publication and verification workflows."],
-  ["02", "Private Deal Rooms", "NDA-gated access to documents, diligence materials and transaction records."],
-  ["03", "Institutional Execution", "Move from qualified interest to offer, negotiation, contract and closing."],
+const capabilities = [
+  ['01', 'Verified opportunities', 'Structured asset and opportunity records with controlled verification and publication.'],
+  ['02', 'Private transaction rooms', 'Permissioned documents, NDA gates, diligence requirements, Q&A and immutable activity history.'],
+  ['03', 'Transaction execution', 'Interest, qualification, offers, negotiation, approvals, contracts and closing in one transaction graph.'],
+  ['04', 'Compliance by design', 'KYC/KYB, AML, risk review and evidence remain separate from public marketplace data.'],
 ];
+
+const lifecycle = ['Intake', 'Verification', 'Compliance', 'Publication', 'Qualification', 'NDA', 'Data Room', 'Diligence', 'Offer', 'Negotiation', 'Contract', 'Closing'];
 
 export default function HomePage() {
   return (
     <main>
-      <header style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"28px 6vw",borderBottom:"1px solid var(--line)"}}>
-        <strong style={{letterSpacing:".12em"}}>ASSETVEYRA</strong>
-        <nav style={{display:"flex",gap:24,color:"var(--muted)",fontSize:14}}>
-          <a href="#opportunities">Opportunities</a>
+      <header className="site-header">
+        <a className="brand" href="/">ASSETVEYRA</a>
+        <nav>
           <a href="#platform">Platform</a>
-          <a href="#process">Process</a>
+          <a href="#workflow">Workflow</a>
+          <a href="#opportunities">Opportunities</a>
+          <a href="/login">Sign in</a>
         </nav>
       </header>
 
-      <section style={{padding:"110px 6vw 90px",maxWidth:1200}}>
-        <p style={{color:"var(--accent)",letterSpacing:".18em",fontSize:12}}>GLOBAL REAL ESTATE INVESTMENT INFRASTRUCTURE</p>
-        <h1 style={{fontSize:"clamp(48px,8vw,92px)",lineHeight:.95,margin:"22px 0",maxWidth:950}}>
-          Where serious property opportunities become executable deals.
-        </h1>
-        <p style={{maxWidth:680,color:"var(--muted)",fontSize:19,lineHeight:1.7}}>
-          AssetVeyra connects verified real-estate opportunities with qualified investors through a controlled workflow for discovery, diligence, negotiation and closing.
-        </p>
-        <div style={{display:"flex",gap:14,marginTop:36,flexWrap:"wrap"}}>
-          <a href="#opportunities" style={{padding:"14px 20px",background:"var(--accent)",color:"#071019",fontWeight:700}}>Explore Opportunities</a>
-          <a href="#process" style={{padding:"14px 20px",border:"1px solid var(--line)"}}>How the platform works</a>
+      <section className="hero">
+        <div className="eyebrow">GLOBAL ASSET & INVESTMENT TRANSACTION INFRASTRUCTURE</div>
+        <h1>From verified asset to executable transaction.</h1>
+        <p className="hero-copy">AssetVeyra is the operating layer for serious real-estate opportunities: structured asset data, controlled disclosure, due diligence, investor qualification and transaction execution.</p>
+        <div className="hero-actions">
+          <a className="button primary" href="#opportunities">Explore opportunities</a>
+          <a className="button secondary" href="/submit">Submit an asset</a>
         </div>
+        <div className="hero-note">Public discovery is separated from private diligence, compliance and deal records.</div>
       </section>
 
-      <section id="platform" style={{padding:"70px 6vw",borderTop:"1px solid var(--line)"}}>
-        <p style={{color:"var(--muted)",letterSpacing:".14em",fontSize:12}}>THE PLATFORM</p>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(230px,1fr))",gap:18,marginTop:28}}>
-          {pillars.map(([number,title,description]) => (
-            <article key={number} style={{background:"var(--panel)",border:"1px solid var(--line)",padding:28,minHeight:210}}>
-              <span style={{color:"var(--accent)",fontSize:12}}>{number}</span>
-              <h2 style={{fontSize:24,margin:"35px 0 12px"}}>{title}</h2>
-              <p style={{color:"var(--muted)",lineHeight:1.65,margin:0}}>{description}</p>
+      <section id="platform" className="section">
+        <div className="section-heading">
+          <div className="eyebrow">THE PLATFORM</div>
+          <h2>Built around the transaction, not the listing.</h2>
+        </div>
+        <div className="capability-grid">
+          {capabilities.map(([number, title, description]) => (
+            <article className="capability" key={number}>
+              <span className="number">{number}</span>
+              <h3>{title}</h3>
+              <p>{description}</p>
             </article>
           ))}
         </div>
       </section>
 
-      <section id="process" style={{padding:"80px 6vw",background:"var(--panel)"}}>
-        <p style={{color:"var(--accent)",letterSpacing:".14em",fontSize:12}}>TRANSACTION WORKFLOW</p>
-        <p style={{fontSize:22,lineHeight:1.7,maxWidth:950,marginTop:24}}>
-          Submit → Verify → Compliance → Publish → Qualify → NDA → Data Room → Due Diligence → Offer → Negotiate → Contract → Close
-        </p>
+      <section id="workflow" className="workflow-section">
+        <div className="section-heading">
+          <div className="eyebrow">TRANSACTION LIFECYCLE</div>
+          <h2>A single controlled workflow from intake to closing.</h2>
+        </div>
+        <div className="lifecycle">
+          {lifecycle.map((step, index) => (
+            <div className="lifecycle-step" key={step}>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <strong>{step}</strong>
+            </div>
+          ))}
+        </div>
       </section>
 
-      <section id="opportunities" style={{padding:"80px 6vw"}}>
-        <h2 style={{fontSize:38,marginTop:0}}>Opportunities</h2>
-        <p style={{color:"var(--muted)",maxWidth:650,lineHeight:1.7}}>
-          The marketplace layer will support land, hotels, income-producing assets and development projects, with public information separated from private transaction data.
-        </p>
+      <section id="opportunities" className="section opportunity-section">
+        <div>
+          <div className="eyebrow">OPPORTUNITIES</div>
+          <h2>Real opportunities will appear here only after their publication gate is satisfied.</h2>
+          <p>AssetVeyra does not manufacture inventory for presentation. Published opportunities will come from verified asset records and carry their actual workflow state.</p>
+        </div>
+        <div className="empty-state">
+          <span className="empty-dot" />
+          <strong>No public opportunities yet</strong>
+          <span>Inventory will populate from the live transaction database.</span>
+        </div>
       </section>
 
-      <footer style={{padding:"30px 6vw",borderTop:"1px solid var(--line)",color:"var(--muted)",fontSize:13}}>
-        AssetVeyra — global investment infrastructure.
+      <footer className="footer">
+        <span>ASSETVEYRA</span>
+        <span>Global investment infrastructure</span>
       </footer>
     </main>
   );
