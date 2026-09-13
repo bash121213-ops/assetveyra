@@ -8,15 +8,20 @@ function translateTextNodes(root: HTMLElement, locale: Locale) {
   const nodes: Text[] = [];
   let node: Node | null;
   while ((node = walker.nextNode())) {
-    const text = node.textContent?.trim();
-    if (text && text.length > 1 && node.parentElement?.tagName !== 'SCRIPT' && node.parentElement?.tagName !== 'STYLE') nodes.push(node as Text);
+    const parent = node.parentElement;
+    if (!parent || parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE' || parent.closest('.language-switcher')) continue;
+    const text = node.textContent ?? '';
+    if (text.trim().length > 1) nodes.push(node as Text);
   }
+
   for (const textNode of nodes) {
     const raw = textNode.textContent ?? '';
-    const leading = raw.match(/^\s*/)?.[0] ?? '';
-    const trailing = raw.match(/\s*$/)?.[0] ?? '';
-    const translated = translate(raw.trim(), locale);
-    if (translated !== raw.trim()) textNode.textContent = `${leading}${translated}${trailing}`;
+    const original = textNode.parentElement?.dataset.avOriginalText ?? raw;
+    if (textNode.parentElement) textNode.parentElement.dataset.avOriginalText = original;
+    const leading = original.match(/^\s*/)?.[0] ?? '';
+    const trailing = original.match(/\s*$/)?.[0] ?? '';
+    const translated = translate(original.trim(), locale);
+    textNode.textContent = `${leading}${translated}${trailing}`;
   }
 }
 
@@ -36,6 +41,10 @@ export default function LocaleShell({ children, initialLocale }: { children: Rea
     document.documentElement.classList.toggle('rtl', RTL_LOCALES.has(locale));
     window.localStorage.setItem('assetveyra-locale', locale);
     translateTextNodes(document.body, locale);
+
+    const observer = new MutationObserver(() => translateTextNodes(document.body, locale));
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => observer.disconnect();
   }, [locale]);
 
   function changeLocale(next: Locale) {
