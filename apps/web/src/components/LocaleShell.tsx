@@ -2,6 +2,7 @@
 
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { detectLocaleFromLanguages, LOCALE_LABELS, normalizeLocale, RTL_LOCALES, SUPPORTED_LOCALES, translate, type Locale } from '@/lib/i18n';
+import { translateExtra } from '@/lib/i18n-extra';
 
 function translateTextNodes(root: HTMLElement, locale: Locale, originals: Map<Text, string>) {
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
@@ -19,7 +20,8 @@ function translateTextNodes(root: HTMLElement, locale: Locale, originals: Map<Te
     originals.set(textNode, original);
     const leading = original.match(/^\s*/)?.[0] ?? '';
     const trailing = original.match(/\s*$/)?.[0] ?? '';
-    const translated = `${leading}${translate(original.trim(), locale)}${trailing}`;
+    const base = translate(original.trim(), locale);
+    const translated = `${leading}${base === original.trim() ? translateExtra(original.trim(), locale) : base}${trailing}`;
     if (current !== translated) textNode.textContent = translated;
   }
 }
