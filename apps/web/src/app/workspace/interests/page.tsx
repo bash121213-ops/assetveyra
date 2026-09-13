@@ -1,0 +1,9 @@
+import { redirect } from 'next/navigation';
+import { createClient } from '@/lib/supabase/server';
+
+export default async function InterestsPage(){
+ const s=await createClient(); const {data:{user}}=await s.auth.getUser(); if(!user)redirect('/login');
+ const {data:members}=await s.from('organization_members').select('organization_id,organizations(display_name,type)').eq('user_id',user.id); const ids=(members??[]).map((m:any)=>m.organization_id);
+ const {data:items}=ids.length?await s.from('investor_interests').select('id,status,created_at,updated_at,opportunities(slug,investment_thesis,assets(title,city,country_code))').in('investor_organization_id',ids).order('updated_at',{ascending:false}):{data:[] as any[]};
+ return <main className="app-shell"><header className="app-header"><a className="brand" href="/">ASSETVEYRA</a><nav><a href="/workspace">Workspace</a><a href="/opportunities">Marketplace</a></nav></header><section className="page-head"><div className="eyebrow">INVESTOR PIPELINE</div><h1>Interests to execution.</h1><p>Track every qualified opportunity without exposing private diligence material before the correct access gate.</p></section><section className="panel"><div className="table">{(items??[]).map((i:any)=><a className="row" href={i.opportunities?.slug?`/opportunities/${i.opportunities.slug}`:'#'} key={i.id}><strong>{i.opportunities?.assets?.title||'Opportunity'}</strong><span>{[i.opportunities?.assets?.city,i.opportunities?.assets?.country_code].filter(Boolean).join(', ')||'—'}</span><span>{i.status}</span></a>)}{!(items?.length)&&<div className="empty-state"><strong>No investor interests yet.</strong><span>Browse published opportunities and register qualified interest.</span><a className="button secondary" href="/opportunities">Browse marketplace</a></div>}</div></section></main>;
+}
