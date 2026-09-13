@@ -1,6 +1,6 @@
 {
-  "installCommand": "corepack enable && pnpm install --no-frozen-lockfile",
-  "buildCommand": "pnpm --filter @assetveyra/web build",
+  "installCommand": "npm install",
+  "buildCommand": "npm run build",
   "framework": "nextjs",
   "outputDirectory": "apps/web/.next"
 }
