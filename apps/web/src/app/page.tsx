@@ -13,16 +13,47 @@ export default function HomePage() {
   return <main className="av-final-home">
     <header className="av-final-header">
       <a className="av-final-brand" href="/">ASSETVEYRA</a>
-      <nav><a href="#opportunities">Opportunities</a><a href="#how-it-works">How It Works</a><a href="/submit">Submit Asset</a><a href="/contact">Contact</a><a href="#language">العربية</a><a href="#language">中文</a><a href="#language">Español</a><a href="#language">FR</a><a href="/login">Login</a></nav>
+      <nav><a href="#home">Home</a><a href="#opportunities">Opportunities</a><a href="#details">Details</a><a href="#dashboard">Dashboard</a><a href="/login">Login</a><a href="/signup">Sign Up</a><a href="#about">About</a><a href="/contact">Contact</a><a href="#legal">Legal</a></nav>
     </header>
-    <section className="av-final-hero">
-      <div className="av-final-hero-copy"><div className="av-kicker">GLOBAL HIGH-VALUE OPPORTUNITIES</div><h1>Exclusive Access to $100,000+ Assets</h1><p>Real market opportunities sourced from current public listings, presented for structured review.</p><div className="av-actions"><a className="av-btn av-primary" href="#opportunities">View Opportunities</a><a className="av-btn av-secondary" href="/login">Request Access</a></div><small>Market data is subject to availability and independent verification.</small></div>
-      <div className="av-final-hero-image"><div><span>ASSETVEYRA</span><strong>Global Asset Access</strong></div></div>
+
+    <section id="home" className="av-final-hero">
+      <div className="av-final-hero-copy">
+        <h1>Exclusive Access to $100,000+ Assets</h1>
+        <p>Curated opportunities for qualified investors worldwide.</p>
+        <a className="av-btn av-primary" href="#opportunities">View Opportunities</a>
+      </div>
     </section>
-    <section className="av-trust"><div><span>Minimum Asset Value</span><strong>$100,000+</strong></div><div><span>Market Data</span><strong>Current Public Listings</strong></div><div><span>Global Coverage</span><strong>Multiple Regions</strong></div><div><span>Information Access</span><strong>Structured Review</strong></div></section>
-    <section id="opportunities" className="av-section"><div className="av-section-head"><div className="av-kicker">CURRENT MARKET OPPORTUNITIES</div><h2>Real assets. Current market data.</h2><p>Explore a selection of currently advertised high-value assets across key global markets. Availability, pricing and status can change and are subject to independent verification.</p></div>
-      <div className="av-cards">{opportunities.map(([flag,country,amount,sector,size,region,status,statusKey]) => <article className="av-card" key={country+amount}><div className="av-card-top"><strong><span>{flag}</span>{country}</strong><em className={statusKey}>{status}</em></div><div className="av-amount">{amount}</div><div className="av-details"><div><span>Sector</span><strong>{sector}</strong></div><div><span>Size</span><strong>{size}</strong></div><div><span>Region</span><strong>{region}</strong></div><div><span>Status</span><strong>{status}</strong></div></div><a className="av-btn av-primary" href="/login">Request Access</a></article>)}</div></section>
-    <section id="how-it-works" className="av-cta"><div><div className="av-kicker">ASSETVEYRA ACCESS</div><h2>From opportunity to controlled access.</h2><p>Register to explore available information, submit an investment requirement, or request access to a specific opportunity.</p></div><a className="av-btn av-primary" href="/contact">Contact AssetVeyra</a></section>
-    <footer className="av-footer"><div><strong>ASSETVEYRA</strong><span>Global high-value investment opportunities</span></div><div className="av-footer-links"><a href="#opportunities">Opportunities</a><a href="#how-it-works">How It Works</a><a href="/submit">Submit Asset</a><a href="/contact">Contact</a><a href="/security">Security</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></div></footer>
+
+    <section className="av-trust">
+      <div>Minimum Asset Value: $100,000+</div>
+      <div>Verified Opportunities</div>
+      <div>Global Coverage: 50+ Countries</div>
+      <div>NDA-Protected Access</div>
+    </section>
+
+    <section id="opportunities" className="av-section">
+      <div className="av-cards">
+        {opportunities.map(([flag,country,amount,sector,size,region,status,statusKey]) => <article className="av-card" key={country+amount}>
+          <div className="av-card-top"><strong><span>{flag}</span>{country}</strong><em className={statusKey}>{status}</em></div>
+          <div className="av-amount">{amount}</div>
+          <div className="av-details">
+            <div><span>Sector</span><strong>{sector}</strong></div>
+            <div><span>Size</span><strong>{size}</strong></div>
+            <div><span>ROI</span><strong>—</strong></div>
+            <div><span>Region</span><strong>{region}</strong></div>
+            <div><span>Status</span><strong>{status}</strong></div>
+          </div>
+          <a className="av-btn av-primary" href="/login">Request Access</a>
+        </article>)}
+      </div>
+    </section>
+
+    <section id="details" className="av-page"><h2>Opportunity Details</h2><p>Detailed opportunity information is available to registered users and approved participants.</p></section>
+    <section id="dashboard" className="av-page"><h2>User Dashboard</h2><p>Registered users can review saved opportunities and access controlled information.</p></section>
+    <section id="about" className="av-page"><h2>About AssetVeyra</h2><p>Global marketplace for high-value investment opportunities.</p></section>
+    <section id="contact" className="av-page"><h2>Contact Us</h2><p>Contact AssetVeyra for access and investment requirements.</p><a className="av-btn av-primary" href="/contact">Contact</a></section>
+    <section id="legal" className="av-page"><h2>Legal Information</h2><p>Terms of Service and Privacy Policy apply.</p></section>
+
+    <footer className="av-footer">AssetVeyra is a marketplace, not an investment advisor. Confidentiality protocols apply.</footer>
   </main>;
 }
