@@ -19,8 +19,8 @@ function translateTextNodes(root: HTMLElement, locale: Locale, originals: Map<Te
     originals.set(textNode, original);
     const leading = original.match(/^\s*/)?.[0] ?? '';
     const trailing = original.match(/\s*$/)?.[0] ?? '';
-    const translated = translate(original.trim(), locale);
-    textNode.textContent = `${leading}${translated}${trailing}`;
+    const translated = `${leading}${translate(original.trim(), locale)}${trailing}`;
+    if (current !== translated) textNode.textContent = translated;
   }
 }
 
