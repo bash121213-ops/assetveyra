@@ -1,14 +1,8 @@
 const marketListings = [
-  { country: 'UAE', city: 'Ras Al Khaimah', title: 'Breeze Island — Al Marjan Island', type: 'Mixed-use beachfront land', area: '134,650 sq ft', price: '$89.86M', original: 'AED 330M', image: 'https://commons.wikimedia.org/wiki/Special:FilePath/Aerial_shot_of_the_coast.jpg', source: 'https://www.propertyfinder.ae/en/plp/buy/land-for-sale-ras-al-khaimah-al-marjan-island-13918882.html' },
-  { country: 'UAE', city: 'Dubai', title: 'Palm Jumeirah — Frond N', type: 'Prime beachfront plot', area: '27,158 sq ft', price: '$54.46M', original: 'AED 200M', image: 'https://commons.wikimedia.org/wiki/Special:FilePath/Royal_Atlantis_Resort_hotel_under_construction%2C_Palm_Jumeirah%2C_Dubai.jpg', source: 'https://www.propertyfinder.ae/en/plp/buy/land-for-sale-dubai-palm-jumeirah-palm-jumeirah-frond-n-141441663.html' },
-  { country: 'UAE', city: 'Dubai', title: 'Palm Jumeirah — Garden Homes Frond H', type: 'Beachfront villa plot', area: '7,844 sq ft', price: '$13.61M', original: 'AED 50M', image: 'https://commons.wikimedia.org/wiki/Special:FilePath/Jumeirah_at_Saadiyat_Resort.jpg', source: 'https://www.propertyfinder.ae/en/plp/buy/land-for-sale-dubai-palm-jumeirah-13892272.html' },
-  { country: 'UAE', city: 'Dubai', title: 'Palm Jebel Ali — Frond O', type: 'Waterfront development land', area: '24,035 sq ft', price: '$10.89M', original: 'AED 40M', image: 'https://commons.wikimedia.org/wiki/Special:FilePath/Aerial_view_of_the_coastline_of_Muttrah.jpg', source: 'https://www.propertyfinder.ae/en/plp/buy/land-for-sale-dubai-palm-jebel-ali-palm-jebel-ali-frond-o-136575474.html' },
-  { country: 'Egypt', city: 'Soma Bay', title: 'Prime beachfront hotel land', type: 'Hospitality development land', area: '32,000 m²', price: '$19.47M*', original: 'EGP 1B headline', image: 'https://commons.wikimedia.org/wiki/Special:FilePath/Albatros_Citadel_Sahl_Hasheesh_R13.jpg', source: 'https://www.propertyfinder.eg/en/plp/buy/land-for-sale-red-sea-soma-bay-14036731.html', note: '*Headline price conflicts with the listing description; reconfirmation required.' },
-  { country: 'Spain', city: 'Zahara de los Atunes', title: 'Playa Atlanterra beachfront plot', type: 'Coastal residential land', area: '2,025 m²', price: '$2.93M', original: '€2.5M', image: 'https://commons.wikimedia.org/wiki/Special:FilePath/Aerial_shot_of_the_coast.jpg', source: 'https://www.idealista.com/en/inmueble/108400000/' },
-  { country: 'Spain', city: 'Zahara de los Atunes', title: 'Playa Atlanterra urban land', type: 'Urban land with sea views', area: '2,201 m²', price: '$1.16M', original: '€990,450', image: 'https://commons.wikimedia.org/wiki/Special:FilePath/Tropical_Luxury_Resort%2C_Coast_of_Ghana.jpg', source: 'https://www.idealista.com/en/venta-terrenos/zahara-de-los-atunes-cadiz/' },
-  { country: 'Spain', city: 'Tarifa', title: 'Coastal estate — 400 m seafront', type: 'Large coastal estate', area: '117,543 m²', price: '$702K', original: '€600K', image: 'https://commons.wikimedia.org/wiki/Special:FilePath/Aerial_view_of_the_coastline_of_Muttrah.jpg', source: 'https://www.idealista.com/en/venta-terrenos/tarifa-cadiz/' },
-  { country: 'South Africa', city: 'Port Nolloth', title: "McDougall's Bay beachfront stand", type: 'Beachfront residential plot', area: '467 m²', price: '$55.8K', original: 'ZAR 900K', image: 'https://commons.wikimedia.org/wiki/Special:FilePath/Aerial_shot_of_the_coast.jpg', source: 'https://www.property24.com/for-sale/mcdougalls-bay/port-nolloth/northern-cape/10455' },
-  { country: 'South Africa', city: 'St Helena Bay', title: 'St Helena Views beachfront stand', type: 'Direct-access coastal plot', area: '292 m²', price: '$241.6K', original: 'ZAR 3.9M', image: 'https://commons.wikimedia.org/wiki/Special:FilePath/Tropical_Luxury_Resort%2C_Coast_of_Ghana.jpg', source: 'https://www.property24.com/for-sale/st-helena-bay/west-coast/western-cape/10554' },
+  { country: 'UAE', city: 'Ras Al Khaimah', title: 'Breeze Island — Al Marjan Island', type: 'Mixed-use beachfront development land', area: '134,650 sq ft', price: '$89.86M', original: 'AED 330M', image: 'https://commons.wikimedia.org/wiki/Special:FilePath/Aerial_shot_of_the_coast.jpg' },
+  { country: 'UAE', city: 'Dubai', title: 'Palm Jumeirah — Frond N', type: 'Prime beachfront development plot', area: '27,158 sq ft', price: '$54.46M', original: 'AED 200M', image: 'https://commons.wikimedia.org/wiki/Special:FilePath/Royal_Atlantis_Resort_hotel_under_construction%2C_Palm_Jumeirah%2C_Dubai.jpg' },
+  { country: 'UAE', city: 'Dubai', title: 'Palm Jebel Ali — Frond O', type: 'Waterfront development land', area: '24,035 sq ft', price: '$10.89M', original: 'AED 40M', image: 'https://commons.wikimedia.org/wiki/Special:FilePath/Aerial_view_of_the_coastline_of_Muttrah.jpg' },
+  { country: 'Egypt', city: 'Soma Bay', title: 'Prime beachfront hotel development land', type: 'Hospitality development land', area: '32,000 m²', price: '$19.47M*', original: 'EGP 1B headline', image: 'https://commons.wikimedia.org/wiki/Special:FilePath/Albatros_Citadel_Sahl_Hasheesh_R13.jpg', note: '*Indicative market figure; final commercial terms require direct verification.' },
 ];
 
 const capabilities = [
@@ -41,14 +35,14 @@ export default function HomePage() {
           <div className="hero-location"><span className="live-dot" /> GLOBAL REAL-ASSET MARKET</div>
           <div className="hero-floating-card">
             <span>MARKET INTELLIGENCE</span>
-            <strong>Source-checked opportunities</strong>
-            <small>Prices shown in USD · external listings</small>
+            <strong>High-value commercial opportunities</strong>
+            <small>Prices shown in USD · market intelligence</small>
           </div>
         </div>
         <div className="hero-copy-block">
           <div className="eyebrow">GLOBAL REAL-ASSET TRANSACTION INFRASTRUCTURE</div>
           <h1>Capital meets real assets.</h1>
-          <p className="hero-copy">Discover real opportunities, understand the asset, control disclosure and move from qualified interest to executable transaction in one institutional workspace.</p>
+          <p className="hero-copy">Discover high-value commercial opportunities, understand the asset, control disclosure and move from qualified interest to executable transaction in one institutional workspace.</p>
           <div className="hero-actions">
             <a className="button primary" href="#market">Explore the market</a>
             <a className="button secondary" href="/submit">Submit an asset</a>
@@ -58,7 +52,7 @@ export default function HomePage() {
       </section>
 
       <section className="market-strip">
-        <div><span>GLOBAL</span><strong>Real assets</strong></div>
+        <div><span>GLOBAL</span><strong>High-value assets</strong></div>
         <div><span>WORKFLOW</span><strong>Source → Diligence → Deal</strong></div>
         <div><span>DISCLOSURE</span><strong>Public → Controlled → Private</strong></div>
         <div><span>ACCESS</span><strong>Investor workspace</strong></div>
@@ -67,20 +61,20 @@ export default function HomePage() {
       <section id="market" className="section market-section">
         <div className="section-heading wide-heading">
           <div>
-            <div className="eyebrow">LIVE MARKET EXAMPLES</div>
-            <h2>Real listings. Real asking prices. One controlled entry point.</h2>
+            <div className="eyebrow">GLOBAL HIGH-VALUE MARKET</div>
+            <h2>Commercial opportunities at institutional ticket sizes.</h2>
           </div>
-          <p>These are external market listings sourced from public marketplaces, not AssetVeyra-owned inventory. Prices are converted to USD for comparison and must be reconfirmed before any transaction.</p>
+          <p>AssetVeyra focuses this public discovery layer on high-value commercial and development opportunities. Individual opportunities shown here are market intelligence examples and are not represented as AssetVeyra-owned inventory.</p>
         </div>
         <div className="market-toolbar">
-          <span>10 opportunities</span><span>USD display</span><span>Checked 14 Sep 2026</span><span>External source</span>
+          <span>4 opportunities</span><span>USD display</span><span>$10M+ focus</span><span>Global commercial</span>
         </div>
         <div className="market-grid">
           {marketListings.map((item, index) => (
             <article className="market-card" key={`${item.country}-${item.title}`}>
               <div className="market-image">
-                <img src={item.image} alt={`${item.title} — ${item.city}`} loading={index > 2 ? 'lazy' : 'eager'} />
-                <span className="source-badge">SOURCE CHECKED</span>
+                <img src={item.image} alt={`${item.title} — ${item.city}`} loading={index > 1 ? 'lazy' : 'eager'} />
+                <span className="source-badge">MARKET INTELLIGENCE</span>
                 <span className="market-index">{String(index + 1).padStart(2, '0')}</span>
               </div>
               <div className="market-card-body">
@@ -91,13 +85,12 @@ export default function HomePage() {
                 {item.note && <p className="market-warning">{item.note}</p>}
                 <div className="card-actions">
                   <a className="button small primary" href="#contact">Request through AssetVeyra</a>
-                  <a className="source-link" href={item.source} target="_blank" rel="noreferrer">Source listing ↗</a>
                 </div>
               </div>
             </article>
           ))}
         </div>
-        <div className="market-disclaimer">Market listings are presented for discovery and comparison. AssetVeyra does not represent external listings as its own inventory unless a separate AssetVeyra verification and publication record is shown.</div>
+        <div className="market-disclaimer">Market examples are presented for discovery and comparison only. AssetVeyra does not expose third-party seller, broker or listing-platform contact details on this public interface. Any transaction requires separate AssetVeyra verification, qualification and controlled disclosure.</div>
       </section>
 
       <section id="platform" className="section platform-section">
@@ -156,7 +149,7 @@ export default function HomePage() {
           <span>ASSETVEYRA</span>
           <strong>Request property information</strong>
           <a className="button primary" href="/login">Start a request</a>
-          <small>No seller contact details are exposed on this public interface.</small>
+          <small>No seller or broker contact details are exposed on this public interface.</small>
         </div>
       </section>
 
