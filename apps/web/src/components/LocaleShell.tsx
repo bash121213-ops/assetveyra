@@ -4,6 +4,18 @@ import { ReactNode, useEffect, useRef, useState } from 'react';
 import { detectLocaleFromLanguages, LOCALE_LABELS, normalizeLocale, RTL_LOCALES, SUPPORTED_LOCALES, translate, type Locale } from '@/lib/i18n';
 import { translateExtra } from '@/lib/i18n-extra';
 import { translateHome } from '@/lib/i18n-home';
+import { PUBLIC_TRANSLATIONS } from '@/lib/i18n-public-ar';
+
+function translateValue(value: string, locale: Locale) {
+  const key = value.trim();
+  const base = translate(key, locale);
+  if (base !== key) return base;
+  const home = translateHome(key, locale);
+  if (home !== key) return home;
+  const extra = translateExtra(key, locale);
+  if (extra !== key) return extra;
+  return PUBLIC_TRANSLATIONS[locale]?.[key] ?? key;
+}
 
 function translateTextNodes(root: HTMLElement, locale: Locale, originals: Map<Text, string>) {
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
@@ -21,11 +33,20 @@ function translateTextNodes(root: HTMLElement, locale: Locale, originals: Map<Te
     originals.set(textNode, original);
     const leading = original.match(/^\s*/)?.[0] ?? '';
     const trailing = original.match(/\s*$/)?.[0] ?? '';
-    const key = original.trim();
-    const base = translate(key, locale);
-    const translated = `${leading}${base !== key ? base : translateHome(key, locale) !== key ? translateHome(key, locale) : translateExtra(key, locale)}${trailing}`;
+    const translated = `${leading}${translateValue(original, locale)}${trailing}`;
     if (current !== translated) textNode.textContent = translated;
   }
+}
+
+function translateAttributes(root: HTMLElement, locale: Locale) {
+  root.querySelectorAll<HTMLElement>('[placeholder], [aria-label], [title]').forEach((element) => {
+    for (const attribute of ['placeholder', 'aria-label', 'title']) {
+      const value = element.getAttribute(attribute);
+      if (!value) continue;
+      const translated = translateValue(value, locale);
+      if (translated !== value) element.setAttribute(attribute, translated);
+    }
+  });
 }
 
 export default function LocaleShell({ children, initialLocale }: { children: ReactNode; initialLocale: Locale }) {
@@ -45,11 +66,14 @@ export default function LocaleShell({ children, initialLocale }: { children: Rea
     document.documentElement.classList.toggle('rtl', RTL_LOCALES.has(locale));
     window.localStorage.setItem('assetveyra-locale', locale);
 
-    const apply = () => translateTextNodes(document.body, locale, originalsRef.current);
+    const apply = () => {
+      translateTextNodes(document.body, locale, originalsRef.current);
+      translateAttributes(document.body, locale);
+    };
     apply();
 
     const observer = new MutationObserver(apply);
-    observer.observe(document.body, { childList: true, subtree: true });
+    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['placeholder', 'aria-label', 'title'] });
     return () => observer.disconnect();
   }, [locale]);
 
