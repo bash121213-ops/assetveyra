@@ -49,6 +49,67 @@ function translateAttributes(root: HTMLElement, locale: Locale) {
   });
 }
 
+const ARABIC_LAYOUT_CSS = `
+html.rtl body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;direction:rtl;text-align:right}
+html.rtl .site-header,html.rtl .app-header{direction:rtl}
+html.rtl .site-header nav,html.rtl .app-header nav{flex-direction:row;direction:rtl}
+html.rtl .hero-home{direction:rtl;grid-template-columns:.95fr 1.05fr}
+html.rtl .hero-copy-block{order:1;text-align:right}
+html.rtl .hero-visual{order:2}
+html.rtl .hero-location{left:auto;right:24px}
+html.rtl .hero-floating-card{right:auto;left:24px;text-align:right}
+html.rtl .hero h1{letter-spacing:-.045em;line-height:1.02}
+html.rtl .hero-actions{justify-content:flex-start;flex-direction:row}
+html.rtl .market-strip{direction:rtl}
+html.rtl .market-strip>div{border-right:0;border-left:1px solid var(--line)}
+html.rtl .market-strip>div:last-child{border-left:0}
+html.rtl .section,html.rtl .workflow-section{direction:rtl}
+html.rtl .wide-heading{direction:rtl;grid-template-columns:.8fr 1.2fr}
+html.rtl .wide-heading p{justify-self:start}
+html.rtl .market-toolbar{direction:rtl}
+html.rtl .market-grid,html.rtl .opportunity-grid{direction:rtl}
+html.rtl .market-card,html.rtl .opportunity-card{direction:rtl;text-align:right}
+html.rtl .source-badge{left:auto;right:15px}
+html.rtl .market-index{right:auto;left:15px}
+html.rtl .card-meta,html.rtl .card-data,html.rtl .card-actions{direction:rtl}
+html.rtl .price-row{direction:rtl}
+html.rtl .capability-grid,html.rtl .lifecycle{direction:rtl}
+html.rtl .lifecycle{border-left:0;border-right:1px solid var(--line)}
+html.rtl .lifecycle-step{border-right:0;border-left:1px solid var(--line)}
+html.rtl .lifecycle-step:last-child{border-left:0}
+html.rtl .intelligence-section{direction:rtl;grid-template-columns:1.2fr .8fr}
+html.rtl .intelligence-copy{order:1}
+html.rtl .intelligence-map{order:2}
+html.rtl .map-overlay{left:20px;right:20px;text-align:right}
+html.rtl .contact-section{direction:rtl;grid-template-columns:.8fr 1.2fr}
+html.rtl .contact-card{order:1;text-align:right}
+html.rtl .contact-section>div:first-child{order:2}
+html.rtl .footer{direction:rtl}
+html.rtl .footer>div{flex-direction:row-reverse}
+html.rtl .footer-links{flex-direction:row-reverse}
+html.rtl .dashboard-head,html.rtl .page-head,html.rtl .form-page,html.rtl .detail{direction:rtl;text-align:right}
+html.rtl .dashboard-head{flex-direction:row-reverse}
+html.rtl .stats,html.rtl .facts,html.rtl .row{direction:rtl}
+html.rtl .stats div{border-right:0;border-left:1px solid var(--line)}
+html.rtl .stats div:last-child{border-left:0}
+html.rtl .facts div{padding:20px 0 20px 16px}
+html.rtl .detail-grid{direction:rtl;grid-template-columns:.7fr 1.5fr}
+html.rtl .deal-gate{order:1;text-align:right}
+html.rtl .detail-grid>div:first-child{order:2}
+html.rtl .form-grid{direction:rtl}
+html.rtl .form-grid .full{grid-column:1/-1}
+html.rtl .auth-page{direction:rtl}
+html.rtl .auth-card{text-align:right}
+html.rtl .language-switcher{left:18px;right:auto}
+html.rtl input,html.rtl textarea,html.rtl select{direction:rtl;text-align:right}
+@media (max-width:900px){
+  html.rtl .hero-home{grid-template-columns:1fr}
+  html.rtl .hero-copy-block,html.rtl .hero-visual{order:initial}
+  html.rtl .wide-heading,html.rtl .intelligence-section,html.rtl .contact-section{grid-template-columns:1fr}
+  html.rtl .detail-grid{grid-template-columns:1fr}
+}
+`;
+
 export default function LocaleShell({ children, initialLocale }: { children: ReactNode; initialLocale: Locale }) {
   const [locale, setLocale] = useState<Locale>(initialLocale);
   const originalsRef = useRef(new Map<Text, string>());
@@ -83,6 +144,7 @@ export default function LocaleShell({ children, initialLocale }: { children: Rea
   }
 
   return <>
+    <style id="assetveyra-arabic-layout">{ARABIC_LAYOUT_CSS}</style>
     {children}
     <div className="language-switcher" aria-label="Language">
       <select value={locale} onChange={(e) => changeLocale(e.target.value as Locale)}>
