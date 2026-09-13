@@ -1,0 +1,104 @@
+/* Locale-specific presentation layer. Kept separate from the main visual system so language fixes do not destabilize the existing design. */
+html[data-locale='ar'] body,
+html[data-locale='ar'] button,
+html[data-locale='ar'] input,
+html[data-locale='ar'] select,
+html[data-locale='ar'] textarea {
+  font-family: var(--font-cairo), 'Noto Sans Arabic', Tahoma, Arial, sans-serif;
+}
+
+html[data-locale='ar'] body {
+  text-align: right;
+  font-feature-settings: 'kern', 'liga';
+}
+
+html[data-locale='ar'] .hero-home,
+html[data-locale='ar'] .intelligence-section,
+html[data-locale='ar'] .contact-section,
+html[data-locale='ar'] .wide-heading {
+  direction: rtl;
+}
+
+html[data-locale='ar'] .hero-copy-block { order: 1; }
+html[data-locale='ar'] .hero-visual { order: 2; }
+html[data-locale='ar'] .site-header nav,
+html[data-locale='ar'] .app-header nav,
+html[data-locale='ar'] .hero-actions,
+html[data-locale='ar'] .card-actions,
+html[data-locale='ar'] .footer,
+html[data-locale='ar'] .footer-links {
+  direction: rtl;
+}
+
+html[data-locale='ar'] .market-strip,
+html[data-locale='ar'] .market-grid,
+html[data-locale='ar'] .capability-grid,
+html[data-locale='ar'] .lifecycle,
+html[data-locale='ar'] .stats,
+html[data-locale='ar'] .opportunity-grid,
+html[data-locale='ar'] .detail-grid,
+html[data-locale='ar'] .form-grid {
+  direction: rtl;
+}
+
+html[data-locale='ar'] .market-strip > div,
+html[data-locale='ar'] .stats div {
+  border-right: 0;
+  border-left: 1px solid var(--line);
+}
+
+html[data-locale='ar'] .market-strip > div:last-child,
+html[data-locale='ar'] .stats div:last-child {
+  border-left: 0;
+}
+
+html[data-locale='ar'] .hero-location { left: auto; right: 24px; }
+html[data-locale='ar'] .hero-floating-card { right: auto; left: 24px; }
+html[data-locale='ar'] .live-dot { margin-right: 0; margin-left: 8px; }
+html[data-locale='ar'] .source-badge { left: auto; right: 15px; }
+html[data-locale='ar'] .market-index { right: auto; left: 15px; }
+html[data-locale='ar'] .facts div { padding-right: 0; padding-left: 16px; }
+html[data-locale='ar'] .language-switcher { right: auto; left: 18px; }
+
+html[data-locale='ar'] h1,
+html[data-locale='ar'] h2,
+html[data-locale='ar'] h3,
+html[data-locale='ar'] p,
+html[data-locale='ar'] label,
+html[data-locale='ar'] .eyebrow,
+html[data-locale='ar'] .capability-label,
+html[data-locale='ar'] .market-toolbar,
+html[data-locale='ar'] .card-meta,
+html[data-locale='ar'] .card-data,
+html[data-locale='ar'] .source-link,
+html[data-locale='ar'] .market-warning,
+html[data-locale='ar'] .market-disclaimer {
+  letter-spacing: normal;
+}
+
+html[data-locale='ar'] .hero h1,
+html[data-locale='ar'] .section-heading h2,
+html[data-locale='ar'] .opportunity-section h2,
+html[data-locale='ar'] .intelligence-section h2,
+html[data-locale='ar'] .contact-section h2,
+html[data-locale='ar'] .dashboard-head h1,
+html[data-locale='ar'] .page-head h1,
+html[data-locale='ar'] .form-page h1,
+html[data-locale='ar'] .detail h1 {
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+
+html[data-locale='ar'] .language-switcher select {
+  font-family: var(--font-cairo), sans-serif;
+  direction: rtl;
+}
+
+/* Preserve readable LTR rendering for URLs, email addresses, prices and technical identifiers inside RTL pages. */
+html[data-locale='ar'] a[href^='http'],
+html[data-locale='ar'] .brand,
+html[data-locale='ar'] .price-row,
+html[data-locale='ar'] .market-index {
+  direction: ltr;
+  unicode-bidi: plaintext;
+}
