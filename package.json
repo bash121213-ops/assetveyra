@@ -6,8 +6,8 @@
   "workspaces": ["apps/*", "packages/*"],
   "scripts": {
     "dev": "pnpm --filter @assetveyra/web dev",
-    "build": "npm --workspace @assetveyra/web run build",
-    "lint": "npm --workspace @assetveyra/web run lint",
-    "typecheck": "npm --workspace @assetveyra/web run typecheck"
+    "build": "pnpm --filter @assetveyra/web build",
+    "lint": "pnpm --filter @assetveyra/web lint",
+    "typecheck": "pnpm --filter @assetveyra/web typecheck"
   }
 }
