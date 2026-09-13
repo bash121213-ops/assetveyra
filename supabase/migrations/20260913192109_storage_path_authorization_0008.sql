@@ -1,0 +1,7 @@
+begin;
+drop policy if exists assetveyra_storage_insert on storage.objects;drop policy if exists assetveyra_storage_select on storage.objects;drop policy if exists assetveyra_storage_update on storage.objects;drop policy if exists assetveyra_storage_delete on storage.objects;
+create policy assetveyra_storage_select on storage.objects for select to authenticated using(bucket_id='assetveyra-private' and((exists(select 1 from public.documents d where d.storage_path=name and is_org_member(d.organization_id))) or exists(select 1 from public.data_room_members m where m.user_id=(select auth.uid()) and(m.expires_at is null or m.expires_at>now()) and name like 'org/'||m.organization_id::text||'/%')));
+create policy assetveyra_storage_insert on storage.objects for insert to authenticated with check(bucket_id='assetveyra-private' and exists(select 1 from public.organization_members m where m.user_id=(select auth.uid()) and name like 'org/'||m.organization_id::text||'/%'));
+create policy assetveyra_storage_update on storage.objects for update to authenticated using(bucket_id='assetveyra-private' and owner_id=(select auth.uid())::text) with check(bucket_id='assetveyra-private' and owner_id=(select auth.uid())::text);
+create policy assetveyra_storage_delete on storage.objects for delete to authenticated using(bucket_id='assetveyra-private' and owner_id=(select auth.uid())::text);
+commit;
