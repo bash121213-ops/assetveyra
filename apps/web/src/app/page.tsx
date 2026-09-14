@@ -26,8 +26,7 @@ export default function HomePage() {
           <div className="av-menu-divider" />
           <div className="av-language-group">
             <span>Language</span>
-            <select aria-label="Language" defaultValue="">
-              <option value="" disabled>Select language</option>
+            <select data-language-menu aria-label="Language" defaultValue="en">
               <option value="en">English</option>
               <option value="ar">العربية</option>
               <option value="zh">中文</option>
