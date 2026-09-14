@@ -5,8 +5,6 @@ import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from './lib/supabase/config';
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
 
-  // The public site must remain available even if Supabase runtime configuration
-  // is unavailable. Authentication is enforced only for protected routes.
   const protectedPath = /^\/(dashboard|onboarding|submit|account|data-room|deals|investor|seller|operations)(\/|$)/.test(request.nextUrl.pathname);
 
   if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
@@ -28,11 +26,13 @@ export async function proxy(request: NextRequest) {
       },
     );
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (protectedPath && !user) return NextResponse.redirect(new URL('/login', request.url));
+    // Verify the JWT cryptographically. Do not use getSession()/getUser()
+    // as the authorization primitive in middleware/proxy.
+    const { data: claimsData } = await supabase.auth.getClaims();
+    if (protectedPath && !claimsData?.claims?.sub) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
   } catch {
-    // Never turn the public marketplace/landing pages into HTTP 500 because
-    // authentication infrastructure is temporarily unavailable.
     if (protectedPath) return NextResponse.redirect(new URL('/login', request.url));
   }
 
