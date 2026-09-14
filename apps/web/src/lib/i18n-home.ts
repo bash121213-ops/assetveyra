@@ -1,4 +1,7 @@
+'use client';
 import type { Locale } from './i18n';
+import { translate, type Locale as AppLocale } from './i18n';
+import { useLocale } from '@/components/LocaleShell';
 
 export const HOME_TRANSLATIONS: Record<string, Record<string,string>> = {
   en:{}, de:{}, ja:{}, ko:{},
@@ -7,4 +10,9 @@ export const HOME_TRANSLATIONS: Record<string, Record<string,string>> = {
   fr:{'Market':'Marché','Platform':'Plateforme','Workflow':'Flux de travail','Sign in':'Se connecter','Submit an asset':'Soumettre un actif','Capital meets real assets.':'Le capital rencontre les actifs réels.','Explore the market':'Explorer le marché','Investor workspace':'Espace de travail de l’investisseur','Real assets':'Actifs réels','THE PLATFORM':'LA PLATEFORME','TRANSACTION LIFECYCLE':'CYCLE DE VIE DE LA TRANSACTION','Verification':'Vérification','Compliance':'Conformité','Publication':'Publication','Qualification':'Qualification','NDA':'Accord de confidentialité','Data Room':'Data room','Diligence':'Due diligence','Offer':'Offre','Negotiation':'Négociation','Contract':'Contrat','Closing':'Clôture','Security':'Sécurité','Privacy':'Confidentialité','Terms':'Conditions'},
   zh:{'Market':'市场','Platform':'平台','Workflow':'工作流程','Sign in':'登录','Submit an asset':'提交资产','Capital meets real assets.':'资本连接真实资产。','Explore the market':'探索市场','Investor workspace':'投资者工作区','Real assets':'真实资产','THE PLATFORM':'平台','TRANSACTION LIFECYCLE':'交易生命周期','Verification':'验证','Compliance':'合规','Publication':'发布','Qualification':'资格审查','NDA':'保密协议','Data Room':'数据室','Diligence':'尽职调查','Offer':'报价','Negotiation':'谈判','Contract':'合同','Closing':'交割','Security':'安全','Privacy':'隐私','Terms':'条款'}
 };
-export function translateHome(text:string, locale:Locale):string { return HOME_TRANSLATIONS[locale]?.[text] ?? text; }
+export function translateHome(text:string, locale:Locale):string { return translate(text, locale) !== text ? translate(text, locale) : HOME_TRANSLATIONS[locale]?.[text] ?? text; }
+export function I18nText({ id, as: Tag = 'span' }: { id:string; as?: keyof JSX.IntrinsicElements }) {
+  const locale: AppLocale = useLocale();
+  const value = translate(id, locale);
+  return <Tag data-i18n-component="true">{value}</Tag>;
+}
