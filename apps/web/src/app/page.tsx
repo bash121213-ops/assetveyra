@@ -1,15 +1,64 @@
 import './av-final.css';
+import { createClient } from '@/lib/supabase/server';
 
-const opportunities = [
-  ['🇪🇸','Spain','€12,900,000','Historic Luxury Villa & Estate','2,235 sqm villa / 253,786 sqm estate','Europe','Pending','pending'],
-  ['🇦🇪','United Arab Emirates','AED 53,000,000','Waterfront Luxury Villa','60,027 sq ft','Middle East','Pending','pending'],
-  ['🇨🇳','China','¥1,800,000,000','Five-Star Luxury Hotel','45,000 sqm / 202 rooms','Asia','Pending','pending'],
-  ['🇺🇸','United States','$32,000,000','Luxury Mountain Penthouse','6,559 sq ft','Americas','Pending','pending'],
-  ['🇦🇺','Australia','AUD $29,000,000','Waterfront Luxury Estate','2,041 sqm residence / 2,197 sqm land','Australia','Pending','pending'],
-  ['🇫🇷','France','€21,000,000','Prime Luxury Residence','302 sqm living / 360 sqm total','Europe','Pending','pending'],
-] as const;
+type Opportunity = {
+  id: string;
+  slug: string;
+  status: string;
+  visibility: string;
+  investment_thesis: string | null;
+  minimum_ticket: number | null;
+  target_return: number | null;
+  asset_id: string;
+};
 
-export default function HomePage() {
+type Asset = {
+  id: string;
+  title: string;
+  asset_type: string;
+  country_code: string | null;
+  region: string | null;
+  area_sqm: number | null;
+  currency: string | null;
+  asking_price: number | null;
+  public_summary: string | null;
+};
+
+const FLAGS: Record<string, string> = { ES: '🇪🇸', AE: '🇦🇪', CN: '🇨🇳', US: '🇺🇸', AU: '🇦🇺', FR: '🇫🇷', GB: '🇬🇧', IT: '🇮🇹', DE: '🇩🇪', SA: '🇸🇦', QA: '🇶🇦', JO: '🇯🇴' };
+const MIN_PUBLIC_VALUE = 100_000;
+
+async function getPublishedOpportunities() {
+  const supabase = await createClient();
+  const { data: opportunities, error: opportunityError } = await supabase
+    .from('opportunities')
+    .select('id,slug,status,visibility,investment_thesis,minimum_ticket,target_return,asset_id')
+    .eq('status', 'published')
+    .eq('visibility', 'public')
+    .order('published_at', { ascending: false })
+    .limit(6);
+
+  if (opportunityError || !opportunities?.length) return { rows: [], error: opportunityError };
+
+  const typed = opportunities as Opportunity[];
+  const assetIds = typed.map((item) => item.asset_id).filter(Boolean);
+  const { data: assets, error: assetError } = await supabase
+    .from('assets')
+    .select('id,title,asset_type,country_code,region,area_sqm,currency,asking_price,public_summary')
+    .in('id', assetIds);
+
+  if (assetError) return { rows: [], error: assetError };
+
+  const assetById = new Map(((assets ?? []) as Asset[]).map((asset) => [asset.id, asset]));
+  const rows = typed
+    .map((opportunity) => ({ opportunity, asset: assetById.get(opportunity.asset_id) }))
+    .filter(({ asset }) => Boolean(asset?.asking_price && Number(asset.asking_price) >= MIN_PUBLIC_VALUE));
+
+  return { rows, error: null };
+}
+
+export default async function HomePage() {
+  const { rows, error } = await getPublishedOpportunities();
+
   return <main className="av-final-home">
     <header className="av-final-header">
       <a className="av-final-brand" href="/">ASSETVEYRA</a>
@@ -19,7 +68,7 @@ export default function HomePage() {
           <a href="#home">Home</a>
           <a href="#opportunities">Opportunities</a>
           <a href="#details">Details</a>
-          <a href="#dashboard">Dashboard</a>
+          <a href="/dashboard">Dashboard</a>
           <a href="#about">About</a>
           <a href="/contact">Contact</a>
           <a href="#legal">Legal</a>
@@ -59,18 +108,19 @@ export default function HomePage() {
 
     <section id="opportunities" className="av-section">
       <div className="av-cards">
-        {opportunities.map(([flag,country,amount,sector,size,region,status,statusKey]) => <article className="av-card" key={country+amount}>
-          <div className="av-card-top"><strong><span>{flag}</span>{country}</strong><em className={statusKey}>{status}</em></div>
-          <div className="av-amount">{amount}</div>
+        {error ? <div className="av-page" style={{gridColumn:'1/-1',margin:0}}><h2>Opportunities temporarily unavailable</h2><p>The live marketplace could not be loaded. Please try again shortly.</p></div> : rows.map(({ opportunity, asset }) => asset ? <article className="av-card" key={opportunity.id}>
+          <div className="av-card-top"><strong><span>{FLAGS[asset.country_code ?? ''] ?? '🌐'}</span>{asset.country_code ?? 'Global'}</strong><em className="verified">Verified</em></div>
+          <div className="av-amount">{asset.currency || 'USD'} {Number(asset.asking_price).toLocaleString()}</div>
           <div className="av-details">
-            <div><span>Sector</span><strong>{sector}</strong></div>
-            <div><span>Size</span><strong>{size}</strong></div>
-            <div><span>ROI</span><strong>—</strong></div>
-            <div><span>Region</span><strong>{region}</strong></div>
-            <div><span>Status</span><strong>{status}</strong></div>
+            <div><span>Sector</span><strong>{asset.title}</strong></div>
+            <div><span>Size</span><strong>{asset.area_sqm ? `${Number(asset.area_sqm).toLocaleString()} sqm` : '—'}</strong></div>
+            <div><span>ROI</span><strong>{opportunity.target_return != null ? `${Number(opportunity.target_return)}%` : '—'}</strong></div>
+            <div><span>Region</span><strong>{asset.region || '—'}</strong></div>
+            <div><span>Status</span><strong>Verified</strong></div>
           </div>
-          <a className="av-btn av-primary" href="/login">Request Access</a>
-        </article>)}
+          <a className="av-btn av-primary" href={`/opportunities/${opportunity.slug}`}>Request Access</a>
+        </article> : null)}
+        {!error && rows.length === 0 && <div className="av-page" style={{gridColumn:'1/-1',margin:0}}><h2>No published opportunities yet</h2><p>Verified opportunities will appear here automatically after publication approval. No sample or fabricated inventory is displayed.</p><a className="av-btn av-primary" href="/opportunities">Open Marketplace</a></div>}
       </div>
     </section>
 
