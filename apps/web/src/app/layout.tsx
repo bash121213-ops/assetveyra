@@ -11,8 +11,18 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'sw
 const cairo = Cairo({ subsets: ['arabic'], variable: '--font-cairo', display: 'swap', weight: ['400', '500', '600', '700', '800'] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://assetveyra.com'),
   title: 'AssetVeyra | Global Real Estate Investment',
   description: 'Discover, verify, diligence and execute institutional-grade real estate opportunities.',
+  alternates: { canonical: '/' },
+  robots: { index: true, follow: true },
+  openGraph: {
+    type: 'website',
+    url: 'https://assetveyra.com/',
+    siteName: 'AssetVeyra',
+    title: 'AssetVeyra | Global Real Estate Investment',
+    description: 'Discover, verify, diligence and execute institutional-grade real estate opportunities.',
+  },
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
