@@ -1,11 +1,18 @@
 'use client';
 
-import { createContext, createElement, ReactNode, useContext, useEffect, useRef, useState, type ElementType } from 'react';
-import { detectLocaleFromLanguages, normalizeLocale, RTL_LOCALES, translate, type Locale } from '@/lib/i18n';
+import { createContext, createElement, ReactNode, useContext, useEffect, useState, type ElementType } from 'react';
+import { detectLocaleFromLanguages, normalizeLocale, RTL_LOCALES, type Locale } from '@/lib/i18n';
 
 const LocaleContext = createContext<Locale>('en');
-export function useLocale(): Locale { return useContext(LocaleContext); }
-export function I18nText({ id, as = 'span' }: { id: string; as?: ElementType }) { const locale = useLocale(); return createElement(as, null, translate(id, locale)); }
+
+export function useLocale(): Locale {
+  return useContext(LocaleContext);
+}
+
+export function I18nText({ id, as = 'span' }: { id: string; as?: ElementType }) {
+  const locale = useLocale();
+  return createElement(as, null, require('@/lib/i18n').translate(id, locale));
+}
 
 const ARABIC_LAYOUT_CSS = `
 html.rtl body{direction:rtl;text-align:right}
@@ -14,21 +21,55 @@ html.rtl .hero-copy-block,html.rtl .market-card,html.rtl .opportunity-card,html.
 html.rtl .hero-copy-block{order:1}.rtl .hero-visual{order:2}.rtl .hero-location{left:auto;right:24px}.rtl .hero-floating-card{right:auto;left:24px}.rtl .market-strip>div{border-right:0;border-left:1px solid var(--line)}.rtl .market-strip>div:last-child{border-left:0}.rtl .lifecycle{border-left:0;border-right:1px solid var(--line)}.rtl .lifecycle-step{border-right:0;border-left:1px solid var(--line)}.rtl .lifecycle-step:last-child{border-left:0}.rtl .source-badge{left:auto;right:15px}.rtl .market-index{right:auto;left:15px}.rtl .stats div{border-right:0;border-left:1px solid var(--line)}.rtl .stats div:last-child{border-left:0}.rtl .facts div{padding:20px 0 20px 16px}
 `;
 
-function translateTextNodes(root: HTMLElement, locale: Locale, originals: Map<Text,string>) {
-  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT); const nodes:Text[]=[]; let node:Node|null;
-  while((node=walker.nextNode())){const parent=node.parentElement;if(!parent||parent.tagName==='SCRIPT'||parent.tagName==='STYLE'||parent.closest('.language-switcher')||parent.closest('[data-no-translate]'))continue;if((node.textContent??'').trim().length>1)nodes.push(node as Text);}
-  for(const textNode of nodes){const current=textNode.textContent??'';const original=originals.get(textNode)??current;originals.set(textNode,original);const leading=original.match(/^\s*/)?.[0]??'';const trailing=original.match(/\s*$/)?.[0]??'';const translated=`${leading}${translate(original.trim(),locale)}${trailing}`;if(current!==translated)textNode.textContent=translated;}
-}
-function translateAttributes(root:HTMLElement,locale:Locale){root.querySelectorAll<HTMLElement>('[placeholder],[aria-label],[title]').forEach(element=>{for(const attribute of ['placeholder','aria-label','title']){const value=element.getAttribute(attribute);if(!value)continue;const translated=translate(value,locale);if(translated!==value)element.setAttribute(attribute,translated);}});}
+export default function LocaleShell({ children, initialLocale }: { children: ReactNode; initialLocale: Locale }) {
+  const [locale, setLocale] = useState<Locale>(initialLocale);
 
-export default function LocaleShell({children,initialLocale}:{children:ReactNode;initialLocale:Locale}){
- const [locale,setLocale]=useState<Locale>(initialLocale); const originalsRef=useRef(new Map<Text,string>());
- useEffect(()=>{const saved=window.localStorage.getItem('assetveyra-locale');setLocale(saved?normalizeLocale(saved):detectLocaleFromLanguages(navigator.languages?.length?navigator.languages:[navigator.language]));},[]);
- useEffect(()=>{document.documentElement.lang=locale;document.documentElement.dir=RTL_LOCALES.has(locale)?'rtl':'ltr';document.documentElement.dataset.locale=locale;document.documentElement.classList.toggle('rtl',RTL_LOCALES.has(locale));window.localStorage.setItem('assetveyra-locale',locale);
-  const selects=document.querySelectorAll<HTMLSelectElement>('[data-language-menu]');selects.forEach(select=>{select.value=locale;select.onchange=()=>setLocale(normalizeLocale(select.value));});
-  const outside=(event:MouseEvent)=>{const target=event.target;if(!(target instanceof Node))return;document.querySelectorAll<HTMLDetailsElement>('details.av-menu[open]').forEach(menu=>{if(!menu.contains(target))menu.removeAttribute('open');});};
-  const escape=(event:KeyboardEvent)=>{if(event.key==='Escape')document.querySelectorAll<HTMLDetailsElement>('details.av-menu[open]').forEach(menu=>menu.removeAttribute('open'));};
-  document.addEventListener('click',outside);document.addEventListener('keydown',escape);const apply=()=>{translateTextNodes(document.body,locale,originalsRef.current);translateAttributes(document.body,locale);};apply();const observer=new MutationObserver(apply);observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['placeholder','aria-label','title']});return()=>{observer.disconnect();document.removeEventListener('click',outside);document.removeEventListener('keydown',escape);selects.forEach(select=>{select.onchange=null;});};
- },[locale]);
- return <LocaleContext.Provider value={locale}><style id="assetveyra-arabic-layout">{ARABIC_LAYOUT_CSS}</style>{children}</LocaleContext.Provider>;
+  useEffect(() => {
+    const saved = window.localStorage.getItem('assetveyra-locale');
+    setLocale(saved ? normalizeLocale(saved) : detectLocaleFromLanguages(navigator.languages?.length ? navigator.languages : [navigator.language]));
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.lang = locale;
+    document.documentElement.dir = RTL_LOCALES.has(locale) ? 'rtl' : 'ltr';
+    document.documentElement.dataset.locale = locale;
+    document.documentElement.classList.toggle('rtl', RTL_LOCALES.has(locale));
+    window.localStorage.setItem('assetveyra-locale', locale);
+
+    const selects = document.querySelectorAll<HTMLSelectElement>('[data-language-menu]');
+    selects.forEach((select) => {
+      select.value = locale;
+      select.onchange = () => setLocale(normalizeLocale(select.value));
+    });
+
+    const outside = (event: MouseEvent) => {
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      document.querySelectorAll<HTMLDetailsElement>('details.av-menu[open]').forEach((menu) => {
+        if (!menu.contains(target)) menu.removeAttribute('open');
+      });
+    };
+    const escape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        document.querySelectorAll<HTMLDetailsElement>('details.av-menu[open]').forEach((menu) => menu.removeAttribute('open'));
+      }
+    };
+
+    document.addEventListener('click', outside);
+    document.addEventListener('keydown', escape);
+    return () => {
+      document.removeEventListener('click', outside);
+      document.removeEventListener('keydown', escape);
+      selects.forEach((select) => {
+        select.onchange = null;
+      });
+    };
+  }, [locale]);
+
+  return (
+    <LocaleContext.Provider value={locale}>
+      <style id="assetveyra-arabic-layout">{ARABIC_LAYOUT_CSS}</style>
+      {children}
+    </LocaleContext.Provider>
+  );
 }
