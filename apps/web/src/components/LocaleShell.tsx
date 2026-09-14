@@ -100,7 +100,6 @@ html.rtl .form-grid{direction:rtl}
 html.rtl .form-grid .full{grid-column:1/-1}
 html.rtl .auth-page{direction:rtl}
 html.rtl .auth-card{text-align:right}
-html.rtl input,html.rtl textarea,html.rtl select{direction:rtl;text-align:right}
 `;
 
 export default function LocaleShell({ children, initialLocale }: { children: ReactNode; initialLocale: Locale }) {
@@ -130,6 +129,24 @@ export default function LocaleShell({ children, initialLocale }: { children: Rea
       };
     });
 
+    const closeMenusOnOutsideClick = (event: MouseEvent) => {
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      document.querySelectorAll<HTMLDetailsElement>('details.av-menu[open]').forEach((menu) => {
+        if (!menu.contains(target)) menu.removeAttribute('open');
+      });
+    };
+
+    const closeMenusOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      document.querySelectorAll<HTMLDetailsElement>('details.av-menu[open]').forEach((menu) => {
+        menu.removeAttribute('open');
+      });
+    };
+
+    document.addEventListener('click', closeMenusOnOutsideClick);
+    document.addEventListener('keydown', closeMenusOnEscape);
+
     const apply = () => {
       translateTextNodes(document.body, locale, originalsRef.current);
       translateAttributes(document.body, locale);
@@ -140,6 +157,8 @@ export default function LocaleShell({ children, initialLocale }: { children: Rea
     observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['placeholder', 'aria-label', 'title'] });
     return () => {
       observer.disconnect();
+      document.removeEventListener('click', closeMenusOnOutsideClick);
+      document.removeEventListener('keydown', closeMenusOnEscape);
       languageSelects.forEach((select) => { select.onchange = null; });
     };
   }, [locale]);
