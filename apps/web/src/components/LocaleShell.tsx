@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, createElement, ReactNode, useContext, useEffect, useState, type ElementType } from 'react';
-import { detectLocaleFromLanguages, normalizeLocale, RTL_LOCALES, type Locale } from '@/lib/i18n';
+import { detectLocaleFromLanguages, normalizeLocale, RTL_LOCALES, translate, type Locale } from '@/lib/i18n';
 
 const LocaleContext = createContext<Locale>('en');
 
@@ -11,7 +11,7 @@ export function useLocale(): Locale {
 
 export function I18nText({ id, as = 'span' }: { id: string; as?: ElementType }) {
   const locale = useLocale();
-  return createElement(as, null, require('@/lib/i18n').translate(id, locale));
+  return createElement(as, null, translate(id, locale));
 }
 
 const ARABIC_LAYOUT_CSS = `
