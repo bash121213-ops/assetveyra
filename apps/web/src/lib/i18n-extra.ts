@@ -1,6 +1,6 @@
 import type { Locale } from './i18n';
 
-const extra: Partial<Record<Locale, Record<string, string>>> = {
+const extra: Record<string, Record<string, string>> = {
   en: {},
   de: {},
   ja: {},
@@ -16,7 +16,7 @@ const extra: Partial<Record<Locale, Record<string, string>>> = {
   },
   zh: {
     'DEAL EXECUTION':'交易执行','From offer to closing.':'从报价到交割。','Execution state is explicit: NDA, data room, diligence, offer, negotiation, approval, contract, signing and closing.':'执行状态清晰明确：保密协议、数据室、尽职调查、报价、谈判、审批、合同、签署与交割。','No live deals.':'暂无进行中的交易。','Accepted offers and transaction records will appear here.':'已接受的报价和交易记录将在此显示。','Open execution':'打开交易执行','TRANSACTION EXECUTION':'交易执行','DEAL HISTORY':'交易历史','Immutable transaction events':'不可篡改的交易事件','NEXT CONTROLLED STEP':'下一受控步骤','Advance transaction':'推进交易','Execution note':'执行备注','PRIVATE DATA ROOM':'私密数据室','ACCESS POLICY':'访问策略','LEGAL ACCESS GATE':'法律访问门槛','Non-disclosure agreement required':'需要签署保密协议','Accept NDA and continue':'接受保密协议并继续','No documents published to this room.':'该数据室尚未发布文件。','Documents will appear after controlled disclosure.':'文件将在受控披露后显示。','CONTROL & COMPLIANCE':'控制与合规','Verification queue.':'验证队列。','Every decision is recorded against the verification case and drives the controlled asset state.':'每项决定都会记录在验证案件中，并驱动资产的受控状态。','Decision recorded.':'决定已记录。','Unable to process the requested decision.':'无法处理请求的决定。','Approve':'批准','Request changes':'要求修改','Reject':'拒绝','Decision rationale':'决定依据','INVESTMENT INTEREST':'投资意向','Pipeline state:':'流程状态：','OFFERS':'报价','FORMAL OFFER':'正式报价','Submit an offer':'提交报价','Submit formal offer':'提交正式报价','Commercial terms':'商业条款','Key conditions, due diligence conditions, target closing…':'关键条件、尽职调查条件、目标交割时间……','No offers submitted.':'尚未提交报价。','When diligence is sufficient, submit a formal offer.':'尽职调查充分后，可提交正式报价。','Asking price':'要价','Interest opened':'意向创建时间','Offers':'报价数量','No expiry':'无到期时间','Pending':'待定','Close date pending':'待确定交割日期','Asset value':'资产价值','Accepted offer':'已接受报价','Recorded':'已记录','Transaction lifecycle':'交易生命周期','Verification':'验证','Compliance':'合规','Publication':'发布','Qualification':'资格审查','NDA':'保密协议','Data Room':'数据室','Diligence':'尽职调查','Offer':'报价','Negotiation':'谈判','Approval':'审批','Contract':'合同','Signing':'签署','Closing':'交割','Completed':'已完成','Cancelled':'已取消','Organization manager':'组织管理员','Expires':'到期时间','Access expired':'访问已过期','No expiry set':'未设置到期时间','Watermark':'水印','Downloads':'下载','Enabled':'已启用','Disabled':'已禁用','View only':'仅查看','Open secure copy':'打开安全副本','PRIVATE TRANSACTION ROOMS':'私密交易室','Transaction workspace':'交易工作区','Your organizations':'您的组织','Recent opportunities':'近期机会'
-  }
+  },
 };
 
 export function translateExtra(text: string, locale: Locale): string {
