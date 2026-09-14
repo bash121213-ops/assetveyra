@@ -1,10 +1,13 @@
 'use client';
 
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { createContext, ReactNode, useContext, useEffect, useRef, useState } from 'react';
 import { detectLocaleFromLanguages, LOCALE_LABELS, normalizeLocale, RTL_LOCALES, SUPPORTED_LOCALES, translate, type Locale } from '@/lib/i18n';
 import { translateExtra } from '@/lib/i18n-extra';
 import { translateHome } from '@/lib/i18n-home';
 import { PUBLIC_TRANSLATIONS } from '@/lib/i18n-public-ar';
+
+const LocaleContext = createContext<Locale>('en');
+export function useLocale(): Locale { return useContext(LocaleContext); }
 
 function translateValue(value: string, locale: Locale) {
   const key = value.trim();
@@ -23,10 +26,9 @@ function translateTextNodes(root: HTMLElement, locale: Locale, originals: Map<Te
   let node: Node | null;
   while ((node = walker.nextNode())) {
     const parent = node.parentElement;
-    if (!parent || parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE' || parent.closest('.language-switcher') || parent.closest('[data-no-translate]')) continue;
+    if (!parent || parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE' || parent.closest('.language-switcher') || parent.closest('[data-no-translate]') || parent.closest('[data-i18n-component]')) continue;
     if ((node.textContent ?? '').trim().length > 1) nodes.push(node as Text);
   }
-
   for (const textNode of nodes) {
     const current = textNode.textContent ?? '';
     const original = originals.get(textNode) ?? current;
@@ -122,51 +124,24 @@ export default function LocaleShell({ children, initialLocale }: { children: Rea
     const languageSelects = document.querySelectorAll<HTMLSelectElement>('[data-language-menu]');
     languageSelects.forEach((select) => {
       select.value = locale;
-      select.onchange = () => {
-        const next = normalizeLocale(select.value);
-        setLocale(next);
-        window.localStorage.setItem('assetveyra-locale', next);
-      };
+      select.onchange = () => setLocale(normalizeLocale(select.value));
     });
 
     const closeMenusOnOutsideClick = (event: MouseEvent) => {
       const target = event.target;
       if (!(target instanceof Node)) return;
-      document.querySelectorAll<HTMLDetailsElement>('details.av-menu[open]').forEach((menu) => {
-        if (!menu.contains(target)) menu.removeAttribute('open');
-      });
+      document.querySelectorAll<HTMLDetailsElement>('details.av-menu[open]').forEach((menu) => { if (!menu.contains(target)) menu.removeAttribute('open'); });
     };
-
-    const closeMenusOnEscape = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') return;
-      document.querySelectorAll<HTMLDetailsElement>('details.av-menu[open]').forEach((menu) => {
-        menu.removeAttribute('open');
-      });
-    };
-
+    const closeMenusOnEscape = (event: KeyboardEvent) => { if (event.key === 'Escape') document.querySelectorAll<HTMLDetailsElement>('details.av-menu[open]').forEach((menu) => menu.removeAttribute('open')); };
     document.addEventListener('click', closeMenusOnOutsideClick);
     document.addEventListener('keydown', closeMenusOnEscape);
 
-    const apply = () => {
-      translateTextNodes(document.body, locale, originalsRef.current);
-      translateAttributes(document.body, locale);
-    };
+    const apply = () => { translateTextNodes(document.body, locale, originalsRef.current); translateAttributes(document.body, locale); };
     apply();
-
     const observer = new MutationObserver(apply);
     observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['placeholder', 'aria-label', 'title'] });
-    return () => {
-      observer.disconnect();
-      document.removeEventListener('click', closeMenusOnOutsideClick);
-      document.removeEventListener('keydown', closeMenusOnEscape);
-      languageSelects.forEach((select) => { select.onchange = null; });
-    };
+    return () => { observer.disconnect(); document.removeEventListener('click', closeMenusOnOutsideClick); document.removeEventListener('keydown', closeMenusOnEscape); languageSelects.forEach((select) => { select.onchange = null; }); };
   }, [locale]);
 
-  return (
-    <>
-      <style id="assetveyra-arabic-layout">{ARABIC_LAYOUT_CSS}</style>
-      {children}
-    </>
-  );
+  return <LocaleContext.Provider value={locale}><><style id="assetveyra-arabic-layout">{ARABIC_LAYOUT_CSS}</style>{children}</></LocaleContext.Provider>;
 }
