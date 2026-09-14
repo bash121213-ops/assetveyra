@@ -100,14 +100,7 @@ html.rtl .form-grid{direction:rtl}
 html.rtl .form-grid .full{grid-column:1/-1}
 html.rtl .auth-page{direction:rtl}
 html.rtl .auth-card{text-align:right}
-html.rtl .language-switcher{left:18px;right:auto}
 html.rtl input,html.rtl textarea,html.rtl select{direction:rtl;text-align:right}
-@media (max-width:900px){
-  html.rtl .hero-home{grid-template-columns:1fr}
-  html.rtl .hero-copy-block,html.rtl .hero-visual{order:initial}
-  html.rtl .wide-heading,html.rtl .intelligence-section,html.rtl .contact-section{grid-template-columns:1fr}
-  html.rtl .detail-grid{grid-template-columns:1fr}
-}
 `;
 
 export default function LocaleShell({ children, initialLocale }: { children: ReactNode; initialLocale: Locale }) {
@@ -127,6 +120,16 @@ export default function LocaleShell({ children, initialLocale }: { children: Rea
     document.documentElement.classList.toggle('rtl', RTL_LOCALES.has(locale));
     window.localStorage.setItem('assetveyra-locale', locale);
 
+    const languageSelects = document.querySelectorAll<HTMLSelectElement>('[data-language-menu]');
+    languageSelects.forEach((select) => {
+      select.value = locale;
+      select.onchange = () => {
+        const next = normalizeLocale(select.value);
+        setLocale(next);
+        window.localStorage.setItem('assetveyra-locale', next);
+      };
+    });
+
     const apply = () => {
       translateTextNodes(document.body, locale, originalsRef.current);
       translateAttributes(document.body, locale);
@@ -135,21 +138,16 @@ export default function LocaleShell({ children, initialLocale }: { children: Rea
 
     const observer = new MutationObserver(apply);
     observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['placeholder', 'aria-label', 'title'] });
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      languageSelects.forEach((select) => { select.onchange = null; });
+    };
   }, [locale]);
 
-  function changeLocale(next: Locale) {
-    setLocale(next);
-    window.localStorage.setItem('assetveyra-locale', next);
-  }
-
-  return <>
-    <style id="assetveyra-arabic-layout">{ARABIC_LAYOUT_CSS}</style>
-    {children}
-    <div className="language-switcher" aria-label="Language">
-      <select value={locale} onChange={(e) => changeLocale(e.target.value as Locale)}>
-        {SUPPORTED_LOCALES.map((code) => <option key={code} value={code}>{LOCALE_LABELS[code]}</option>)}
-      </select>
-    </div>
-  </>;
+  return (
+    <>
+      <style id="assetveyra-arabic-layout">{ARABIC_LAYOUT_CSS}</style>
+      {children}
+    </>
+  );
 }
