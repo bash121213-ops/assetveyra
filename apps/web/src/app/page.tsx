@@ -13,7 +13,34 @@ export default function HomePage() {
   return <main className="av-final-home">
     <header className="av-final-header">
       <a className="av-final-brand" href="/">ASSETVEYRA</a>
-      <nav><a href="#home">Home</a><a href="#opportunities">Opportunities</a><a href="#details">Details</a><a href="#dashboard">Dashboard</a><a href="/login">Login</a><a href="/signup">Sign Up</a><a href="#about">About</a><a href="/contact">Contact</a><a href="#legal">Legal</a></nav>
+      <details className="av-menu">
+        <summary className="av-menu-trigger" aria-label="Open menu"><span className="av-menu-icon" aria-hidden="true"><i></i><i></i><i></i></span><span>Menu</span></summary>
+        <nav className="av-menu-panel" aria-label="Main navigation">
+          <a href="#home">Home</a>
+          <a href="#opportunities">Opportunities</a>
+          <a href="#details">Details</a>
+          <a href="#dashboard">Dashboard</a>
+          <a href="#about">About</a>
+          <a href="/contact">Contact</a>
+          <a href="#legal">Legal</a>
+          <div className="av-menu-divider" />
+          <div className="av-language-group">
+            <span>Language</span>
+            <select aria-label="Language" defaultValue="">
+              <option value="" disabled>Select language</option>
+              <option value="en">English</option>
+              <option value="ar">العربية</option>
+              <option value="zh">中文</option>
+              <option value="es">Español</option>
+              <option value="fr">Français</option>
+            </select>
+          </div>
+          <div className="av-menu-account">
+            <a className="av-menu-login" href="/login">Login</a>
+            <a className="av-menu-signup" href="/signup">Sign Up</a>
+          </div>
+        </nav>
+      </details>
     </header>
 
     <section id="home" className="av-final-hero">
