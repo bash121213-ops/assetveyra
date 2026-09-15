@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { randomUUID } from 'node:crypto';
 import { connect as tlsConnect, TLSSocket } from 'node:tls';
 import { z } from 'zod';
 import { createClient } from '@/lib/supabase/server';
@@ -92,12 +93,14 @@ async function sendContactEmail({
   phone,
   interest,
   message,
+  requestId,
 }: {
   name: string;
   email: string;
   phone: string;
   interest: keyof typeof interestLabel;
   message: string;
+  requestId: string;
 }) {
   let stage = 'configuration';
   const host = process.env.SMTP_HOST;
@@ -144,6 +147,12 @@ async function sendContactEmail({
       clearTimeout(timeout);
       reject(error);
     });
+  }).catch((error) => {
+    const details = error instanceof Error
+      ? { name: error.name, message: error.message, code: (error as NodeJS.ErrnoException).code ?? null }
+      : { name: 'UnknownError', message: String(error), code: null };
+    console.error('Contact SMTP diagnostic:', { requestId, stage, host, port, ...details });
+    throw error;
   });
 
   try {
@@ -186,7 +195,7 @@ async function sendContactEmail({
     const details = error instanceof Error
       ? { name: error.name, message: error.message, code: (error as NodeJS.ErrnoException).code ?? null }
       : { name: 'UnknownError', message: String(error), code: null };
-    console.error('Contact SMTP diagnostic:', { stage, host, port, ...details });
+    console.error('Contact SMTP diagnostic:', { requestId, stage, host, port, ...details });
     throw error;
   } finally {
     socket.end();
@@ -194,13 +203,15 @@ async function sendContactEmail({
 }
 
 export async function POST(request: Request) {
+  const requestId = randomUUID();
+
   try {
     const body = await request.json();
     const parsed = schema.safeParse(body);
     if (!parsed.success) {
-      return NextResponse.json({ error: 'Please check the information and try again.' }, { status: 400 });
+      return NextResponse.json({ ok: false, error: 'Please check the information and try again.', requestId }, { status: 400 });
     }
-    if (parsed.data.website) return NextResponse.json({ ok: true });
+    if (parsed.data.website) return NextResponse.json({ ok: true, stored: false, notification: 'skipped', requestId });
 
     const { name, email, phone, interest, message } = parsed.data;
     const supabase = await createClient();
@@ -209,20 +220,23 @@ export async function POST(request: Request) {
       .insert({ name, email, phone: phone || null, interest, message });
 
     if (insertError) {
-      console.error('Contact submission storage failed:', insertError.message);
-      return NextResponse.json({ error: 'We could not receive your request. Please try again later.' }, { status: 500 });
+      console.error('Contact submission storage failed:', { requestId, message: insertError.message });
+      return NextResponse.json({ ok: false, stored: false, error: 'We could not receive your request. Please try again later.', requestId }, { status: 500 });
     }
 
     try {
-      await sendContactEmail({ name, email, phone, interest, message });
-      console.info('Contact notification email sent successfully');
+      await sendContactEmail({ name, email, phone, interest, message, requestId });
+      console.info('Contact notification email accepted by SMTP:', { requestId });
+      return NextResponse.json({ ok: true, stored: true, notification: 'accepted', requestId }, { status: 200 });
     } catch (error) {
-      console.error('Contact notification email failed:', error);
+      console.error('Contact notification email failed:', {
+        requestId,
+        message: error instanceof Error ? error.message : String(error),
+      });
+      return NextResponse.json({ ok: true, stored: true, notification: 'failed', requestId }, { status: 200 });
     }
-
-    return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error('Contact endpoint error:', error);
-    return NextResponse.json({ error: 'We could not receive your request. Please try again later.' }, { status: 500 });
+    console.error('Contact endpoint error:', { requestId, error });
+    return NextResponse.json({ ok: false, stored: false, error: 'We could not receive your request. Please try again later.', requestId }, { status: 500 });
   }
 }
