@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useDraggable, useDroppable, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { I18nText } from '@/components/LocaleShell';
 import { normalizeLocale, translate } from '@/lib/i18n';
 import '@/lib/i18nAssetImages';
@@ -8,13 +9,48 @@ import { deleteAssetImage, reorderAssetImages } from '@/app/workspace/assets/act
 
 type Image = { id: string; storage_path: string; signed_url: string; sort_order: number };
 
+function ImageCard({ image, index, disabled, onRemove }: { image: Image; index: number; disabled: boolean; onRemove: (image: Image) => void }) {
+  const { attributes, listeners, setNodeRef: setDraggableNodeRef, transform, isDragging } = useDraggable({ id: image.id, disabled });
+  const { setNodeRef: setDroppableNodeRef, isOver } = useDroppable({ id: image.id, disabled });
+  const setNodeRef = (node: HTMLElement | null) => {
+    setDraggableNodeRef(node);
+    setDroppableNodeRef(node);
+  };
+  const transformStyle = transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined;
+
+  return (
+    <article
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
+      style={{
+        border: isOver ? '2px solid var(--accent)' : '1px solid var(--border)',
+        borderRadius: 14,
+        padding: 7,
+        background: 'var(--surface)',
+        cursor: disabled ? 'default' : 'grab',
+        opacity: isDragging ? 0.55 : 1,
+        transform: transformStyle,
+        touchAction: 'none',
+      }}
+    >
+      <img src={image.signed_url} alt="" style={{ width: '100%', aspectRatio: '4 / 3', objectFit: 'cover', borderRadius: 10 }} />
+      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, alignItems: 'center', marginTop: 7 }}>
+        <small>{index === 0 ? <I18nText id="Main image" /> : `#${index + 1}`}</small>
+        <button type="button" className="button" disabled={disabled} onPointerDown={(event) => event.stopPropagation()} onClick={() => onRemove(image)}><I18nText id="Delete" /></button>
+      </div>
+    </article>
+  );
+}
+
 export default function AssetImageGallery({ assetId, initialImages }: { assetId: string; initialImages: Image[] }) {
   const [images, setImages] = useState(initialImages);
   const [busy, setBusy] = useState(false);
-  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }), useSensor(KeyboardSensor));
 
   async function move(from: number, to: number) {
     if (from === to || to < 0 || to >= images.length) return;
+    const previous = images;
     const next = [...images];
     const [item] = next.splice(from, 1);
     next.splice(to, 0, item);
@@ -24,10 +60,17 @@ export default function AssetImageGallery({ assetId, initialImages }: { assetId:
     try {
       await reorderAssetImages(assetId, normalized.map((image) => ({ id: image.id, sort_order: image.sort_order })));
     } catch {
-      setImages(images);
+      setImages(previous);
     } finally {
       setBusy(false);
     }
+  }
+
+  async function handleDragEnd(event: DragEndEvent) {
+    if (!event.over || event.active.id === event.over.id) return;
+    const from = images.findIndex((image) => image.id === event.active.id);
+    const to = images.findIndex((image) => image.id === event.over?.id);
+    if (from !== -1 && to !== -1) await move(from, to);
   }
 
   async function remove(image: Image) {
@@ -49,17 +92,11 @@ export default function AssetImageGallery({ assetId, initialImages }: { assetId:
   return (
     <div style={{ display: 'grid', gap: 12 }}>
       {busy && <small style={{ color: 'var(--muted)' }}><I18nText id="Saving image changes…" /></small>}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(150px,1fr))', gap: 12 }}>
-        {images.map((image, index) => (
-          <article key={image.id} draggable={!busy} onDragStart={() => setDragIndex(index)} onDragOver={(event) => event.preventDefault()} onDrop={() => { if (dragIndex !== null) void move(dragIndex, index); setDragIndex(null); }} style={{ border: '1px solid var(--border)', borderRadius: 14, padding: 7, background: 'var(--surface)', cursor: busy ? 'default' : 'grab' }}>
-            <img src={image.signed_url} alt="" style={{ width: '100%', aspectRatio: '4 / 3', objectFit: 'cover', borderRadius: 10 }} />
-            <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, alignItems: 'center', marginTop: 7 }}>
-              <small>{index === 0 ? <I18nText id="Main image" /> : `#${index + 1}`}</small>
-              <button type="button" className="button" disabled={busy} onClick={() => void remove(image)}><I18nText id="Delete" /></button>
-            </div>
-          </article>
-        ))}
-      </div>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(event) => void handleDragEnd(event)}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(150px,1fr))', gap: 12 }}>
+          {images.map((image, index) => <ImageCard key={image.id} image={image} index={index} disabled={busy} onRemove={remove} />)}
+        </div>
+      </DndContext>
     </div>
   );
 }
