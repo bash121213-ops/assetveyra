@@ -1,6 +1,7 @@
 import { notFound, redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { I18nText } from '@/components/LocaleShell';
+import '@/lib/i18nAssetImages';
 import AssetImageGallery from '@/components/AssetImageGallery';
 import AssetImageUploader from '@/components/AssetImageUploader';
 import { uploadAssetImages } from '@/app/workspace/assets/actions';
