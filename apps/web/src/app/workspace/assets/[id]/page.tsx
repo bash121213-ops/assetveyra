@@ -13,14 +13,15 @@ export default async function AssetImageManagementPage({ params }: { params: Pro
   if (!user) redirect('/login');
   const { data: asset } = await s.from('assets').select('id,organization_id,title,asset_type,status,city,country_code').eq('id', id).single();
   if (!asset) notFound();
+  const assetId = asset.id;
   const { data: membership } = await s.from('organization_members').select('role').eq('organization_id', asset.organization_id).eq('user_id', user.id).maybeSingle();
   if (!membership) redirect('/workspace/assets');
-  const { data: images } = await s.from('asset_images').select('id,storage_path,sort_order').eq('asset_id', id).order('sort_order', { ascending: true });
+  const { data: images } = await s.from('asset_images').select('id,storage_path,sort_order').eq('asset_id', assetId).order('sort_order', { ascending: true });
   const withUrls = await Promise.all((images ?? []).map(async (image) => {
     const { data } = await s.storage.from('property-images').createSignedUrl(image.storage_path, 60 * 60);
     return { ...image, signed_url: data?.signedUrl ?? '' };
   }));
-  async function handleUpload(formData: FormData) { 'use server'; await uploadAssetImages(asset.id, formData); }
+  async function handleUpload(formData: FormData) { 'use server'; await uploadAssetImages(assetId, formData); }
   return (
     <main className="app-shell">
       <header className="app-header">
@@ -44,7 +45,7 @@ export default async function AssetImageManagementPage({ params }: { params: Pro
         <div>
           <h2><I18nText id="Image order" /></h2>
           <p style={{ color: 'var(--muted)' }}><I18nText id="Drag an image to change its order. The first image becomes the marketplace thumbnail." /></p>
-          <AssetImageGallery assetId={asset.id} initialImages={withUrls} />
+          <AssetImageGallery assetId={assetId} initialImages={withUrls} />
         </div>
       </section>
     </main>
