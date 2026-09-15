@@ -99,6 +99,7 @@ async function sendContactEmail({
   interest: keyof typeof interestLabel;
   message: string;
 }) {
+  let stage = 'configuration';
   const host = process.env.SMTP_HOST;
   const port = Number(process.env.SMTP_PORT || '465');
   const user = process.env.SMTP_USER;
@@ -123,6 +124,7 @@ async function sendContactEmail({
     message,
   ].join('\r\n');
 
+  stage = 'tls_connect';
   const socket = await new Promise<TLSSocket>((resolve, reject) => {
     const connection = tlsConnect({
       host,
@@ -145,12 +147,19 @@ async function sendContactEmail({
   });
 
   try {
+    stage = 'greeting';
     await readSmtpResponse(socket, 220);
+    stage = 'ehlo';
     await smtpCommand(socket, 'EHLO assetveyra.com', 250);
+    stage = 'auth_login';
     await smtpCommand(socket, 'AUTH LOGIN', 334);
+    stage = 'auth_username';
     await smtpCommand(socket, Buffer.from(user, 'utf8').toString('base64'), 334);
+    stage = 'auth_password';
     await smtpCommand(socket, Buffer.from(password, 'utf8').toString('base64'), 235);
+    stage = 'mail_from';
     await smtpCommand(socket, `MAIL FROM:<${user}>`, 250);
+    stage = 'rcpt_to';
     await smtpCommand(socket, `RCPT TO:<${receiver}>`, [250, 251]);
 
     const data = [
@@ -167,9 +176,18 @@ async function sendContactEmail({
       .join('\r\n')
       .replace(/(^|\r\n)\./g, '$1..');
 
+    stage = 'data_command';
     await smtpCommand(socket, 'DATA', 354);
+    stage = 'data_body';
     await smtpCommand(socket, `${data}\r\n.`, 250);
+    stage = 'quit';
     await smtpCommand(socket, 'QUIT', 221);
+  } catch (error) {
+    const details = error instanceof Error
+      ? { name: error.name, message: error.message, code: (error as NodeJS.ErrnoException).code ?? null }
+      : { name: 'UnknownError', message: String(error), code: null };
+    console.error('Contact SMTP diagnostic:', { stage, host, port, ...details });
+    throw error;
   } finally {
     socket.end();
   }
@@ -197,6 +215,7 @@ export async function POST(request: Request) {
 
     try {
       await sendContactEmail({ name, email, phone, interest, message });
+      console.info('Contact notification email sent successfully');
     } catch (error) {
       console.error('Contact notification email failed:', error);
     }
