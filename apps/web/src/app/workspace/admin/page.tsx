@@ -65,7 +65,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
     {params.updated && <section className="panel"><strong><I18nText id="Change recorded."/></strong></section>}
     {params.error && <section className="panel"><strong><I18nText id="Action blocked by the control gate."/></strong></section>}
     <section className="panel"><h2><I18nText id="Opportunity control"/></h2><div className="table">{(opportunities ?? []).map((o: any) => <div className="row" key={o.id} style={{display:'grid',gap:10}}>
-      <div><strong>{o.assets?.title || o.slug}</strong><div style={{color:'var(--muted)',fontSize:11,marginTop:5}}><I18nText id={o.status}/><span> · {o.visibility}</span><span> · {o.assets?.country_code || '—'}</span></div></div>
+      <div><strong>{o.assets?.title || o.slug}</strong><div style={{color:'var(--muted)',fontSize:11,marginTop:5}}><I18nText id={o.status}/><span> · <I18nText id={o.visibility}/></span><span> · {o.assets?.country_code || '—'}</span></div></div>
       <span>{o.assets?.asking_price ? `${o.assets.asking_price} ${o.assets.currency || ''}` : <I18nText id="Price pending"/>}</span>
       <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
         {o.status === 'compliance_review' && <form action={act}><input type="hidden" name="action" value="approve_compliance"/><input type="hidden" name="id" value={o.id}/><button className="button primary"><I18nText id="Approve compliance"/></button></form>}
