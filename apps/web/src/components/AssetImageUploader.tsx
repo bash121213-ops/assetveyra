@@ -43,6 +43,7 @@ export default function AssetImageUploader({ inputName = 'images' }: { inputName
   const inputRef = useRef<HTMLInputElement>(null);
   const [images, setImages] = useState<PreparedImage[]>([]);
   const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [message, setMessage] = useState('');
 
   async function onChange(event: ChangeEvent<HTMLInputElement>) {
@@ -51,14 +52,18 @@ export default function AssetImageUploader({ inputName = 'images' }: { inputName
     const available = Math.max(0, MAX_IMAGES - images.length);
     const selected = files.slice(0, available);
     setBusy(true);
+    setProgress(0);
     setMessage(files.length > available ? '20 images maximum.' : '');
     const prepared: PreparedImage[] = [];
-    for (const file of selected) {
+    for (let index = 0; index < selected.length; index += 1) {
+      const file = selected[index];
       try {
         const compressed = await compressImage(file);
         prepared.push({ file: compressed, preview: URL.createObjectURL(compressed), name: file.name });
       } catch {
         prepared.push({ file, preview: '', name: file.name, error: 'This image could not be prepared.' });
+      } finally {
+        setProgress(Math.round(((index + 1) / selected.length) * 100));
       }
     }
     const next = [...images, ...prepared];
@@ -90,14 +95,20 @@ export default function AssetImageUploader({ inputName = 'images' }: { inputName
         <input ref={inputRef} name={inputName} type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={onChange} />
       </label>
       <small style={{ color: 'var(--muted)' }}><I18nText id="Up to 20 images. Images are compressed before upload." /></small>
-      {busy && <div style={{ color: 'var(--muted)' }}><I18nText id="Preparing images…" /></div>}
-      {message && <div role="status" style={{ color: 'var(--muted)' }}>{message}</div>}
+      {busy && (
+        <div style={{ display: 'grid', gap: 6 }} role="status" aria-live="polite">
+          <div style={{ color: 'var(--muted)' }}><I18nText id="Preparing images…" /> {progress}%</div>
+          <progress max={100} value={progress} style={{ width: '100%' }} />
+        </div>
+      )}
+      {message && <div role="status" style={{ color: 'var(--muted)' }}><I18nText id={message} /></div>}
       {!!images.length && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(120px,1fr))', gap: 10 }}>
           {images.map((image, index) => (
             <div key={`${image.name}-${index}`} style={{ border: '1px solid var(--border)', borderRadius: 12, padding: 6, background: 'var(--surface)' }}>
-              {image.preview ? <img src={image.preview} alt={image.name} style={{ width: '100%', aspectRatio: '1 / 1', objectFit: 'cover', borderRadius: 8 }} /> : <div style={{ aspectRatio: '1 / 1', display: 'grid', placeItems: 'center', color: 'var(--muted)', fontSize: 12 }}>Error</div>}
+              {image.preview ? <img src={image.preview} alt={image.name} style={{ width: '100%', aspectRatio: '1 / 1', objectFit: 'cover', borderRadius: 8 }} /> : <div role="alert" style={{ aspectRatio: '1 / 1', display: 'grid', placeItems: 'center', color: 'var(--muted)', fontSize: 12 }}><I18nText id="Error" /></div>}
               <div style={{ fontSize: 11, marginTop: 5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{image.name}</div>
+              {image.error && <small role="alert" style={{ display: 'block', marginTop: 4, color: 'var(--muted)' }}><I18nText id={image.error} /></small>}
               <button type="button" className="button" style={{ marginTop: 6, width: '100%' }} onClick={() => remove(index)}><I18nText id="Remove" /></button>
             </div>
           ))}
