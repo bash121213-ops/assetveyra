@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { I18nText } from '@/components/LocaleShell';
+import { normalizeLocale, translate } from '@/lib/i18n';
 import '@/lib/i18nAssetImages';
 import { deleteAssetImage, reorderAssetImages } from '@/app/workspace/assets/actions';
 
@@ -30,7 +31,8 @@ export default function AssetImageGallery({ assetId, initialImages }: { assetId:
   }
 
   async function remove(image: Image) {
-    if (!window.confirm('Remove this image?')) return;
+    const locale = normalizeLocale(document.documentElement.lang);
+    if (!window.confirm(translate('Remove this image?', locale))) return;
     setBusy(true);
     try {
       await deleteAssetImage(image.id);
