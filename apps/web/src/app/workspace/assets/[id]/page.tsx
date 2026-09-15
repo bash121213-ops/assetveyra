@@ -20,7 +20,7 @@ export default async function AssetImageManagementPage({ params }: { params: Pro
     const { data } = await s.storage.from('property-images').createSignedUrl(image.storage_path, 60 * 60);
     return { ...image, signed_url: data?.signedUrl ?? '' };
   }));
-  const uploadAction = uploadAssetImages.bind(null, asset.id);
+  async function handleUpload(formData: FormData) { 'use server'; await uploadAssetImages(asset.id, formData); }
   return (
     <main className="app-shell">
       <header className="app-header">
@@ -36,7 +36,7 @@ export default async function AssetImageManagementPage({ params }: { params: Pro
         <div>
           <h2><I18nText id="Upload images" /></h2>
           <p style={{ color: 'var(--muted)' }}><I18nText id="Images are compressed in the browser before they are stored securely." /></p>
-          <form action={uploadAction} className="form-grid" encType="multipart/form-data">
+          <form action={handleUpload} className="form-grid" encType="multipart/form-data">
             <AssetImageUploader />
             <div className="full"><button className="button primary"><I18nText id="Upload images" /></button></div>
           </form>
