@@ -50,4 +50,4 @@ tests                 Cross-domain and integration tests
 
 ## Languages
 
-English, Arabic, Chinese, Spanish, French, German, Japanese and Korean.
+English, Arabic, Chinese, Spanish and French.
