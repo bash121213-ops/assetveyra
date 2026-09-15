@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { I18nText } from '@/components/LocaleShell';
 
 const ADMIN_ROLES = ['platform_admin', 'operations_admin', 'compliance_officer'] as const;
 
@@ -15,10 +16,8 @@ async function act(formData: FormData) {
   const action = String(formData.get('action') || '');
   const id = String(formData.get('id') || '');
   if (!id) redirect('/workspace/admin?error=missing_id');
-
   const { data: opportunity, error: oe } = await s.from('opportunities').select('id,asset_id,status,owner_organization_id').eq('id', id).maybeSingle();
   if (!opportunity || oe) redirect('/workspace/admin?error=not_found');
-
   if (action === 'approve_compliance') {
     if (opportunity.status !== 'compliance_review') redirect('/workspace/admin?error=compliance_gate');
     const { error } = await s.from('opportunities').update({ status: 'approved' }).eq('id', id);
@@ -61,19 +60,19 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
   ]);
   const params = await searchParams;
   return <main className="app-shell">
-    <header className="app-header"><a className="brand" href="/">ASSETVEYRA</a><nav><a href="/workspace">Workspace</a><a href="/workspace/review">Verification</a><a href="/opportunities">Marketplace</a></nav></header>
-    <section className="page-head"><div className="eyebrow">OPERATIONS CONTROL</div><h1>Platform operations.</h1><p>Verification, compliance and publication are separate controlled gates. Contact requests are retained for operational follow-up.</p></section>
-    {params.updated && <section className="panel"><strong>Change recorded.</strong></section>}
-    {params.error && <section className="panel"><strong>Action blocked by the control gate.</strong></section>}
-    <section className="panel"><h2>Opportunity control</h2><div className="table">{(opportunities ?? []).map((o: any) => <div className="row" key={o.id} style={{display:'grid',gap:10}}>
-      <div><strong>{o.assets?.title || o.slug}</strong><div style={{color:'var(--muted)',fontSize:11,marginTop:5}}>{o.status} · {o.visibility} · {o.assets?.country_code || '—'}</div></div>
-      <span>{o.assets?.asking_price ? `${o.assets.asking_price} ${o.assets.currency || ''}` : 'Price pending'}</span>
+    <header className="app-header"><a className="brand" href="/">ASSETVEYRA</a><nav><a href="/workspace"><I18nText id="Workspace"/></a><a href="/workspace/review"><I18nText id="Verification"/></a><a href="/opportunities"><I18nText id="Marketplace"/></a></nav></header>
+    <section className="page-head"><div className="eyebrow"><I18nText id="OPERATIONS CONTROL"/></div><h1><I18nText id="Platform operations."/></h1><p><I18nText id="Verification, compliance and publication are separate controlled gates. Contact requests are retained for operational follow-up."/></p></section>
+    {params.updated && <section className="panel"><strong><I18nText id="Change recorded."/></strong></section>}
+    {params.error && <section className="panel"><strong><I18nText id="Action blocked by the control gate."/></strong></section>}
+    <section className="panel"><h2><I18nText id="Opportunity control"/></h2><div className="table">{(opportunities ?? []).map((o: any) => <div className="row" key={o.id} style={{display:'grid',gap:10}}>
+      <div><strong>{o.assets?.title || o.slug}</strong><div style={{color:'var(--muted)',fontSize:11,marginTop:5}}><I18nText id={o.status}/><span> · <I18nText id={o.visibility}/></span><span> · {o.assets?.country_code || '—'}</span></div></div>
+      <span>{o.assets?.asking_price ? `${o.assets.asking_price} ${o.assets.currency || ''}` : <I18nText id="Price pending"/>}</span>
       <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
-        {o.status === 'compliance_review' && <form action={act}><input type="hidden" name="action" value="approve_compliance"/><input type="hidden" name="id" value={o.id}/><button className="button primary">Approve compliance</button></form>}
-        {o.status === 'approved' && <form action={act}><input type="hidden" name="action" value="publish"/><input type="hidden" name="id" value={o.id}/><button className="button primary">Publish</button></form>}
-        {['published','approved'].includes(o.status) && <form action={act}><input type="hidden" name="action" value="suspend"/><input type="hidden" name="id" value={o.id}/><button className="button">Suspend</button></form>}
+        {o.status === 'compliance_review' && <form action={act}><input type="hidden" name="action" value="approve_compliance"/><input type="hidden" name="id" value={o.id}/><button className="button primary"><I18nText id="Approve compliance"/></button></form>}
+        {o.status === 'approved' && <form action={act}><input type="hidden" name="action" value="publish"/><input type="hidden" name="id" value={o.id}/><button className="button primary"><I18nText id="Publish"/></button></form>}
+        {['published','approved'].includes(o.status) && <form action={act}><input type="hidden" name="action" value="suspend"/><input type="hidden" name="id" value={o.id}/><button className="button"><I18nText id="Suspend"/></button></form>}
       </div>
-    </div>)}{!(opportunities?.length) && <div className="empty-state"><strong>No opportunities.</strong><span>Submitted assets will appear here after intake.</span></div>}</div></section>
-    <section className="panel"><h2>Contact intake</h2><div className="table">{(contacts ?? []).map((c: any) => <div className="row" key={c.id} style={{display:'grid',gap:8}}><div><strong>{c.name}</strong><div style={{color:'var(--muted)',fontSize:11,marginTop:5}}>{c.email} · {c.interest} · {c.status}</div></div><span>{c.message}</span>{c.status !== 'resolved' && <form action={act}><input type="hidden" name="action" value="resolve_contact"/><input type="hidden" name="id" value={c.id}/><button className="button">Mark resolved</button></form>}</div>)}{!(contacts?.length) && <div className="empty-state"><strong>No contact requests.</strong><span>New requests are stored securely even before outbound email is configured.</span></div>}</div></section>
+    </div>)}{!(opportunities?.length) && <div className="empty-state"><strong><I18nText id="No opportunities."/></strong><span><I18nText id="Submitted assets will appear here after intake."/></span></div>}</div></section>
+    <section className="panel"><h2><I18nText id="Contact intake"/></h2><div className="table">{(contacts ?? []).map((c: any) => <div className="row" key={c.id} style={{display:'grid',gap:8}}><div><strong>{c.name}</strong><div style={{color:'var(--muted)',fontSize:11,marginTop:5}}>{c.email} · {c.interest} · <I18nText id={c.status}/></div></div><span>{c.message}</span>{c.status !== 'resolved' && <form action={act}><input type="hidden" name="action" value="resolve_contact"/><input type="hidden" name="id" value={c.id}/><button className="button"><I18nText id="Mark resolved"/></button></form>}</div>)}{!(contacts?.length) && <div className="empty-state"><strong><I18nText id="No contact requests."/></strong><span><I18nText id="New requests are stored securely even before outbound email is configured."/></span></div>}</div></section>
   </main>;
 }

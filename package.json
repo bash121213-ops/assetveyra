@@ -6,7 +6,8 @@
   "workspaces": ["apps/*"],
   "scripts": {
     "dev": "npm --workspace @assetveyra/web run dev",
-    "build": "npm --workspace @assetveyra/web run build",
+    "i18n:check": "node scripts/validate-i18n.mjs",
+    "build": "npm run i18n:check && npm --workspace @assetveyra/web run build",
     "lint": "npm --workspace @assetveyra/web run lint",
     "typecheck": "npm --workspace @assetveyra/web run typecheck"
   },
