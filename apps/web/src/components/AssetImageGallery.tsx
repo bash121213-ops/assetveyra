@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { I18nText } from '@/components/LocaleShell';
+import '@/lib/i18nAssetImages';
 import { deleteAssetImage, reorderAssetImages } from '@/app/workspace/assets/actions';
 
 type Image = { id: string; storage_path: string; signed_url: string; sort_order: number };
