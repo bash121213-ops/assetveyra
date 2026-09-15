@@ -25,9 +25,10 @@ function smtpError(message: string): Error {
   return new Error(`SMTP error: ${message}`);
 }
 
-async function sendSmtpCommand(socket: TLSSocket, command: string, expected: number | number[]) {
+async function readSmtpResponse(socket: TLSSocket, expected: number | number[]) {
   const expectedCodes = Array.isArray(expected) ? expected : [expected];
-  const response = await new Promise<string>((resolve, reject) => {
+
+  return new Promise<string>((resolve, reject) => {
     let buffer = '';
     const timeout = setTimeout(() => {
       cleanup();
@@ -77,10 +78,12 @@ async function sendSmtpCommand(socket: TLSSocket, command: string, expected: num
     socket.on('data', onData);
     socket.once('error', onError);
     socket.once('close', onClose);
-    socket.write(`${command}\r\n`);
   });
+}
 
-  return response;
+async function smtpCommand(socket: TLSSocket, command: string, expected: number | number[]) {
+  socket.write(`${command}\r\n`);
+  return readSmtpResponse(socket, expected);
 }
 
 async function sendContactEmail({
@@ -142,13 +145,13 @@ async function sendContactEmail({
   });
 
   try {
-    await sendSmtpCommand(socket, '', 220);
-    await sendSmtpCommand(socket, `EHLO assetveyra.com`, 250);
-    await sendSmtpCommand(socket, 'AUTH LOGIN', 334);
-    await sendSmtpCommand(socket, Buffer.from(user, 'utf8').toString('base64'), 334);
-    await sendSmtpCommand(socket, Buffer.from(password, 'utf8').toString('base64'), 235);
-    await sendSmtpCommand(socket, `MAIL FROM:<${user}>`, 250);
-    await sendSmtpCommand(socket, `RCPT TO:<${receiver}>`, [250, 251]);
+    await readSmtpResponse(socket, 220);
+    await smtpCommand(socket, 'EHLO assetveyra.com', 250);
+    await smtpCommand(socket, 'AUTH LOGIN', 334);
+    await smtpCommand(socket, Buffer.from(user, 'utf8').toString('base64'), 334);
+    await smtpCommand(socket, Buffer.from(password, 'utf8').toString('base64'), 235);
+    await smtpCommand(socket, `MAIL FROM:<${user}>`, 250);
+    await smtpCommand(socket, `RCPT TO:<${receiver}>`, [250, 251]);
 
     const data = [
       `From: AssetVeyra <${user}>`,
@@ -164,9 +167,9 @@ async function sendContactEmail({
       .join('\r\n')
       .replace(/(^|\r\n)\./g, '$1..');
 
-    await sendSmtpCommand(socket, `DATA`, 354);
-    await sendSmtpCommand(socket, `${data}\r\n.`, 250);
-    await sendSmtpCommand(socket, 'QUIT', 221);
+    await smtpCommand(socket, 'DATA', 354);
+    await smtpCommand(socket, `${data}\r\n.`, 250);
+    await smtpCommand(socket, 'QUIT', 221);
   } finally {
     socket.end();
   }
