@@ -10,7 +10,7 @@ const COPY: Record<Locale, Copy> = {
     eyebrow: 'TRANSACTION AGREEMENT', title: 'Transaction Service & 1% Fee Agreement', updated: 'Effective date: 16 September 2026',
     intro: 'This template records the commercial relationship between AssetVeyra and a client using AssetVeyra to identify, negotiate and coordinate a real-estate transaction. A transaction-specific agreement may supplement or replace these terms where required by applicable law.',
     sections: [
-      { title: '1. Scope of AssetVeyra services', body: ['AssetVeyra may receive and prepare the client request, search and match opportunities, communicate with owners and buyers, transmit offers and counteroffers, facilitate commercial negotiations, coordinate transaction steps, coordinate access to legal and other professional providers, and coordinate practical travel arrangements where required by the transaction.'], },
+      { title: '1. Scope of AssetVeyra services', body: ['AssetVeyra may receive and prepare the client request, search and match opportunities, communicate with owners and buyers, transmit offers and counteroffers, facilitate commercial negotiations, coordinate transaction steps, coordinate access to legal and other professional providers, and coordinate practical travel arrangements where required by the transaction.'] },
       { title: '2. Final price and decision', body: ['AssetVeyra may negotiate and facilitate a mutually acceptable commercial outcome, but the buyer and seller remain the parties who approve the final price and contractual terms. AssetVeyra does not have authority to bind either party unless a separate written authority expressly provides otherwise.'] },
       { title: '3. AssetVeyra fee — 1%', body: ['The standard AssetVeyra transaction service fee is 1% of the final agreed transaction value for a transaction successfully completed through AssetVeyra’s services, unless a different written fee is expressly agreed for that transaction.', 'The agreement must identify who pays the 1% fee and the completion event that makes it due. Unless otherwise stated, the fee is separate from the property purchase price.'] },
       { title: '4. When the fee becomes due', body: ['Unless the transaction-specific agreement states a different lawful trigger, the 1% fee becomes due when the transaction reaches the agreed completion event, such as completion of the sale, official transfer or registration, or execution of the legally effective sale agreement, as applicable to the transaction and jurisdiction.'] },
@@ -52,7 +52,7 @@ const COPY: Record<Locale, Copy> = {
 };
 
 export default function TransactionAgreementPage() {
-  const { locale } = useLocale();
+  const locale = useLocale();
   const copy = COPY[locale] ?? COPY.en;
   return <main className="app-shell"><section className="form-page legal-page"><div className="eyebrow">{copy.eyebrow}</div><h1>{copy.title}</h1><p className="muted">{copy.updated}</p><p>{copy.intro}</p>{copy.sections.map((s)=><section key={s.title}><h2>{s.title}</h2>{s.body.map((p)=><p key={p}>{p}</p>)}{s.bullets&&<ul>{s.bullets.map((b)=><li key={b}>{b}</li>)}</ul>}</section>)}<div className="notice">{copy.notice}</div></section></main>;
 }
