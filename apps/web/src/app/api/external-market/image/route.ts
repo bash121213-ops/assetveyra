@@ -1,0 +1,84 @@
+import { NextRequest } from 'next/server';
+
+const ALLOWED_HOSTS = new Set([
+  'www.luxuryestate.com',
+  'd1ov4zfz2t2vta.cloudfront.net',
+  'assets.simpleviewinc.com',
+  'www.smergers.com',
+  'cdn.thinkwebcontent.com',
+]);
+
+function isAllowed(url: URL) {
+  return url.protocol === 'https:' && ALLOWED_HOSTS.has(url.hostname);
+}
+
+function extractOgImage(html: string, baseUrl: URL) {
+  const match = html.match(/<meta[^>]+property=[\"']og:image[\"'][^>]+content=[\"']([^\"']+)[\"'][^>]*>/i)
+    ?? html.match(/<meta[^>]+content=[\"']([^\"']+)[\"'][^>]+property=[\"']og:image[\"'][^>]*>/i);
+  if (!match?.[1]) return null;
+  try {
+    const imageUrl = new URL(match[1], baseUrl);
+    return isAllowed(imageUrl) ? imageUrl : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function GET(request: NextRequest) {
+  const raw = request.nextUrl.searchParams.get('url');
+  if (!raw) return new Response('Missing image URL', { status: 400 });
+
+  let target: URL;
+  try {
+    target = new URL(raw);
+  } catch {
+    return new Response('Invalid image URL', { status: 400 });
+  }
+
+  if (!isAllowed(target)) return new Response('Image host not allowed', { status: 403 });
+
+  try {
+    const response = await fetch(target, {
+      headers: { 'User-Agent': 'AssetVeyra/1.0 (+https://assetveyra.com)' },
+      cache: 'no-store',
+      redirect: 'follow',
+    });
+
+    const contentType = response.headers.get('content-type') ?? '';
+    if (response.ok && contentType.startsWith('image/')) {
+      return new Response(response.body, {
+        status: 200,
+        headers: {
+          'Content-Type': contentType,
+          'Cache-Control': 'public, max-age=3600, s-maxage=86400',
+        },
+      });
+    }
+
+    if (target.hostname === 'www.luxuryestate.com' && response.ok && contentType.includes('text/html')) {
+      const html = await response.text();
+      const imageUrl = extractOgImage(html, target);
+      if (imageUrl) {
+        const imageResponse = await fetch(imageUrl, {
+          headers: { 'User-Agent': 'AssetVeyra/1.0 (+https://assetveyra.com)' },
+          cache: 'no-store',
+          redirect: 'follow',
+        });
+        const imageType = imageResponse.headers.get('content-type') ?? '';
+        if (imageResponse.ok && imageType.startsWith('image/')) {
+          return new Response(imageResponse.body, {
+            status: 200,
+            headers: {
+              'Content-Type': imageType,
+              'Cache-Control': 'public, max-age=3600, s-maxage=86400',
+            },
+          });
+        }
+      }
+    }
+  } catch {
+    // Fall through to a stable 404 so the UI can show its explicit image-unavailable state.
+  }
+
+  return new Response('Image unavailable', { status: 404 });
+}
