@@ -6,14 +6,16 @@ import { normalizeLocale, RTL_LOCALES, translate, type Locale } from '@/lib/i18n
 type LocaleContextValue = { locale: Locale; setLocale: (locale: Locale) => void };
 const LocaleContext = createContext<LocaleContextValue>({ locale: 'en', setLocale: () => undefined });
 
-export function useLocale(): LocaleContextValue { return useContext(LocaleContext); }
+export function useLocale(): Locale { return useContext(LocaleContext).locale; }
+export function useLocaleContext(): LocaleContextValue { return useContext(LocaleContext); }
+
 export function I18nText({ id, as = 'span' }: { id: string; as?: ElementType }) {
-  const { locale } = useLocale();
+  const locale = useLocale();
   return createElement(as, null, translate(id, locale));
 }
 
 export function LanguageSelect() {
-  const { locale, setLocale } = useLocale();
+  const { locale, setLocale } = useLocaleContext();
   return <select data-language-menu value={locale} aria-label={translate('Language', locale)} onChange={(event) => setLocale(normalizeLocale(event.target.value))}>
     <option value="en">English</option><option value="ar">العربية</option><option value="zh">中文</option><option value="es">Español</option><option value="fr">Français</option>
   </select>;
