@@ -7,115 +7,146 @@ import { createClient } from '@/lib/supabase/client';
 import type { Locale } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 
-type Localized = Record<Locale, string>;
-
+type Localized = { en: string; ar: string };
+type Detail = { label: Localized; value: Localized };
 type ExternalListing = {
+  id: string;
   country: Localized;
   city: Localized;
-  countryCode: string;
   title: Localized;
   propertyType: Localized;
   price: string;
-  facts: Record<Locale, string[]>;
+  summary: Localized;
+  facts: Localized[];
+  details: Detail[];
+  features: Localized[];
   imageUrl: string | null;
   imageAlt: Localized;
   sourceUrl: string;
-  sourceName: string;
 };
+
+const L = (en: string, ar: string = en): Localized => ({ en, ar });
 
 const listings: ExternalListing[] = [
   {
-    country: { en: 'United Arab Emirates', ar: 'الإمارات العربية المتحدة', zh: '阿拉伯联合酋长国', es: 'Emiratos Árabes Unidos', fr: 'Émirats arabes unis' },
-    city: { en: 'Dubai · Palm Jumeirah', ar: 'دبي · نخلة جميرا', zh: '迪拜 · 棕榈岛', es: 'Dubái · Palm Jumeirah', fr: 'Dubaï · Palm Jumeirah' },
-    countryCode: 'AE',
-    title: { en: '250-Room Luxury Beachfront & Wellness Hotel', ar: 'فندق فاخر على الواجهة البحرية والعافية – 250 غرفة', zh: '250间豪华海滨康养酒店', es: 'Hotel de lujo frente al mar y bienestar – 250 habitaciones', fr: 'Hôtel de luxe en bord de mer et bien-être – 250 chambres' },
-    propertyType: { en: 'Hospitality', ar: 'ضيافة', zh: '酒店及旅游', es: 'Hostelería', fr: 'Hôtellerie' },
-    price: '€152,000,000',
-    facts: { en: ['250 rooms', 'Beachfront', '5-star resort', 'NDA + proof of funds'], ar: ['250 غرفة', 'واجهة بحرية', 'منتجع 5 نجوم', 'NDA + إثبات أموال'], zh: ['250间客房', '临海', '五星级度假村', 'NDA + 资金证明'], es: ['250 habitaciones', 'Frente al mar', 'Resort de 5 estrellas', 'NDA + prueba de fondos'], fr: ['250 chambres', 'Bord de mer', 'Complexe 5 étoiles', 'NDA + preuve de fonds'] },
-    imageUrl: null,
-    imageAlt: { en: 'Original listing image is available on the source listing', ar: 'الصورة الأصلية للإعلان متاحة في المصدر', zh: '原始挂牌图片可在来源页面查看', es: 'La imagen original está disponible en el anuncio fuente', fr: 'L’image originale est disponible sur l’annonce source' },
-    sourceUrl: 'https://www.luxuryestate.com/p132160711-hotel-for-sale-dubai',
-    sourceName: 'LuxuryEstate',
+    id: 'dubai-palm-250', country: L('United Arab Emirates', 'الإمارات العربية المتحدة'), city: L('Dubai · Palm Jumeirah', 'دبي · نخلة جميرا'),
+    title: L('250-Room Luxury Beachfront & Wellness Resort', 'منتجع فاخر شاطئي وعافية – 250 غرفة'), propertyType: L('5-Star Hospitality Asset', 'أصل فندقي 5 نجوم'), price: '€152,000,000',
+    summary: L('A five-star beachfront and wellness resort on Palm Jumeirah with more than 250 keys, multiple restaurants and bars, four retail spaces, extensive wellness and spa facilities, conference and event facilities, and direct private beach access. The listing states that an established hospitality operator manages the asset and that further information is released after NDA and proof of funds.', 'منتجع شاطئي وعافية من فئة 5 نجوم في نخلة جميرا، يضم أكثر من 250 غرفة، ومطاعم وبارات متعددة، وأربع مساحات تجارية، ومرافق عافية وسبا واسعة، ومرافق للمؤتمرات والفعاليات، ووصولاً مباشراً إلى شاطئ خاص. يذكر الإعلان وجود مشغّل ضيافة قائم وأن المعلومات الإضافية تتطلب اتفاقية سرية وإثبات القدرة المالية.'),
+    facts: [L('250+ rooms', 'أكثر من 250 غرفة'), L('Private beachfront', 'شاطئ خاص'), L('5-star resort', 'منتجع 5 نجوم'), L('Approx. 8% stated yield', 'عائد معلن يقارب 8%')],
+    details: [
+      { label: L('Location', 'الموقع'), value: L('Palm Jumeirah, Dubai, UAE', 'نخلة جميرا، دبي، الإمارات') },
+      { label: L('Asking price', 'السعر المطلوب'), value: L('€152 million; subject to AED/EUR exchange-rate adjustment at transaction', '152 مليون يورو؛ خاضع لتعديل سعر صرف الدرهم/اليورو وقت المعاملة') },
+      { label: L('Rooms / keys', 'الغرف'), value: L('More than 250', 'أكثر من 250') },
+      { label: L('Classification', 'التصنيف'), value: L('Five-star beachfront and wellness resort', 'منتجع شاطئي وعافية من فئة خمس نجوم') },
+      { label: L('Food & beverage', 'الأغذية والمشروبات'), value: L('Multiple restaurants and bars; health-focused dining concepts', 'مطاعم وبارات متعددة؛ مفاهيم طعام موجهة للصحة والعافية') },
+      { label: L('Retail', 'التجزئة'), value: L('4 retail spaces', '4 مساحات تجارية') },
+      { label: L('Wellness', 'العافية'), value: L('Extensive wellness and spa facilities', 'مرافق عافية وسبا واسعة') },
+      { label: L('Events', 'الفعاليات'), value: L('Conference and event facilities', 'مرافق مؤتمرات وفعاليات') },
+      { label: L('Beach access', 'الوصول إلى الشاطئ'), value: L('Direct private beach access', 'وصول مباشر إلى شاطئ خاص') },
+      { label: L('Operator', 'المشغّل'), value: L('Established hospitality operator, according to listing', 'مشغّل ضيافة قائم بحسب الإعلان') },
+      { label: L('Information access', 'الوصول للمعلومات'), value: L('Further information after NDA and proof of funds', 'المعلومات الإضافية بعد NDA وإثبات القدرة المالية') },
+      { label: L('Listing reference', 'مرجع الإعلان'), value: L('3405', '3405') },
+    ],
+    features: [L('Beachfront sanctuary', 'واجهة بحرية'), L('Wellness retreats', 'برامج عافية'), L('Health-focused dining', 'مطاعم صحية'), L('Restaurants & bars', 'مطاعم وبارات'), L('Retail spaces', 'مساحات تجارية'), L('Spa facilities', 'مرافق سبا'), L('Conference facilities', 'مرافق مؤتمرات'), L('Private beach', 'شاطئ خاص')],
+    imageUrl: null, imageAlt: L('Original listing image is not directly retrievable from the public source', 'الصورة الأصلية للإعلان غير قابلة للاستخراج المباشر من المصدر العام'), sourceUrl: 'https://www.luxuryestate.com/p132160711-hotel-for-sale-dubai'
   },
   {
-    country: { en: 'United Arab Emirates', ar: 'الإمارات العربية المتحدة', zh: '阿拉伯联合酋长国', es: 'Emiratos Árabes Unidos', fr: 'Émirats arabes unis' },
-    city: { en: 'Dubai · Jumeirah Garden City', ar: 'دبي · جميرا جاردن سيتي', zh: '迪拜 · 朱美拉花园城', es: 'Dubái · Jumeirah Garden City', fr: 'Dubaï · Jumeirah Garden City' },
-    countryCode: 'AE',
-    title: { en: '4-Star Off-Plan Hotel', ar: 'فندق 4 نجوم قيد التطوير', zh: '四星级期房酒店', es: 'Hotel de 4 estrellas en construcción', fr: 'Hôtel 4 étoiles en développement' },
-    propertyType: { en: 'Hospitality / Development', ar: 'ضيافة / تطوير', zh: '酒店 / 开发', es: 'Hostelería / Desarrollo', fr: 'Hôtellerie / Développement' },
-    price: 'AED 170,000,000',
-    facts: { en: ['96 rooms', '13,000 sq ft plot', '49,566 sq ft GFA', 'Handover Q2 2027'], ar: ['96 غرفة', 'أرض 13,000 قدم²', 'مساحة إجمالية 49,566 قدم²', 'التسليم Q2 2027'], zh: ['96间客房', '13,000平方英尺土地', '49,566平方英尺总建筑面积', '2027年第二季度交付'], es: ['96 habitaciones', 'Parcela de 13.000 pies²', '49.566 pies² GFA', 'Entrega T2 2027'], fr: ['96 chambres', 'Terrain de 13 000 pi²', '49 566 pi² GFA', 'Livraison T2 2027'] },
-    imageUrl: null,
-    imageAlt: { en: 'Original listing image is available on the source listing', ar: 'الصورة الأصلية للإعلان متاحة في المصدر', zh: '原始挂牌图片可在来源页面查看', es: 'La imagen original está disponible en el anuncio fuente', fr: 'L’image originale est disponible sur l’annonce source' },
-    sourceUrl: 'https://dxboffplan.com/properties/hotel-for-sale-in-jumeirah-garden-city/',
-    sourceName: 'DXB Off Plan',
+    id: 'dubai-jumeirah-garden-city', country: L('United Arab Emirates', 'الإمارات العربية المتحدة'), city: L('Dubai · Jumeirah Garden City', 'دبي · جميرا جاردن سيتي'),
+    title: L('4-Star Off-Plan Hotel Development', 'فندق 4 نجوم قيد التطوير'), propertyType: L('Hospitality / Development', 'ضيافة / تطوير'), price: 'AED 170,000,000',
+    summary: L('A 4-star off-plan hotel development in Jumeirah Garden City. The listing states 96 hotel rooms, four commercial shops, a 13,000 sq ft plot, 49,566 sq ft gross floor area, G+2 podiums+9 floors, panoramic Dubai skyline views, construction at ground-floor stage, and expected completion in June 2027.', 'مشروع فندق 4 نجوم قيد التطوير في جميرا جاردن سيتي. يذكر الإعلان 96 غرفة فندقية، وأربع وحدات تجارية، وأرضاً بمساحة 13,000 قدم²، ومساحة بناء إجمالية 49,566 قدم²، وتكوين أرضي + طابقين بوديوم + 9 طوابق، وإطلالات بانورامية على أفق دبي، مع المشروع في مرحلة الطابق الأرضي والتسليم المتوقع في يونيو 2027.'),
+    facts: [L('96 hotel rooms', '96 غرفة فندقية'), L('4 retail shops', '4 محلات تجارية'), L('49,566 sq ft GFA', '49,566 قدم² مساحة بناء'), L('Completion June 2027', 'التسليم يونيو 2027')],
+    details: [
+      { label: L('Location', 'الموقع'), value: L('Jumeirah Garden City, Dubai, UAE', 'جميرا جاردن سيتي، دبي، الإمارات') }, { label: L('Asking price', 'السعر المطلوب'), value: L('AED 170,000,000', '170,000,000 درهم إماراتي') },
+      { label: L('Hotel rooms', 'الغرف'), value: L('96 rooms', '96 غرفة') }, { label: L('Retail', 'الوحدات التجارية'), value: L('4 commercial shops', '4 محلات تجارية') },
+      { label: L('Plot size', 'مساحة الأرض'), value: L('13,000 sq ft', '13,000 قدم²') }, { label: L('Gross floor area', 'المساحة الإجمالية'), value: L('49,566 sq ft', '49,566 قدم²') },
+      { label: L('Configuration', 'التكوين'), value: L('G + 2 podiums + 9 floors', 'أرضي + طابقان بوديوم + 9 طوابق') }, { label: L('Views', 'الإطلالات'), value: L('Panoramic Dubai skyline views', 'إطلالات بانورامية على أفق دبي') },
+      { label: L('Construction status', 'حالة الإنشاء'), value: L('Under construction; ground-floor stage stated', 'قيد الإنشاء؛ الإعلان يذكر مرحلة الطابق الأرضي') }, { label: L('Expected completion', 'التسليم المتوقع'), value: L('June 2027 / Q2 2027', 'يونيو 2027 / الربع الثاني 2027') },
+      { label: L('Operator', 'المشغّل'), value: L('Flexible operator selection stated', 'مرونة اختيار المشغّل بحسب الإعلان') }, { label: L('Additional material', 'مواد إضافية'), value: L('Presentation, ROI analysis, floor plans and payment schedule available by request', 'العرض وتحليل ROI والمخططات وجدول الدفعات متاحة عند الطلب') }
+    ],
+    features: [L('Central Dubai location', 'موقع مركزي في دبي'), L('Retail income component', 'مكوّن دخل تجاري'), L('Skyline views', 'إطلالات على الأفق'), L('Off-plan development', 'مشروع قيد التطوير'), L('Flexible operator', 'مرونة اختيار المشغّل')],
+    imageUrl: 'https://d1ov4zfz2t2vta.cloudfront.net/storage/project_files/135r325.jpg', imageAlt: L('Actual project rendering for the Jumeirah Garden City hotel development', 'الصورة الفعلية المنشورة لمشروع الفندق في جميرا جاردن سيتي'), sourceUrl: 'https://dxboffplan.com/properties/hotel-for-sale-in-jumeirah-garden-city/'
   },
   {
-    country: { en: 'United States', ar: 'الولايات المتحدة', zh: '美国', es: 'Estados Unidos', fr: 'États-Unis' },
-    city: { en: 'St. Simons Island, Georgia', ar: 'جزيرة سانت سايمونز، جورجيا', zh: '乔治亚州圣西蒙斯岛', es: 'St. Simons Island, Georgia', fr: 'St. Simons Island, Géorgie' },
-    countryCode: 'US',
-    title: { en: 'Ocean Lodge Boutique Resort', ar: 'منتجع Ocean Lodge البوتيكي', zh: 'Ocean Lodge精品度假村', es: 'Resort boutique Ocean Lodge', fr: 'Complexe boutique Ocean Lodge' },
-    propertyType: { en: 'Hospitality', ar: 'ضيافة', zh: '酒店及旅游', es: 'Hostelería', fr: 'Hôtellerie' },
-    price: '$9,000,000',
-    facts: { en: ['15 suites', '20,000 sq ft', '0.6 acre lot', 'Built 2008'], ar: ['15 جناحاً', '20,000 قدم²', 'أرض 0.6 فدان', 'بناء 2008'], zh: ['15间套房', '20,000平方英尺', '0.6英亩土地', '2008年建成'], es: ['15 suites', '20.000 pies²', 'Parcela de 0,6 acres', 'Construido en 2008'], fr: ['15 suites', '20 000 pi²', 'Terrain de 0,6 acre', 'Construit en 2008'] },
-    imageUrl: null,
-    imageAlt: { en: 'Original listing image is available on the source listing', ar: 'الصورة الأصلية للإعلان متاحة في المصدر', zh: '原始挂牌图片可在来源页面查看', es: 'La imagen original está disponible en el anuncio fuente', fr: 'L’image originale est disponible sur l’annonce source' },
-    sourceUrl: 'https://www.commercialsearch.com/commercial-property/us/ga/st-simons-island/boutique-resort-in-the-heart-of-st-simons-island/',
-    sourceName: 'CommercialSearch',
+    id: 'st-simons-ocean-lodge', country: L('United States', 'الولايات المتحدة'), city: L('St. Simons Island, Georgia', 'جزيرة سانت سايمونز، جورجيا'),
+    title: L('Ocean Lodge Boutique Resort', 'منتجع Ocean Lodge البوتيكي'), propertyType: L('Boutique Hospitality Asset', 'أصل ضيافة بوتيكي'), price: '$9,000,000',
+    summary: L('A 15-suite boutique resort at 935 Beach View Drive. The property is described as 20,000 sq ft on 0.6 acre, built in 2008, with Spanish-Mediterranean architecture, full kitchens, spacious living areas, private balconies, a rooftop restaurant and lounge, and multiple potential revenue channels including lodging, food and beverage, weddings and private events.', 'منتجع بوتيكي يضم 15 جناحاً في 935 Beach View Drive. يذكر الإعلان أن المساحة 20,000 قدم² على أرض 0.6 فدان، وقد بُني عام 2008، ويتميز بطابع إسباني-متوسطي، ومطابخ كاملة، ومساحات معيشة واسعة، وشرفات خاصة، ومطعم وصالة على السطح، مع قنوات إيرادات محتملة متعددة تشمل الإقامة والطعام والشراب والفعاليات وحفلات الزفاف.'),
+    facts: [L('15 luxury suites', '15 جناحاً فاخراً'), L('20,000 sq ft', '20,000 قدم²'), L('0.6 acre lot', 'أرض 0.6 فدان'), L('Built 2008', 'بناء 2008')],
+    details: [
+      { label: L('Address', 'العنوان'), value: L('935 Beach View Drive, St. Simons Island, GA 31522', '935 Beach View Drive، St. Simons Island، جورجيا 31522') }, { label: L('Asking price', 'السعر المطلوب'), value: L('$9,000,000', '9,000,000 دولار') },
+      { label: L('Property size', 'مساحة العقار'), value: L('20,000 sq ft', '20,000 قدم²') }, { label: L('Lot size', 'مساحة الأرض'), value: L('0.6 acre', '0.6 فدان') },
+      { label: L('Units', 'الوحدات'), value: L('15 luxury guest suites', '15 جناح ضيافة فاخر') }, { label: L('Year built', 'سنة البناء'), value: L('2008', '2008') },
+      { label: L('Architecture', 'الطابع المعماري'), value: L('Spanish-Mediterranean', 'إسباني-متوسطي') }, { label: L('Suites', 'الأجنحة'), value: L('Full kitchens, spacious living areas, private balconies; some with two bathrooms', 'مطابخ كاملة ومساحات معيشة واسعة وشرفات خاصة؛ بعض الأجنحة تضم حمامين') },
+      { label: L('Restaurant', 'المطعم'), value: L('Rooftop restaurant and lounge', 'مطعم وصالة على السطح') }, { label: L('Location', 'الموقع'), value: L('75 steps from the Atlantic Ocean; walking distance to Pier Village', 'على بعد نحو 75 خطوة من المحيط الأطلسي وعلى مسافة مشي من Pier Village') },
+      { label: L('Operations', 'التشغيل'), value: L('Operated by a lender for continuity and asset preservation, according to the listing', 'يذكر الإعلان أنه يُدار من قبل جهة ممولة للحفاظ على استمرارية التشغيل والأصل') }, { label: L('Value-add', 'إمكانات التطوير'), value: L('Operations, marketing, events and capital improvements are identified as potential value-add areas', 'التشغيل والتسويق والفعاليات والتحسينات الرأسمالية مذكورة كمجالات محتملة لزيادة القيمة') }
+    ],
+    features: [L('Rooftop restaurant', 'مطعم على السطح'), L('Private balconies', 'شرفات خاصة'), L('Full kitchens', 'مطابخ كاملة'), L('Ocean proximity', 'قرب المحيط'), L('Event potential', 'إمكانات الفعاليات'), L('Boutique scale', 'حجم بوتيكي')],
+    imageUrl: 'https://assets.simpleviewinc.com/simpleview/image/upload/c_fill%2Ch_798%2Cq_75%2Cw_1200/v1/clients/goldenislesga/ocean_lodge_day_34dbd79b-4eff-42c5-9978-7b1014bae2b7.jpg', imageAlt: L('Actual Ocean Lodge Resort exterior image', 'صورة حقيقية لواجهة منتجع Ocean Lodge'), sourceUrl: 'https://www.commercialsearch.com/commercial-property/us/ga/st-simons-island/boutique-resort-in-the-heart-of-st-simons-island/'
   },
   {
-    country: { en: 'Jordan', ar: 'الأردن', zh: '约旦', es: 'Jordania', fr: 'Jordanie' },
-    city: { en: 'Amman', ar: 'عمّان', zh: '安曼', es: 'Amán', fr: 'Amman' },
-    countryCode: 'JO',
-    title: { en: 'Newly Established Apart-Hotel', ar: 'شقق فندقية حديثة التأسيس', zh: '新建公寓式酒店', es: 'Apartahotel de nueva creación', fr: 'Appart-hôtel récemment établi' },
-    propertyType: { en: 'Hospitality', ar: 'ضيافة', zh: '酒店及旅游', es: 'Hostelería', fr: 'Hôtellerie' },
-    price: 'JOD 930,000',
-    facts: { en: ['12 suites', '1,200 sq m built area', '350 sq m commercial land', '7-car garage'], ar: ['12 جناحاً', 'مساحة مبنية 1,200 م²', 'أرض تجارية 350 م²', 'مرآب لـ7 سيارات'], zh: ['12间套房', '建筑面积1,200平方米', '350平方米商业用地', '7车位车库'], es: ['12 suites', '1.200 m² construidos', '350 m² de terreno comercial', 'Garaje para 7 coches'], fr: ['12 suites', '1 200 m² bâtis', '350 m² de terrain commercial', 'Garage pour 7 voitures'] },
-    imageUrl: 'https://www.smergers.com/media/businessphoto/113009-1741767127-b2b1be01-41f0-43f9-8a52-6326da40a62e.png',
-    imageAlt: { en: 'Original image from the Amman apart-hotel listing source', ar: 'الصورة الأصلية من مصدر إعلان الشقق الفندقية في عمّان', zh: '来自安曼公寓式酒店原始挂牌的图片', es: 'Imagen original de la fuente del anuncio del apartahotel de Amán', fr: 'Image originale de la source de l’annonce de l’appart-hôtel d’Amman' },
-    sourceUrl: 'https://www.smergers.com/business/newly-established-hotel-for-sale-in-amman-jordan/1y5n5/',
-    sourceName: 'SMERGERS',
+    id: 'amman-apart-hotel', country: L('Jordan', 'الأردن'), city: L('Amman', 'عمّان'), title: L('Newly Established Apart-Hotel', 'شقق فندقية حديثة التأسيس'), propertyType: L('Apart-Hotel / Hospitality', 'شقق فندقية / ضيافة'), price: 'JOD 930,000',
+    summary: L('A newly developed apart-hotel in a commercial and tourist area of Amman. The listing describes a LEED-certified green building with panoramic views, renewable water infrastructure and thermal blocks. It includes 12 open-concept apartment suites, a rooftop, a seven-car garage, five ground-floor commercial shops and a building permit license. The owner is stated to have no loans, debts or shareholders.', 'شقق فندقية حديثة التطوير في منطقة تجارية وسياحية في عمّان. يصف الإعلان المبنى بأنه حاصل على LEED للمباني الخضراء، مع إطلالات بانورامية ومصدر مياه متجدد وبلوكات حرارية. يضم 12 جناحاً بنظام مفتوح، وسطحاً، ومرآباً لسبع سيارات، وخمسة محلات تجارية في الطابق الأرضي، ورخصة بناء. ويذكر الإعلان أن الملكية لمالك واحد دون قروض أو ديون أو مساهمين.'),
+    facts: [L('12 apartment suites', '12 جناحاً'), L('1,200 sq m built', '1,200 م² مبني'), L('350 sq m commercial land', '350 م² أرض تجارية'), L('7-car garage', 'مرآب 7 سيارات')],
+    details: [
+      { label: L('Location', 'الموقع'), value: L('Amman, Jordan · commercial/tourist district', 'عمّان، الأردن · منطقة تجارية وسياحية') }, { label: L('Asking price', 'السعر المطلوب'), value: L('JOD 930,000 (listed as approximately USD 1.3 million)', '930,000 دينار أردني (مذكور بما يقارب 1.3 مليون دولار)') },
+      { label: L('Built-up area', 'المساحة المبنية'), value: L('1,200 sq m', '1,200 م²') }, { label: L('Land', 'الأرض'), value: L('350 sq m commercial land', '350 م² أرض تجارية') },
+      { label: L('Grand total area', 'المساحة الإجمالية'), value: L('1,350 sq m', '1,350 م²') }, { label: L('Apartment suites', 'الأجنحة'), value: L('12 open-concept suites; approximately 29–64 sq m each', '12 جناحاً بنظام مفتوح؛ مساحة الجناح تقريباً 29–64 م²') },
+      { label: L('Capacity', 'السعة'), value: L('Each apartment can accommodate up to four people', 'كل شقة يمكن أن تستوعب حتى أربعة أشخاص') }, { label: L('Kitchen', 'المطبخ'), value: L('One apartment includes a fully equipped kitchen and bathroom appliances', 'إحدى الشقق تضم مطبخاً مجهزاً بالكامل وتجهيزات حمام') },
+      { label: L('Rooftop', 'السطح'), value: L('Potential shared room, café, gym, yoga studio or rented space', 'يمكن استخدامه كغرفة مشتركة أو مقهى أو جيم أو استوديو يوغا أو تأجيره') }, { label: L('Parking', 'المواقف'), value: L('Garage for 7 cars', 'مرآب لـ7 سيارات') },
+      { label: L('Ground-floor retail', 'التجاري الأرضي'), value: L('5 open commercial shops; approximately 6 m ceiling height', '5 محلات تجارية مفتوحة؛ ارتفاع سقف يقارب 6 أمتار') }, { label: L('Sustainability', 'الاستدامة'), value: L('LEED-certified green building; renewable water source and thermal blocks stated', 'مبنى أخضر حاصل على LEED؛ مصدر مياه متجدد وبلوكات حرارية بحسب الإعلان') },
+      { label: L('Ownership', 'الملكية'), value: L('Single owner; no loans, debts or shareholders stated', 'مالك واحد؛ دون قروض أو ديون أو مساهمين بحسب الإعلان') }, { label: L('Included intangible asset', 'الأصل غير الملموس'), value: L('Building permit license', 'رخصة بناء') }
+    ],
+    features: [L('LEED-certified', 'حاصل على LEED'), L('Panoramic views', 'إطلالات بانورامية'), L('Rooftop', 'سطح قابل للتشغيل'), L('5 retail shops', '5 محلات تجارية'), L('7-car garage', 'مرآب 7 سيارات'), L('Flexible hospitality use', 'استخدام ضيافة مرن')],
+    imageUrl: 'https://www.smergers.com/media/businessphoto/113009-1741767127-b2b1be01-41f0-43f9-8a52-6326da40a62e.png', imageAlt: L('Actual image from the Amman apart-hotel listing', 'الصورة الفعلية لإعلان الشقق الفندقية في عمّان'), sourceUrl: 'https://www.smergers.com/business/newly-established-hotel-for-sale-in-amman-jordan/1y5n5/'
   },
   {
-    country: { en: 'Spain', ar: 'إسبانيا', zh: '西班牙', es: 'España', fr: 'Espagne' },
-    city: { en: 'San Pedro de Alcantara · Marbella, Málaga', ar: 'سان بيدرو دي ألكانتارا · ماربيا، مالقة', zh: '马贝拉圣佩德罗-德阿尔坎塔拉', es: 'San Pedro de Alcántara · Marbella, Málaga', fr: 'San Pedro de Alcántara · Marbella, Málaga' },
-    countryCode: 'ES',
-    title: { en: '5-Star Golf Resort Hotel', ar: 'منتجع فندقي 5 نجوم وملعب غولف', zh: '五星级高尔夫度假酒店', es: 'Hotel resort de 5 estrellas con golf', fr: 'Hôtel resort 5 étoiles avec golf' },
-    propertyType: { en: 'Hospitality', ar: 'ضيافة', zh: '酒店及旅游', es: 'Hostelería', fr: 'Hôtellerie' },
-    price: '€125,000,000',
-    facts: { en: ['172 rooms & suites', '12,369 sq m built area', '11,245 sq m plot', '27-hole golf course'], ar: ['172 غرفة وجناح', '12,369 م² مساحة مبنية', '11,245 م² أرض', 'ملعب غولف 27 حفرة'], zh: ['172间客房及套房', '12,369平方米建筑面积', '11,245平方米土地', '27洞高尔夫球场'], es: ['172 habitaciones y suites', '12.369 m² construidos', '11.245 m² de parcela', 'Campo de golf de 27 hoyos'], fr: ['172 chambres et suites', '12 369 m² bâtis', '11 245 m² de terrain', 'Golf 27 trous'] },
-    imageUrl: 'https://cdn.thinkwebcontent.com/property/40791/9782021/20260417114351/w800h600/s1600x1200/x-279027633.jpg',
-    imageAlt: { en: 'Original image from the Marbella hotel listing source', ar: 'الصورة الأصلية من مصدر إعلان الفندق في ماربيا', zh: '来自马贝拉酒店原始挂牌的图片', es: 'Imagen original de la fuente del anuncio del hotel de Marbella', fr: 'Image originale de la source de l’annonce de l’hôtel de Marbella' },
-    sourceUrl: 'https://www.thinkspain.com/property-for-sale/9782021',
-    sourceName: 'thinkSPAIN',
+    id: 'marbella-golf-resort', country: L('Spain', 'إسبانيا'), city: L('San Pedro de Alcántara · Marbella, Málaga', 'سان بيدرو دي ألكانتارا · ماربيا، مالقة'), title: L('5-Star Golf Resort Hotel', 'منتجع فندقي 5 نجوم مع ملعب غولف'), propertyType: L('Luxury Hospitality / Golf', 'ضيافة فاخرة / غولف'), price: '€125,000,000',
+    summary: L('A five-star resort in Marbella with a 27-hole golf course, 172 rooms and suites, 12,369 sq m of built area on an 11,245 sq m plot, and a major renovation completed in July 2016. The listing describes year-round operation, a long-term lease to a prestigious hotel chain, multiple dining venues, a 1,500 sq m spa and wellness facility, outdoor pool, gym, kids club and landscaped gardens.', 'منتجع 5 نجوم في ماربيا يضم ملعب غولف من 27 حفرة، و172 غرفة وجناحاً، ومساحة مبنية 12,369 م² على أرض 11,245 م²، مع تجديد رئيسي اكتمل في يوليو 2016. يذكر الإعلان تشغيل العقار على مدار العام وعقد إيجار طويل الأجل مع سلسلة فندقية، إضافة إلى مطاعم متعددة وسبا وعافية بمساحة 1,500 م² ومسبح خارجي وجيم ونادي أطفال وحدائق.'),
+    facts: [L('172 rooms & suites', '172 غرفة وجناح'), L('12,369 sq m built', '12,369 م² مبني'), L('11,245 sq m plot', '11,245 م² أرض'), L('27-hole golf course', 'ملعب غولف 27 حفرة')],
+    details: [
+      { label: L('Location', 'الموقع'), value: L('San Pedro de Alcántara, Marbella, Málaga, Spain', 'سان بيدرو دي ألكانتارا، ماربيا، مالقة، إسبانيا') }, { label: L('Advertised price', 'السعر المعلن'), value: L('€125,000,000', '125,000,000 يورو') },
+      { label: L('Rooms & suites', 'الغرف والأجنحة'), value: L('172: 114 standard double rooms, 52 suites, 3 junior suites, 2 executive suites, 1 presidential suite', '172: 114 غرفة مزدوجة، 52 جناحاً، 3 أجنحة جونيور، جناحان تنفيذيان، جناح رئاسي') },
+      { label: L('Plot', 'الأرض'), value: L('11,245 sq m', '11,245 م²') }, { label: L('Built area', 'المساحة المبنية'), value: L('12,369 sq m', '12,369 م²') }, { label: L('Construction', 'البناء'), value: L('Built in 2000', 'بُني عام 2000') },
+      { label: L('Renovation', 'التجديد'), value: L('Extensive renovation and repositioning completed July 2016', 'تجديد وإعادة تموضع واسعة اكتملت في يوليو 2016') }, { label: L('Operations', 'التشغيل'), value: L('Listing states year-round full-capacity operation', 'الإعلان يذكر تشغيل العقار بكامل طاقته على مدار العام') },
+      { label: L('Lease', 'الإيجار'), value: L('Long-term lease to a prestigious hotel chain, according to listing', 'عقد إيجار طويل الأجل مع سلسلة فندقية مرموقة بحسب الإعلان') }, { label: L('Dining', 'المطاعم'), value: L('Mediterranean/international restaurant, bar, snack/café venue, pool bar and golf-course restaurant', 'مطعم متوسطي/دولي، بار، مطعم خفيف/مقهى، بار مسبح، ومطعم في ملعب الغولف') },
+      { label: L('Spa & wellness', 'السبا والعافية'), value: L('1,500 sq m spa and wellness facility with outdoor terrace', 'مرفق سبا وعافية بمساحة 1,500 م² مع تراس خارجي') }, { label: L('Recreation', 'الترفيه'), value: L('Outdoor pool, gym, kids club, landscaped gardens and outdoor areas', 'مسبح خارجي وجيم ونادي أطفال وحدائق ومساحات خارجية') },
+      { label: L('Golf', 'الغولف'), value: L('27 holes across three 9-hole courses; listing notes tournament history', '27 حفرة موزعة على ثلاثة ملاعب من 9 حفر؛ ويذكر الإعلان استضافة بطولات') }, { label: L('Nearby', 'المعالم القريبة'), value: L('Puerto Banús approx. 10 minutes; Marbella centre approx. 15 minutes', 'بورتو بانوس نحو 10 دقائق؛ مركز ماربيا نحو 15 دقيقة') }
+    ],
+    features: [L('27-hole golf', 'غولف 27 حفرة'), L('1,500 sq m spa', 'سبا 1,500 م²'), L('Private terraces', 'شرفات خاصة'), L('Outdoor pool', 'مسبح خارجي'), L('Kids club', 'نادي أطفال'), L('Year-round operation stated', 'تشغيل سنوي بحسب الإعلان')],
+    imageUrl: 'https://cdn.thinkwebcontent.com/property/40791/9782021/20260417114351/w800h600/s1600x1200/x-279027633.jpg', imageAlt: L('Actual listing image for the Marbella golf resort', 'الصورة الفعلية لإعلان منتجع الغولف في ماربيا'), sourceUrl: 'https://www.thinkspain.com/property-for-sale/9782021'
   },
   {
-    country: { en: 'Spain', ar: 'إسبانيا', zh: '西班牙', es: 'España', fr: 'Espagne' },
-    city: { en: 'Sant Antoni de Portmany, Ibiza', ar: 'سانت أنتوني دي بورتماني، إيبيزا', zh: '伊维萨岛圣安طوني德波特曼尼', es: 'Sant Antoni de Portmany, Ibiza', fr: 'Sant Antoni de Portmany, Ibiza' },
-    countryCode: 'ES',
-    title: { en: 'Seafront Hotel Asset', ar: 'أصل فندقي على الواجهة البحرية', zh: '海滨酒店资产', es: 'Activo hotelero frente al mar', fr: 'Actif hôtelier en bord de mer' },
-    propertyType: { en: 'Hospitality', ar: 'ضيافة', zh: '酒店及旅游', es: 'Hostelería', fr: 'Hôtellerie' },
-    price: '€22,000,000',
-    facts: { en: ['92 rooms', '4,500 sq m built area', '2,000 sq m plot', 'Seafront / sea views'], ar: ['92 غرفة', '4,500 م² مساحة مبنية', '2,000 م² أرض', 'واجهة بحرية / إطلالات بحرية'], zh: ['92间客房', '4,500平方米建筑面积', '2,000平方米土地', '临海 / 海景'], es: ['92 habitaciones', '4.500 m² construidos', '2.000 m² de parcela', 'Frente al mar / vistas al mar'], fr: ['92 chambres', '4 500 m² bâtis', '2 000 m² de terrain', 'Bord de mer / vue mer'] },
-    imageUrl: 'https://cdn.thinkwebcontent.com/property/32695/9519372/20260117152701/w800h533/s1600x1200/x-270873193.jpg',
-    imageAlt: { en: 'Original image from the Ibiza hotel listing source', ar: 'الصورة الأصلية من مصدر إعلان الفندق في إيبيزا', zh: '来自伊维萨酒店原始挂牌的图片', es: 'Imagen original de la fuente del anuncio del hotel de Ibiza', fr: 'Image originale de la source de l’annonce de l’hôtel d’Ibiza' },
-    sourceUrl: 'https://www.thinkspain.com/property-for-sale/9519372',
-    sourceName: 'thinkSPAIN',
+    id: 'ibiza-seafront-hotel', country: L('Spain', 'إسبانيا'), city: L('Sant Antoni de Portmany, Ibiza', 'سانت أنتوني دي بورتماني، إيبيزا'), title: L('Seafront 3-Star Hotel Asset', 'أصل فندقي 3 نجوم على الواجهة البحرية'), propertyType: L('Hospitality / Repositioning', 'ضيافة / إعادة تموضع'), price: '€22,000,000',
+    summary: L('A 3-star hotel in the heart of Sant Antoni de Portmany with 92 rooms, including six staff rooms, and sea views for guest rooms. The asset is 4,500 sq m on a 2,000 sq m plot, six storeys, built in 1970, with restaurant and terrace, pool area, potential pool bar, laundry, office, two professional washing machines, equipped kitchen, parking/garage, communal garden, air conditioning, lift and terrace/balcony. The listing states that the hotel is currently non-operational and needs updating.', 'فندق 3 نجوم في قلب سانت أنتوني دي بورتماني يضم 92 غرفة، منها 6 غرف للموظفين، ويذكر الإعلان إطلالات بحرية لغرف الضيوف. تبلغ المساحة المبنية 4,500 م² على أرض 2,000 م²، ويتكون من 6 طوابق وبُني عام 1970. يضم مطعماً وتراساً ومنطقة مسبح وإمكانية إضافة بار للمسبح، ومغسلة ومكتباً وغسالتين مهنيتين ومطبخاً مجهزاً ومواقف/مرآباً وحديقة وتكييفاً ومصعداً وتراساً/شرفات. ويذكر الإعلان أن الفندق غير عامل حالياً ويحتاج إلى تحديث.'),
+    facts: [L('92 rooms', '92 غرفة'), L('4,500 sq m built', '4,500 م² مبني'), L('2,000 sq m plot', '2,000 م² أرض'), L('Seafront / sea views', 'واجهة بحرية / إطلالات بحرية')],
+    details: [
+      { label: L('Location', 'الموقع'), value: L('Sant Antoni de Portmany, Ibiza, Spain', 'سانت أنتوني دي بورتماني، إيبيزا، إسبانيا') }, { label: L('Asking price', 'السعر المطلوب'), value: L('€22,000,000', '22,000,000 يورو') },
+      { label: L('Classification', 'التصنيف'), value: L('3-star hotel', 'فندق 3 نجوم') }, { label: L('Rooms', 'الغرف'), value: L('92 rooms, including 6 staff rooms', '92 غرفة، منها 6 غرف للموظفين') },
+      { label: L('Bathrooms', 'الحمامات'), value: L('92', '92') }, { label: L('Built area', 'المساحة المبنية'), value: L('4,500 sq m', '4,500 م²') }, { label: L('Plot', 'الأرض'), value: L('2,000 sq m', '2,000 م²') },
+      { label: L('Storeys', 'الطوابق'), value: L('6', '6') }, { label: L('Year built', 'سنة البناء'), value: L('1970', '1970') }, { label: L('Sea views', 'إطلالة البحر'), value: L('Guest rooms described as having sea views', 'الإعلان يذكر إطلالات بحرية لغرف الضيوف') },
+      { label: L('Food & beverage', 'الأغذية والمشروبات'), value: L('Restaurant with terrace; pool area with potential pool bar', 'مطعم مع تراس؛ منطقة مسبح مع إمكانية إضافة بار') }, { label: L('Operations', 'التشغيل'), value: L('Currently not operating and requires updating, according to listing', 'غير عامل حالياً ويحتاج إلى تحديث بحسب الإعلان') },
+      { label: L('Laundry / back of house', 'المغسلة والخدمات'), value: L('Dedicated laundry, office and two professional washing machines', 'مغسلة مخصصة ومكتب وغسالتان مهنيتان') }, { label: L('Kitchen', 'المطبخ'), value: L('Equipped kitchen for food and beverage operations', 'مطبخ مجهز لتشغيل الأغذية والمشروبات') },
+      { label: L('Parking / access', 'المواقف والوصول'), value: L('Parking/garage, lift and wheelchair-friendly features stated', 'مواقف/مرآب ومصعد وخصائص مناسبة للكراسي المتحركة بحسب الإعلان') }, { label: L('Energy rating', 'التصنيف الطاقي'), value: L('Energy consumption E; emissions E', 'استهلاك الطاقة E؛ الانبعاثات E') },
+      { label: L('Repositioning', 'إعادة التموضع'), value: L('Full renovation, modernization, upgraded dining and premium positioning are identified opportunities', 'التجديد والتحديث ورفع مستوى المطاعم واستهداف شريحة أعلى هي فرص مذكورة لإعادة التموضع') }
+    ],
+    features: [L('Seafront', 'واجهة بحرية'), L('Sea views', 'إطلالات بحرية'), L('Pool', 'مسبح'), L('Restaurant', 'مطعم'), L('Parking / garage', 'مواقف / مرآب'), L('Lift', 'مصعد'), L('Repositioning potential', 'إمكانات إعادة التموضع')],
+    imageUrl: 'https://cdn.thinkwebcontent.com/property/32695/9519372/20260117152701/w800h533/s1600x1200/x-270873193.jpg', imageAlt: L('Actual listing image for the Sant Antoni de Portmany hotel', 'الصورة الفعلية لإعلان فندق سانت أنتوني دي بورتماني'), sourceUrl: 'https://www.thinkspain.com/property-for-sale/9519372'
   },
 ];
 
-const copy = {
-  en: { heading: 'External Market Opportunities', intro: 'Selected third-party market listings presented separately from AssetVeyra opportunities. Availability, pricing and transaction terms must be independently verified.', contact: 'Contact AssetVeyra', ask: 'Request This Opportunity', pricing: 'Sign in to view pricing', source: 'Market opportunity', viewSource: 'View original listing', imageUnavailable: 'Original photo unavailable for direct embedding', footer: 'External listings are third-party market references, not verified AssetVeyra opportunities. AssetVeyra is a marketplace and transaction-coordination platform, not an investment advisor.' },
-  ar: { heading: 'فرص السوق الخارجي', intro: 'قوائم عقارية مختارة من السوق الخارجي ومعروضة بشكل منفصل عن فرص AssetVeyra. يجب التحقق بشكل مستقل من التوفر والأسعار وشروط المعاملة.', contact: 'تواصل مع AssetVeyra', ask: 'اطلب هذه الفرصة', pricing: 'سجّل الدخول لعرض السعر', source: 'فرصة من السوق', viewSource: 'عرض الإعلان الأصلي', imageUnavailable: 'الصورة الأصلية غير متاحة للإدراج المباشر', footer: 'القوائم الخارجية هي مراجع من سوق الغير وليست فرصاً موثقة من AssetVeyra. AssetVeyra منصة للسوق العقاري وتنسيق المعاملات وليست مستشاراً استثمارياً.' },
-  zh: { heading: '外部市场机会', intro: '精选第三方市场挂牌，与 AssetVeyra 机会明确分开。可用性、价格和交易条款必须独立核实。', contact: '联系 AssetVeyra', ask: '咨询此机会', pricing: '登录后查看价格', source: '市场机会', viewSource: '查看原始挂牌', imageUnavailable: '无法直接嵌入原始图片', footer: '外部挂牌是第三方市场参考，并非经 AssetVeyra 核实的机会。AssetVeyra 是房地产市场和交易协调平台，并非投资顾问。' },
-  es: { heading: 'Oportunidades del mercado externo', intro: 'Listados seleccionados de terceros, presentados por separado de las oportunidades de AssetVeyra. La disponibilidad, el precio y las condiciones deben verificarse de forma independiente.', contact: 'Contactar con AssetVeyra', ask: 'Solicitar esta oportunidad', pricing: 'Inicie sesión para ver el precio', source: 'Oportunidad de mercado', viewSource: 'Ver anuncio original', imageUnavailable: 'La foto original no está disponible para inserción directa', footer: 'Los listados externos son referencias de terceros y no oportunidades verificadas por AssetVeyra. AssetVeyra es una plataforma de mercado y coordinación de operaciones, no un asesor de inversiones.' },
-  fr: { heading: 'Opportunités du marché externe', intro: 'Sélection de biens proposés par des tiers, présentés séparément des opportunités AssetVeyra. La disponibilité, le prix et les conditions doivent être vérifiés indépendamment.', contact: 'Contacter AssetVeyra', ask: 'Demander cette opportunité', pricing: 'Connectez-vous pour voir le prix', source: 'Opportunité du marché', viewSource: 'Voir l’annonce originale', imageUnavailable: 'La photo originale ne peut pas être intégrée directement', footer: 'Les annonces externes sont des références de marché de tiers et non des opportunités vérifiées par AssetVeyra. AssetVeyra est une plateforme de marché et de coordination des transactions, et non un conseiller en investissement.' },
-} satisfies Record<Locale, { heading:string; intro:string; contact:string; ask:string; pricing:string; source:string; viewSource:string; imageUnavailable:string; footer:string }>;
+const copy: Record<Locale, { heading: string; intro: string; contact: string; ask: string; pricing: string; source: string; viewSource: string; details: string; features: string; close: string; unavailable: string; footer: string }> = {
+  en: { heading: 'External Market Opportunities', intro: 'Selected third-party market listings presented separately from AssetVeyra opportunities. Availability, pricing and transaction terms must be independently verified.', contact: 'Contact AssetVeyra', ask: 'Request This Opportunity', pricing: 'Sign in to view pricing', source: 'Market opportunity', viewSource: 'View original listing', details: 'Property details', features: 'Key features', close: 'Close', unavailable: 'Original photo unavailable for direct embedding', footer: 'External listings are third-party market references, not verified AssetVeyra opportunities.' },
+  ar: { heading: 'فرص السوق الخارجي', intro: 'قوائم عقارية مختارة من السوق الخارجي ومعروضة بشكل منفصل عن فرص AssetVeyra. يجب التحقق بشكل مستقل من التوفر والأسعار وشروط المعاملة.', contact: 'تواصل مع AssetVeyra', ask: 'اطلب هذه الفرصة', pricing: 'سجّل الدخول لعرض السعر', source: 'فرصة من السوق', viewSource: 'عرض الإعلان الأصلي', details: 'تفاصيل العقار', features: 'أهم المزايا', close: 'إغلاق', unavailable: 'الصورة الأصلية غير متاحة للإدراج المباشر', footer: 'القوائم الخارجية هي مراجع من سوق الغير وليست فرصاً موثقة من AssetVeyra.' },
+  zh: { heading: '外部市场机会', intro: '精选第三方市场挂牌，与 AssetVeyra 机会分开显示。可用性、价格和交易条款必须独立核实。', contact: '联系 AssetVeyra', ask: '咨询此机会', pricing: '登录后查看价格', source: '市场机会', viewSource: '查看原始挂牌', details: '物业详情', features: '主要特点', close: '关闭', unavailable: '无法直接嵌入原始图片', footer: '外部挂牌是第三方市场参考，并非经 AssetVeyra 核实的机会。' },
+  es: { heading: 'Oportunidades del mercado externo', intro: 'Listados seleccionados de terceros, separados de las oportunidades de AssetVeyra. La disponibilidad, el precio y las condiciones deben verificarse de forma independiente.', contact: 'Contactar con AssetVeyra', ask: 'Solicitar esta oportunidad', pricing: 'Inicie sesión para ver el precio', source: 'Oportunidad de mercado', viewSource: 'Ver anuncio original', details: 'Detalles del inmueble', features: 'Características', close: 'Cerrar', unavailable: 'La foto original no está disponible para inserción directa', footer: 'Los listados externos son referencias de terceros y no oportunidades verificadas por AssetVeyra.' },
+  fr: { heading: 'Opportunités du marché externe', intro: 'Sélection de biens proposés par des tiers, séparés des opportunités AssetVeyra. La disponibilité, le prix et les conditions doivent être vérifiés indépendamment.', contact: 'Contacter AssetVeyra', ask: 'Demander cette opportunité', pricing: 'Connectez-vous pour voir le prix', source: 'Opportunité du marché', viewSource: 'Voir l’annonce originale', details: 'Détails du bien', features: 'Caractéristiques', close: 'Fermer', unavailable: 'La photo originale ne peut pas être intégrée directement', footer: 'Les annonces externes sont des références de marché de tiers et non des opportunités vérifiées par AssetVeyra.' }
+};
 
 export default function ExternalMarketPage() {
   const locale = useLocale();
   const t = copy[locale];
   const [authenticated, setAuthenticated] = useState(false);
+  const [selected, setSelected] = useState<ExternalListing | null>(null);
+  const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     const supabase = createClient();
@@ -125,49 +156,45 @@ export default function ExternalMarketPage() {
     return () => { active = false; listener.subscription.unsubscribe(); };
   }, []);
 
+  const titleFor = (listing: ExternalListing) => listing.title[locale === 'ar' ? 'ar' : 'en'];
+  const textFor = (value: Localized) => value[locale === 'ar' ? 'ar' : 'en'];
+
   return <main className="av-final-home">
     <header className="av-final-header">
       <a className="av-final-brand" href="/">ASSETVEYRA</a>
-      <details className="av-menu">
-        <summary className="av-menu-trigger"><span className="av-menu-icon" aria-hidden="true"><i></i><i></i><i></i></span><I18nText id="Menu"/></summary>
-        <nav className="av-menu-panel" aria-label="Primary navigation">
-          <a href="/"><I18nText id="Home"/></a>
-          <a href="/external-market"><I18nText id="Marketplace"/></a>
-          <a href="/contact"><I18nText id="Contact"/></a>
-          <a href="/dashboard"><I18nText id="Dashboard"/></a>
-          <div className="av-menu-divider" />
-          <div className="av-language-group"><I18nText id="Language" /><LanguageSelect /></div>
-          <div className="av-menu-account"><a className="av-menu-login" href="/login"><I18nText id="Login" /></a><a className="av-menu-signup" href="/signup"><I18nText id="Sign Up" /></a></div>
-        </nav>
+      <details className="av-menu"><summary className="av-menu-trigger"><span className="av-menu-icon" aria-hidden="true"><i></i><i></i><i></i></span><I18nText id="Menu"/></summary>
+        <nav className="av-menu-panel" aria-label="Primary navigation"><a href="/"><I18nText id="Home"/></a><a href="/external-market"><I18nText id="Marketplace"/></a><a href="/contact"><I18nText id="Contact"/></a><a href="/dashboard"><I18nText id="Dashboard"/></a><div className="av-menu-divider"/><div className="av-language-group"><I18nText id="Language"/><LanguageSelect/></div><div className="av-menu-account"><a className="av-menu-login" href="/login"><I18nText id="Login"/></a><a className="av-menu-signup" href="/signup"><I18nText id="Sign Up"/></a></div></nav>
       </details>
     </header>
 
     <section className="external-market-section">
-      <div className="external-market-heading">
-        <div><div className="eyebrow"><I18nText id="Marketplace" /></div><h2>{t.heading}</h2><p>{t.intro}</p></div>
-        <a className="external-market-contact" href={authenticated ? '/contact' : '/login'}>{t.contact}</a>
-      </div>
-
+      <div className="external-market-heading"><div><div className="eyebrow"><I18nText id="Marketplace"/></div><h2>{t.heading}</h2><p>{t.intro}</p></div><a className="external-market-contact" href={authenticated ? '/contact' : '/login'}>{t.contact}</a></div>
       <div className="external-listing-grid">
-        {listings.map((listing) => {
-          const title = listing.title[locale];
-          return <article className="external-listing-card" key={`${listing.countryCode}-${listing.title.en}`}>
-            <a className="external-listing-image-link" href={listing.sourceUrl} target="_blank" rel="noreferrer noopener" aria-label={`${t.viewSource}: ${title}`}>
-              <div className="external-listing-image">
-                {listing.imageUrl ? <img src={listing.imageUrl} alt={listing.imageAlt[locale]} loading="lazy" /> : <div className="external-image-missing"><span>{t.imageUnavailable}</span><strong>{listing.sourceName}</strong></div>}
-                <div className="external-image-watermark" aria-hidden="true">ASSETVEYRA · EXTERNAL</div>
-              </div>
-            </a>
-            <div className="card-meta"><span>{listing.country[locale]}</span><span>{t.source}</span></div>
-            <h4><a className="external-listing-title-link" href={listing.sourceUrl} target="_blank" rel="noreferrer noopener">{title}</a></h4>
-            <p>{listing.city[locale]} · {listing.propertyType[locale]}</p>
-            <div className="external-facts">{listing.facts[locale].map((fact) => <span key={fact}><b>•</b>{fact}</span>)}</div>
-            <div className="external-card-footer"><strong>{authenticated ? listing.price : t.pricing}</strong><div className="external-card-actions"><a className="external-source-link" href={listing.sourceUrl} target="_blank" rel="noreferrer noopener">{t.viewSource}</a><a className="external-market-contact-link" href={authenticated ? `/contact?opportunity=${encodeURIComponent(title)}` : '/login'}>{t.ask}</a></div></div>
-          </article>;
-        })}
+        {listings.map((listing) => { const title = titleFor(listing); const imageFailed = failedImages[listing.id]; return <article className="external-listing-card" key={listing.id}>
+          <button type="button" className="external-listing-image-button" onClick={() => setSelected(listing)} aria-label={`${title} — ${t.details}`}>
+            <div className="external-listing-image">{listing.imageUrl && !imageFailed ? <img src={listing.imageUrl} alt={textFor(listing.imageAlt)} loading="lazy" onError={() => setFailedImages((current) => ({ ...current, [listing.id]: true }))}/> : <div className="external-image-missing"><strong>{t.unavailable}</strong></div>}<div className="external-image-watermark" aria-hidden="true">MARKET REFERENCE</div></div>
+          </button>
+          <div className="card-meta"><span>{textFor(listing.country)}</span><span>{textFor(listing.city)}</span></div>
+          <h4><button type="button" className="external-listing-title-button" onClick={() => setSelected(listing)}>{title}</button></h4>
+          <p>{textFor(listing.propertyType)} · {textFor(listing.summary)}</p>
+          <div className="external-facts">{listing.facts.map((fact, index) => <span key={index}><b>•</b>{textFor(fact)}</span>)}</div>
+          <div className="external-card-footer"><strong>{authenticated ? listing.price : t.pricing}</strong><div className="external-card-actions"><button type="button" className="external-details-button" onClick={() => setSelected(listing)}>{t.details}</button><a className="external-source-link" href={listing.sourceUrl} target="_blank" rel="noreferrer noopener">{t.viewSource}</a><a className="external-market-contact-link" href={authenticated ? `/contact?opportunity=${encodeURIComponent(title)}` : '/login'}>{t.ask}</a></div></div>
+        </article>; })}
       </div>
     </section>
 
+    {selected && <div className="external-detail-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setSelected(null); }}>
+      <section className="external-detail-panel" role="dialog" aria-modal="true" aria-label={titleFor(selected)}>
+        <button type="button" className="external-detail-close" onClick={() => setSelected(null)} aria-label={t.close}>×</button>
+        <div className="external-detail-media">{selected.imageUrl && !failedImages[selected.id] ? <img src={selected.imageUrl} alt={textFor(selected.imageAlt)} onError={() => setFailedImages((current) => ({ ...current, [selected.id]: true }))}/> : <div className="external-image-missing"><strong>{t.unavailable}</strong></div>}</div>
+        <div className="external-detail-content"><div className="eyebrow">{textFor(selected.propertyType)}</div><h2>{titleFor(selected)}</h2><div className="external-detail-location">{textFor(selected.city)} · {textFor(selected.country)}</div><div className="external-detail-price">{authenticated ? selected.price : t.pricing}</div><p className="external-detail-summary">{textFor(selected.summary)}</p>
+          <div className="external-detail-section"><h3>{t.details}</h3><div className="external-detail-table">{selected.details.map((detail, index) => <div className="external-detail-row" key={index}><strong>{textFor(detail.label)}</strong><span>{textFor(detail.value)}</span></div>)}</div></div>
+          <div className="external-detail-section"><h3>{t.features}</h3><div className="external-feature-list">{selected.features.map((feature, index) => <span key={index}>{textFor(feature)}</span>)}</div></div>
+          <div className="external-detail-actions"><a className="external-market-contact-link" href={authenticated ? `/contact?opportunity=${encodeURIComponent(titleFor(selected))}` : '/login'}>{t.ask}</a><a className="external-source-link" href={selected.sourceUrl} target="_blank" rel="noreferrer noopener">{t.viewSource}</a></div>
+          <p className="external-detail-disclaimer"><I18nText id="Market-reference data is reproduced from the public listing and may change. AssetVeyra has not independently verified ownership, availability, pricing, financial performance, legal status or other representations unless explicitly stated in a separate verification record."/></p>
+        </div>
+      </section>
+    </div>}
     <footer className="av-footer">{t.footer}</footer>
   </main>;
 }
