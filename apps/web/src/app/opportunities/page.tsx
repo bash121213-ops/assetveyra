@@ -46,9 +46,9 @@ export default async function OpportunitiesPage(){
   return <main className="app-shell">
     <header className="app-header">
       <a className="brand" href="/">ASSETVEYRA</a>
-      <nav><a href="/opportunities"><I18nText id="Opportunities"/></a><a href="/dashboard"><I18nText id="Workspace"/></a>{user?<form action="/logout" method="post"><button className="text-button"><I18nText id="Sign out"/></button></form>:<a href="/login"><I18nText id="Sign in"/></a>}</nav>
+      <nav><a href="/opportunities"><I18nText id="Marketplace"/></a><a href="/workspace"><I18nText id="Overview"/></a>{user?<form action="/logout" method="post"><button className="text-button"><I18nText id="Sign out"/></button></form>:<a href="/login"><I18nText id="Sign in"/></a>}</nav>
     </header>
-    <section className="page-head"><div className="eyebrow"><I18nText id="Market"/></div><h1><I18nText id="Opportunities"/></h1><p><I18nText id="Curated opportunities for qualified investors worldwide."/></p></section>
+    <section className="page-head"><div className="eyebrow"><I18nText id="Market"/></div><h1><I18nText id="Marketplace"/></h1><p><I18nText id="Curated opportunities for qualified investors worldwide."/></p></section>
     {error&&<div className="form-error" style={{maxWidth:1280,margin:'0 auto 30px',width:'88%'}}><I18nText id="The live marketplace could not be loaded. Please try again shortly."/></div>}
     <section className="opportunity-grid">
       {rows.map(({opportunity,asset})=>asset?<a className="opportunity-card" href={user?`/opportunities/${opportunity.slug}`:'/login'} key={opportunity.id}>
