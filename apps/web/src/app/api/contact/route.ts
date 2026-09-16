@@ -195,6 +195,12 @@ async function sendContactEmail({
 
 export async function POST(request: Request) {
   try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: 'Authentication required.' }, { status: 401 });
+    }
+
     const body = await request.json();
     const parsed = schema.safeParse(body);
     if (!parsed.success) {
@@ -203,7 +209,6 @@ export async function POST(request: Request) {
     if (parsed.data.website) return NextResponse.json({ ok: true });
 
     const { name, email, phone, interest, message } = parsed.data;
-    const supabase = await createClient();
     const { error: insertError } = await supabase
       .from('contact_submissions')
       .insert({ name, email, phone: phone || null, interest, message });
