@@ -1,0 +1,5 @@
+.detail-information{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;margin-top:28px;background:var(--av-line);border:1px solid var(--av-line)}
+.detail-information-block{padding:26px;background:#fff}
+.detail-information-block p{margin:12px 0 0;color:var(--av-muted);font-size:14px;line-height:1.8;white-space:pre-line}
+.transaction-path-panel{margin-top:42px!important;padding:30px 0!important}
+@media(max-width:767px){.detail-information{grid-template-columns:1fr}.transaction-path-panel{margin-top:30px!important}}
