@@ -4,6 +4,7 @@ import { cookies, headers } from 'next/headers';
 import { Cairo, Inter } from 'next/font/google';
 import './globals.css';
 import './locale-overrides.css';
+import './external-market.css';
 import LocaleShell from '@/components/LocaleShell';
 import { detectLocaleFromLanguages, normalizeLocale } from '@/lib/i18n';
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
