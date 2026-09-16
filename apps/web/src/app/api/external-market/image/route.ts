@@ -24,6 +24,28 @@ function extractOgImage(html: string, baseUrl: URL) {
   }
 }
 
+async function fetchAllowed(url: URL) {
+  const response = await fetch(url, {
+    headers: { 'User-Agent': 'AssetVeyra/1.0 (+https://assetveyra.com)' },
+    cache: 'no-store',
+    redirect: 'manual',
+  });
+
+  if (response.status >= 300 && response.status < 400) {
+    const location = response.headers.get('location');
+    if (!location) return null;
+    try {
+      const redirected = new URL(location, url);
+      if (!isAllowed(redirected)) return null;
+      return fetchAllowed(redirected);
+    } catch {
+      return null;
+    }
+  }
+
+  return response;
+}
+
 export async function GET(request: NextRequest) {
   const raw = request.nextUrl.searchParams.get('url');
   if (!raw) return new Response('Missing image URL', { status: 400 });
@@ -38,11 +60,8 @@ export async function GET(request: NextRequest) {
   if (!isAllowed(target)) return new Response('Image host not allowed', { status: 403 });
 
   try {
-    const response = await fetch(target, {
-      headers: { 'User-Agent': 'AssetVeyra/1.0 (+https://assetveyra.com)' },
-      cache: 'no-store',
-      redirect: 'follow',
-    });
+    const response = await fetchAllowed(target);
+    if (!response) return new Response('Image unavailable', { status: 404 });
 
     const contentType = response.headers.get('content-type') ?? '';
     if (response.ok && contentType.startsWith('image/')) {
@@ -59,13 +78,9 @@ export async function GET(request: NextRequest) {
       const html = await response.text();
       const imageUrl = extractOgImage(html, target);
       if (imageUrl) {
-        const imageResponse = await fetch(imageUrl, {
-          headers: { 'User-Agent': 'AssetVeyra/1.0 (+https://assetveyra.com)' },
-          cache: 'no-store',
-          redirect: 'follow',
-        });
-        const imageType = imageResponse.headers.get('content-type') ?? '';
-        if (imageResponse.ok && imageType.startsWith('image/')) {
+        const imageResponse = await fetchAllowed(imageUrl);
+        const imageType = imageResponse?.headers.get('content-type') ?? '';
+        if (imageResponse?.ok && imageType.startsWith('image/')) {
           return new Response(imageResponse.body, {
             status: 200,
             headers: {
