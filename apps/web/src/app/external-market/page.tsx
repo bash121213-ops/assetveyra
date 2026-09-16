@@ -65,6 +65,7 @@ export default function ExternalMarketPage() {
         {listings.map((listing) => <article className="external-listing-card" key={`${listing.countryCode}-${listing.title}`}>
           <div className="external-listing-image">
             {listing.imageUrl ? <img src={listing.imageUrl} alt={listing.imageAlt ?? listing.title} loading="lazy" /> : <div className="external-image-placeholder" aria-hidden="true"><span>{listing.countryCode}</span></div>}
+            <div className="external-image-watermark" aria-hidden="true">ASSETVEYRA</div>
           </div>
           <div className="card-meta"><span>{listing.country}</span><span>{t.source}</span></div>
           <h4>{listing.title}</h4>
