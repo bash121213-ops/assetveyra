@@ -6,7 +6,7 @@ import { translate } from '@/lib/i18n';
 import '@/lib/i18nLegalConsultation';
 
 export default function LegalConsultationPage() {
-  const locale = useLocale();
+  const { locale } = useLocale();
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
 
   async function submit(event: FormEvent<HTMLFormElement>) {
