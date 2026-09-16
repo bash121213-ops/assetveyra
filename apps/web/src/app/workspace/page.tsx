@@ -1,7 +1,79 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { I18nText } from '@/components/LocaleShell';
-const ADMIN_ROLES=['platform_admin','operations_admin','compliance_officer'];
-export default async function WorkspacePage(){const s=await createClient();const {data:{user}}=await s.auth.getUser();if(!user)redirect('/login');const {data:memberships}=await s.from('organization_members').select('organization_id,role,organizations(display_name,type)').eq('user_id',user.id);const orgIds=(memberships??[]).map((m:any)=>m.organization_id);const isAdmin=(memberships??[]).some((m:any)=>ADMIN_ROLES.includes(m.role));const [{data:assets},{data:interests},{data:deals},{data:rooms}]=await Promise.all([orgIds.length?s.from('assets').select('id,title,status,asset_type,city,country_code,area_sqm,asking_price,currency,updated_at').in('organization_id',orgIds).order('updated_at',{ascending:false}).limit(8):Promise.resolve({data:[]} as any),orgIds.length?s.from('investor_interests').select('id,status,created_at,opportunities(slug,assets(title))').in('investor_organization_id',orgIds).order('created_at',{ascending:false}).limit(8):Promise.resolve({data:[]} as any),orgIds.length?s.from('deals').select('id,status,target_close_date,opportunities(slug,assets(title))').or(`organization_id.in.(${orgIds.join(',')}),buyer_organization_id.in.(${orgIds.join(',')}),seller_organization_id.in.(${orgIds.join(',')})`).order('updated_at',{ascending:false}).limit(8):Promise.resolve({data:[]} as any),orgIds.length?s.from('data_rooms').select('id,name,status,nda_required,download_enabled,opportunities(slug,assets(title))').in('organization_id',orgIds).order('updated_at',{ascending:false}).limit(8):Promise.resolve({data:[]} as any)]);
-return <main className="app-shell"><header className="app-header"><a className="brand" href="/">ASSETVEYRA</a><nav><a href="/opportunities"><I18nText id="Marketplace"/></a><a href="/workspace"><I18nText id="Workspace"/></a><form action="/logout" method="post"><button className="text-button"><I18nText id="Sign out"/></button></form></nav></header><section className="page-head"><div className="eyebrow"><I18nText id="Institutional Workspace"/></div><h1><I18nText id="Transaction Workspace"/></h1><p><I18nText id="Every sensitive record remains organization-scoped."/></p></section>{isAdmin&&<section className="panel"><div className="panel-title"><div><div className="eyebrow"><I18nText id="PLATFORM"/></div><h2><I18nText id="Operations"/></h2></div></div><div style={{display:'flex',gap:10,flexWrap:'wrap'}}><a className="button primary" href="/workspace/admin"><I18nText id="Open platform controls"/></a><a className="button" href="/workspace/review"><I18nText id="Open verification queue"/></a></div></section>}<section className="panel"><div className="panel-title"><div><div className="eyebrow"><I18nText id="WORKFLOW"/></div><h2><I18nText id="Modules"/></h2></div></div><div className="opportunity-grid" style={{padding:'0'}}><a className="opportunity-card" href="/workspace/assets"><div className="card-meta"><span><I18nText id="SELLER"/></span><span>{assets?.length??0}</span></div><h2><I18nText id="Assets & verification"/></h2><p><I18nText id="Track submitted assets, verification state and publication readiness."/></p><strong><I18nText id="Open workspace →"/></strong></a><a className="opportunity-card" href="/workspace/interests"><div className="card-meta"><span><I18nText id="INVESTOR"/></span><span>{interests?.length??0}</span></div><h2><I18nText id="Investor Interests"/></h2><p><I18nText id="Monitor interests from qualification through confidentiality, diligence, offer and negotiation."/></p><strong><I18nText id="Open workspace →"/></strong></a><a className="opportunity-card" href="/workspace/data-rooms"><div className="card-meta"><span><I18nText id="DATA ROOM"/></span><span>{rooms?.length??0}</span></div><h2><I18nText id="Private data rooms"/></h2><p><I18nText id="Control document access, confidentiality gates, expiry and download policy."/></p><strong><I18nText id="Open workspace →"/></strong></a><a className="opportunity-card" href="/workspace/deals"><div className="card-meta"><span><I18nText id="DEALS"/></span><span>{deals?.length??0}</span></div><h2><I18nText id="Deal execution"/></h2><p><I18nText id="Follow the transaction lifecycle from initiation to closing."/></p><strong><I18nText id="Open workspace →"/></strong></a></div></section><section className="panel"><div className="panel-title"><div><div className="eyebrow"><I18nText id="ORGANIZATIONS"/></div><h2><I18nText id="Your access"/></h2></div></div><div className="table">{(memberships??[]).map((m:any)=><div className="row" key={`${m.organization_id}-${m.role}`}><strong>{m.organizations?.display_name}</strong><span>{m.organizations?.type}</span><span>{m.role}</span></div>)}</div></section></main>;
+
+const ADMIN_ROLES = ['platform_admin', 'operations_admin', 'compliance_officer'];
+
+export default async function WorkspacePage() {
+  const s = await createClient();
+  const { data: { user } } = await s.auth.getUser();
+  if (!user) redirect('/login');
+
+  const { data: memberships } = await s
+    .from('organization_members')
+    .select('organization_id,role,organizations(display_name,type)')
+    .eq('user_id', user.id);
+
+  const orgIds = (memberships ?? []).map((m: any) => m.organization_id);
+  const isAdmin = (memberships ?? []).some((m: any) => ADMIN_ROLES.includes(m.role));
+  const isInvestor = (memberships ?? []).some((m: any) => m.organizations?.type === 'investor');
+  const isSeller = (memberships ?? []).some((m: any) => m.organizations?.type !== 'investor');
+
+  const [{ data: assets }, { data: interests }, { data: deals }] = await Promise.all([
+    orgIds.length
+      ? s.from('assets').select('id,title,status,asset_type,city,country_code').in('organization_id', orgIds).order('updated_at', { ascending: false }).limit(5)
+      : Promise.resolve({ data: [] } as any),
+    isInvestor && orgIds.length
+      ? s.from('investor_interests').select('id,status,created_at,opportunities(slug,assets(title,city,country_code))').in('investor_organization_id', orgIds).order('updated_at', { ascending: false }).limit(5)
+      : Promise.resolve({ data: [] } as any),
+    orgIds.length
+      ? s.from('deals').select('id,status,target_close_date,opportunities(slug,assets(title))').or(`organization_id.in.(${orgIds.join(',')}),buyer_organization_id.in.(${orgIds.join(',')}),seller_organization_id.in.(${orgIds.join(',')})`).order('updated_at', { ascending: false }).limit(5)
+      : Promise.resolve({ data: [] } as any),
+  ]);
+
+  return <main className="app-shell">
+    <header className="app-header">
+      <a className="brand" href="/">ASSETVEYRA</a>
+      <nav>
+        <a href="/workspace"><I18nText id="Overview"/></a>
+        <a href="/opportunities"><I18nText id="Marketplace"/></a>
+        {isInvestor && <a href="/workspace/interests"><I18nText id="My Interests"/></a>}
+        {!!deals?.length && <a href="/workspace/deals"><I18nText id="Transactions"/></a>}
+        {isSeller && <a href="/workspace/assets"><I18nText id="My Assets"/></a>}
+        {isAdmin && <a href="/workspace/admin"><I18nText id="Admin Console"/></a>}
+        <form action="/logout" method="post"><button className="text-button"><I18nText id="Sign out"/></button></form>
+      </nav>
+    </header>
+
+    <section className="page-head">
+      <div className="eyebrow"><I18nText id="Overview"/></div>
+      <h1><I18nText id="Transaction Workspace"/></h1>
+      <p><I18nText id="Your authenticated view of opportunities, interests and transactions."/></p>
+    </section>
+
+    <section className="stats">
+      <div><span><I18nText id="Organizations"/></span><strong>{memberships?.length || 0}</strong></div>
+      <div><span><I18nText id="My Interests"/></span><strong>{interests?.length || 0}</strong></div>
+      <div><span><I18nText id="Active Transactions"/></span><strong>{deals?.length || 0}</strong></div>
+      {isSeller && <div><span><I18nText id="My Assets"/></span><strong>{assets?.length || 0}</strong></div>}
+    </section>
+
+    <section className="panel">
+      <div className="panel-title"><div><div className="eyebrow"><I18nText id="NEXT STEPS"/></div><h2><I18nText id="Your activity"/></h2></div></div>
+      <div className="opportunity-grid" style={{ padding: 0 }}>
+        <a className="opportunity-card" href="/opportunities"><div className="card-meta"><span><I18nText id="MARKETPLACE"/></span></div><h2><I18nText id="Explore opportunities"/></h2><p><I18nText id="Review the available real-estate opportunities and open an opportunity to see its permitted details."/></p><strong><I18nText id="Open Marketplace →"/></strong></a>
+        {isInvestor && <a className="opportunity-card" href="/workspace/interests"><div className="card-meta"><span><I18nText id="INVESTOR"/></span><span>{interests?.length ?? 0}</span></div><h2><I18nText id="My Interests"/></h2><p><I18nText id="Track qualification, NDA, data-room and diligence progress for opportunities you requested."/></p><strong><I18nText id="Open My Interests →"/></strong></a>}
+        {!!deals?.length && <a className="opportunity-card" href="/workspace/deals"><div className="card-meta"><span><I18nText id="TRANSACTIONS"/></span><span>{deals.length}</span></div><h2><I18nText id="Transactions"/></h2><p><I18nText id="Follow active transactions through their controlled lifecycle to closing."/></p><strong><I18nText id="Open Transactions →"/></strong></a>}
+        {isSeller && <a className="opportunity-card" href="/workspace/assets"><div className="card-meta"><span><I18nText id="SELLER"/></span><span>{assets?.length ?? 0}</span></div><h2><I18nText id="My Assets"/></h2><p><I18nText id="Manage submitted assets and their controlled verification and publication status."/></p><strong><I18nText id="Open My Assets →"/></strong></a>}
+      </div>
+    </section>
+
+    <section className="panel">
+      <div className="panel-title"><div><div className="eyebrow"><I18nText id="RECENT ACTIVITY"/></div><h2><I18nText id="Recent transactions"/></h2></div></div>
+      <div className="table">
+        {(deals ?? []).map((d: any) => <a className="row" href={`/workspace/deals/${d.id}`} key={d.id}><strong>{d.opportunities?.assets?.title || <I18nText id="Transaction"/>}</strong><span>{d.status}</span><span>{d.target_close_date || <I18nText id="Pending"/>}</span></a>)}
+        {!deals?.length && <div className="empty-state"><strong><I18nText id="No active transactions yet."/></strong><span><I18nText id="Your transaction records will appear here after an offer is accepted."/></span></div>}
+      </div>
+    </section>
+  </main>;
 }
