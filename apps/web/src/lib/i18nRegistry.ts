@@ -1,4 +1,5 @@
 import type { Locale } from '@/lib/i18n';
+import { BASE_TRANSLATIONS } from '@/lib/i18nBase';
 import { WORKSPACE_TRANSLATIONS } from '@/lib/i18nWorkspace';
 import { OPPORTUNITY_TRANSLATIONS } from '@/lib/i18nOpportunity';
 import { ASSET_IMAGE_TRANSLATIONS } from '@/lib/i18nAssetImages';
@@ -88,6 +89,7 @@ const BASE_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
 };
 
 export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
+  ...BASE_TRANSLATIONS,
   ...BASE_TRANSLATION_REGISTRY,
   ...WORKSPACE_TRANSLATIONS,
   ...OPPORTUNITY_TRANSLATIONS,
