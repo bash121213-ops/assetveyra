@@ -31,7 +31,7 @@ function collectObjectEntries(source, file) {
   for (const match of source.matchAll(re)) {
     const key = match[1] ?? match[2];
     const body = match[3];
-    if (LOCALES.includes(key) || !/\b(?:en|ar|zh|es|fr)\s*:/.test(body)) continue;
+    if (LOCALES.includes(key) || !/(?:['\"])?(?:en|ar|zh|es|fr)(?:['\"])?\s*:/.test(body)) continue;
     const values = {};
     for (const locale of LOCALES) {
       const valueMatch = body.match(new RegExp('\\b' + locale + '\\s*:\\s*([\'"])((?:\\\\.|(?!\\1).)*)\\1'));
