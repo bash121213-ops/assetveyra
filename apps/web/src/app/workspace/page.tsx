@@ -1,9 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { I18nText } from '@/components/LocaleShell';
-import '@/lib/i18nAssetImages';
-import '@/lib/i18nWorkspace';
-
 const ADMIN_ROLES = ['platform_admin', 'operations_admin', 'compliance_officer'];
 const SELLER_ROLES = ['seller_admin', 'seller_member', 'platform_admin', 'operations_admin'];
 
