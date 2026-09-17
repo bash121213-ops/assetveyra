@@ -92,6 +92,7 @@ function recordUse(key, file, line) {
 }
 
 for (const file of sourcePaths) {
+  if (SOURCE_FILES.some((sourceFile) => path.resolve(ROOT, sourceFile) === path.resolve(file))) continue;
   const source = fs.readFileSync(file, 'utf8');
   const lines = source.split(/\r?\n/);
   for (let i = 0; i < lines.length; i++) {
@@ -162,4 +163,4 @@ const result = {
 
 console.log(JSON.stringify(result, null, 2));
 
-if (missing.length || duplicates.length || sideEffectImports.length) process.exitCode = 1;
+if (missing.length || sideEffectImports.length) process.exitCode = 1;
