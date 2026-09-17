@@ -1,6 +1,6 @@
-import { TRANSLATIONS, type Locale } from '@/lib/i18n';
+import type { Locale } from '@/lib/i18n';
 
-const entries: Record<string, Record<Locale, string>> = {
+export const ASSET_IMAGE_TRANSLATIONS: Record<string, Record<Locale, string>> = {
   'Property images': { en: 'Property images', ar: 'صور العقار', zh: '物业图片', es: 'Imágenes del inmueble', fr: 'Images du bien' },
   'Up to 20 images. Images are compressed before upload.': { en: 'Up to 20 images. Images are compressed before upload.', ar: 'حتى 20 صورة. يتم ضغط الصور قبل الرفع.', zh: '最多 20 张图片。上传前会自动压缩。', es: 'Hasta 20 imágenes. Se comprimen antes de subirlas.', fr: 'Jusqu’à 20 images. Elles sont compressées avant l’envoi.' },
   'Preparing images…': { en: 'Preparing images…', ar: 'جارٍ تجهيز الصور…', zh: '正在准备图片…', es: 'Preparando imágenes…', fr: 'Préparation des images…' },
@@ -22,5 +22,3 @@ const entries: Record<string, Record<Locale, string>> = {
   'Main image': { en: 'Main image', ar: 'الصورة الرئيسية', zh: '主图', es: 'Imagen principal', fr: 'Image principale' },
   'Delete': { en: 'Delete', ar: 'حذف', zh: '删除', es: 'Eliminar', fr: 'Supprimer' }
 };
-
-for (const [key, value] of Object.entries(entries)) TRANSLATIONS[key] = value;
