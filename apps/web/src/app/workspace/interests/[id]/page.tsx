@@ -364,6 +364,7 @@ async function acceptOffer(formData: FormData) {
 export default async function InterestDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const { s, user, interest: i } = await getContext(id);
+  const locale = 'en';
   const { data: offers } = await s.from('offers').select('id,amount,currency,status,expires_at,created_at,terms,submitted_by').eq('interest_id', id).order('created_at', { ascending: false });
 
   const ownerOrg = (i as any).opportunities?.owner_organization_id as string | undefined;
