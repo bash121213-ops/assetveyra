@@ -5,6 +5,7 @@ import { OPPORTUNITY_TRANSLATIONS } from '@/lib/i18nOpportunity';
 import { ASSET_IMAGE_TRANSLATIONS } from '@/lib/i18nAssetImages';
 import { LEGAL_CONSULTATION_TRANSLATIONS } from '@/lib/i18nLegalConsultation';
 import { QUALIFIED_INVESTOR_TRANSLATIONS } from '@/lib/i18nQualifiedInvestors';
+import { SITE_TRANSLATIONS } from '@/lib/i18nSite';
 
 type TranslationSet = Record<Locale, string>;
 
@@ -162,6 +163,7 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   ...ASSET_IMAGE_TRANSLATIONS,
   ...LEGAL_CONSULTATION_TRANSLATIONS,
   ...QUALIFIED_INVESTOR_TRANSLATIONS,
+  ...SITE_TRANSLATIONS,
 };
 
 export const STATUS_TRANSLATIONS = {
