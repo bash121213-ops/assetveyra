@@ -1,6 +1,13 @@
-import { TRANSLATIONS, type Locale, SUPPORTED_LOCALES } from '@/lib/i18n';
+import type { Locale } from '@/lib/i18n';
+import { WORKSPACE_TRANSLATIONS } from '@/lib/i18nWorkspace';
+import { OPPORTUNITY_TRANSLATIONS } from '@/lib/i18nOpportunity';
+import { ASSET_IMAGE_TRANSLATIONS } from '@/lib/i18nAssetImages';
+import { LEGAL_CONSULTATION_TRANSLATIONS } from '@/lib/i18nLegalConsultation';
+import { QUALIFIED_INVESTOR_TRANSLATIONS } from '@/lib/i18nQualifiedInvestors';
 
-export const CENTRAL_TRANSLATION_REGISTRY = {
+type TranslationSet = Record<Locale, string>;
+
+const BASE_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   'Add Property': { en: 'Add Property', ar: 'إضافة عقار', zh: '添加物业', es: 'Añadir propiedad', fr: 'Ajouter un bien' },
   'Property gallery': { en: 'Property gallery', ar: 'معرض صور العقار', zh: '物业图片库', es: 'Galería del inmueble', fr: 'Galerie du bien' },
   'View all property images': { en: 'View all property images', ar: 'عرض جميع صور العقار', zh: '查看全部物业图片', es: 'Ver todas las imágenes del inmueble', fr: 'Voir toutes les images du bien' },
@@ -42,7 +49,16 @@ export const CENTRAL_TRANSLATION_REGISTRY = {
   'Asset images': { en: 'Asset images', ar: 'صور الأصل', zh: '资产图片', es: 'Imágenes del activo', fr: 'Images du bien' },
   'Upload images': { en: 'Upload images', ar: 'رفع الصور', zh: '上传图片', es: 'Subir imágenes', fr: 'Télécharger des images' },
   'Main image': { en: 'Main image', ar: 'الصورة الرئيسية', zh: '主图', es: 'Imagen principal', fr: 'Image principale' },
-} as const;
+};
+
+export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
+  ...BASE_TRANSLATION_REGISTRY,
+  ...WORKSPACE_TRANSLATIONS,
+  ...OPPORTUNITY_TRANSLATIONS,
+  ...ASSET_IMAGE_TRANSLATIONS,
+  ...LEGAL_CONSULTATION_TRANSLATIONS,
+  ...QUALIFIED_INVESTOR_TRANSLATIONS,
+};
 
 export const STATUS_TRANSLATIONS = {
   draft: { en: 'Draft', ar: 'مسودة', zh: '草稿', es: 'Borrador', fr: 'Brouillon' },
@@ -51,7 +67,7 @@ export const STATUS_TRANSLATIONS = {
   pending: { en: 'Pending', ar: 'قيد الانتظار', zh: '待处理', es: 'Pendiente', fr: 'En attente' },
   qualified: { en: 'Qualified', ar: 'مؤهل', zh: '已合格', es: 'Calificado', fr: 'Qualifié' },
   rejected: { en: 'Rejected', ar: 'مرفوض', zh: '已拒绝', es: 'Rechazado', fr: 'Refusé' },
-} as const;
+} as const;;
 
 export const ASSET_TYPE_TRANSLATIONS = {
   land: { en: 'Land', ar: 'أرض', zh: '土地', es: 'Terreno', fr: 'Terrain' },
@@ -65,55 +81,10 @@ export const ASSET_TYPE_TRANSLATIONS = {
   infrastructure: { en: 'Infrastructure', ar: 'البنية التحتية', zh: '基础设施', es: 'Infraestructura', fr: 'Infrastructure' },
   renewable_energy: { en: 'Renewable energy', ar: 'طاقة متجددة', zh: '可再生能源', es: 'Energía renovable', fr: 'Énergie renouvelable' },
   other: { en: 'Other', ar: 'أخرى', zh: '其他', es: 'Otro', fr: 'Autre' },
-} as const;
-
-function mergeCentralTranslations() {
-  for (const [key, translations] of Object.entries(CENTRAL_TRANSLATION_REGISTRY)) {
-    const current = TRANSLATIONS[key] ?? {};
-    for (const locale of SUPPORTED_LOCALES) {
-      const value = translations[locale as keyof typeof translations];
-      if (value) {
-        current[locale] = value;
-      }
-    }
-    TRANSLATIONS[key] = current;
-  }
-}
-
-mergeCentralTranslations();
-
-const LOCALE_SET = new Set<string>(SUPPORTED_LOCALES);
-
-export function getLocaleCoverage() {
-  const knownKeys = new Set<string>();
-  for (const locale of SUPPORTED_LOCALES) {
-    const map = CENTRAL_TRANSLATION_REGISTRY;
-    for (const key of Object.keys(map)) {
-      knownKeys.add(key);
-    }
-    for (const key of Object.keys(TRANSLATIONS)) {
-      knownKeys.add(key);
-    }
-  }
-  const coverage: Record<string, { missing: string[] }> = {};
-  for (const locale of SUPPORTED_LOCALES) {
-    const missing = [...knownKeys].filter((key) => !(TRANSLATIONS[key]?.[locale] ?? CENTRAL_TRANSLATION_REGISTRY[key]?.[locale]));
-    coverage[locale] = { missing };
-  }
-  return coverage;
-}
-
-export function hasCompleteLocaleCoverage() {
-  return Object.values(getLocaleCoverage()).every((entry) => entry.missing.length === 0);
-}
+} as const;;
 
 export function resolveLocaleText(key: string, locale: Locale): string {
-  const legacyValue = TRANSLATIONS[key]?.[locale];
-  if (legacyValue) return legacyValue;
-  const centralValue = CENTRAL_TRANSLATION_REGISTRY[key]?.[locale];
-  if (centralValue) return centralValue;
-  const fallback = CENTRAL_TRANSLATION_REGISTRY[key]?.en ?? TRANSLATIONS[key]?.en ?? key;
-  return fallback;
+  return CENTRAL_TRANSLATION_REGISTRY[key]?.[locale] ?? CENTRAL_TRANSLATION_REGISTRY[key]?.en ?? key;
 }
 
 export function resolveStatusLabel(status: string, locale: Locale): string {
@@ -123,7 +94,19 @@ export function resolveStatusLabel(status: string, locale: Locale): string {
 
 export function resolveAssetTypeLabel(type: string, locale: Locale): string {
   const normalized = String(type || '').toLowerCase();
-  return ASSET_TYPE_TRANSLATIONS[normalized as keyof typeof ASSET_TYPE_TRANSLATIONS]?.[locale] ?? type || 'Other';
+  return ASSET_TYPE_TRANSLATIONS[normalized as keyof typeof ASSET_TYPE_TRANSLATIONS]?.[locale] ?? type ?? 'Other';
 }
 
-export const localeCompliance = { supported: [...SUPPORTED_LOCALES], rtl: ['ar'], hasCompleteCoverage: hasCompleteLocaleCoverage() };
+export function getLocaleCoverage(locales: readonly Locale[]) {
+  const keys = Object.keys(CENTRAL_TRANSLATION_REGISTRY);
+  return Object.fromEntries(
+    locales.map((locale) => [
+      locale,
+      { missing: keys.filter((key) => !CENTRAL_TRANSLATION_REGISTRY[key]?.[locale]) },
+    ]),
+  ) as Record<Locale, { missing: string[] }>;
+}
+
+export function hasCompleteLocaleCoverage(locales: readonly Locale[]) {
+  return locales.every((locale) => getLocaleCoverage([locale])[locale].missing.length === 0);
+}
