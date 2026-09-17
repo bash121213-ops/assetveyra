@@ -1,8 +1,9 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import { I18nText, LanguageSelect } from '@/components/LocaleShell';
 
-export default function SiteChrome({ children }: { children?: React.ReactNode }) {
+export default function SiteChrome({ children }: { children?: ReactNode }) {
   return <>
     <header className="av-final-header">
       <a className="av-final-brand" href="/">ASSETVEYRA</a>
