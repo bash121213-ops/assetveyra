@@ -157,7 +157,7 @@ const result = {
   registryKeys: registry.size,
   usedStaticKeys: used.size,
   missingCount: missing.length,
-  missing: missing.slice(0, 5),
+  missing: missing.map((item) => item.locale ? `${item.key} [${item.locale}]` : item.key),
   untranslatedCount: untranslated.length,
   duplicateKeyCount: duplicates.length,
   dynamicStatusOrAssetTypeExpressions: dynamic.length,
