@@ -17,7 +17,7 @@ export default async function OpportunitiesPage(){
   const s=await createClient();
   const {data:{user}}=await s.auth.getUser();
   const {data:opportunities,error:opportunityError}=await s.from('public_opportunities').select('id,slug,status,investment_thesis,structure,minimum_ticket,target_return,asset_id').order('published_at',{ascending:false});
-  let assets:Asset[]=[];let assetError=null;let imageMap=new Map<string,Awaited<ReturnType<typeof getPublishedAssetImages>> extends Map<string,infer T>?T:never[]>();
+  let assets:Asset[]=[];let assetError=null;let imageMap:Awaited<ReturnType<typeof getPublishedAssetImages>>=new Map();
   if(!opportunityError&&opportunities?.length){
     const assetIds=(opportunities as Opportunity[]).map(item=>item.asset_id).filter(Boolean);
     if(assetIds.length){
