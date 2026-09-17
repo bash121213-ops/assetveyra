@@ -3,8 +3,6 @@
 import { FormEvent, useState } from 'react';
 import { I18nText, useLocale } from '@/components/LocaleShell';
 import { translate } from '@/lib/i18n';
-import '@/lib/i18nLegalConsultation';
-
 export default function LegalConsultationPage() {
   const locale = useLocale();
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
