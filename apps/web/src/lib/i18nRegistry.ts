@@ -151,6 +151,7 @@ const BASE_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   'Asset images': { en: 'Asset images', ar: 'صور الأصل', zh: '资产图片', es: 'Imágenes del activo', fr: 'Images du bien' },
   'Upload images': { en: 'Upload images', ar: 'رفع الصور', zh: '上传图片', es: 'Subir imágenes', fr: 'Télécharger des images' },
   'Main image': { en: 'Main image', ar: 'الصورة الرئيسية', zh: '主图', es: 'Imagen principal', fr: 'Image principale' },
+  'AssetVeyra is a marketplace, not an investment advisor.': { en: 'AssetVeyra is a marketplace, not an investment advisor.', ar: 'AssetVeyra منصة لعرض الفرص وتنسيق المعاملات وليست مستشارًا استثماريًا.', zh: 'AssetVeyra 是机会展示和交易协调平台，不是投资顾问。', es: 'AssetVeyra es una plataforma de oportunidades y coordinación de transacciones, no un asesor de inversiones.', fr: 'AssetVeyra est une plateforme d’opportunités et de coordination des transactions, et non un conseiller en investissement.' },
 };
 
 export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
