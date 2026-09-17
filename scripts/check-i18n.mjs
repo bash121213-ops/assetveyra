@@ -155,12 +155,10 @@ const result = {
   registryKeys: registry.size,
   usedStaticKeys: used.size,
   missingCount: missing.length,
-  missing: missing.slice(0, 100),
+  missing: missing.slice(0, 200),
   untranslatedCount: untranslated.length,
-  untranslated: untranslated.slice(0, 50),
   duplicateKeyCount: duplicates.length,
-  duplicateKeys: duplicates.slice(0, 50),
-  dynamicStatusOrAssetTypeExpressions: dynamic,
+  dynamicStatusOrAssetTypeExpressions: dynamic.length,
   sideEffectI18nImports: sideEffectImports,
 };
 
