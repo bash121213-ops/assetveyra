@@ -114,7 +114,7 @@ export default function AssetImageUploader({ inputName = 'images' }: { inputName
   const remaining = MAX_IMAGES - images.length;
 
   return (
-    <div className="full" style={{ display: 'grid', gap: 14 }}>
+    <div className="full" style={{ display: 'grid', gap: 16 }}>
       <div
         role="button"
         tabIndex={0}
@@ -136,17 +136,19 @@ export default function AssetImageUploader({ inputName = 'images' }: { inputName
         }}
         onDrop={onDrop}
         style={{
+          position: 'relative',
           border: `1px dashed ${dragging ? 'var(--text)' : 'var(--border)'}`,
-          borderRadius: 18,
-          padding: '30px 22px',
-          minHeight: 190,
+          borderRadius: 20,
+          padding: '34px 24px',
+          minHeight: 220,
           display: 'grid',
           placeItems: 'center',
           textAlign: 'center',
           background: dragging ? 'var(--surface)' : 'transparent',
-          cursor: 'pointer',
-          transition: 'border-color 160ms ease, background 160ms ease',
+          cursor: busy ? 'wait' : 'pointer',
+          transition: 'border-color 160ms ease, background 160ms ease, transform 160ms ease',
           outline: 'none',
+          opacity: busy ? 0.82 : 1,
         }}
       >
         <input
@@ -157,37 +159,71 @@ export default function AssetImageUploader({ inputName = 'images' }: { inputName
           multiple
           onChange={onChange}
           tabIndex={-1}
+          disabled={busy || remaining === 0}
           style={{ position: 'absolute', width: 1, height: 1, opacity: 0, pointerEvents: 'none' }}
         />
-        <div style={{ display: 'grid', justifyItems: 'center', gap: 10, maxWidth: 620 }}>
+
+        <div style={{ display: 'grid', justifyItems: 'center', gap: 12, maxWidth: 640 }}>
           <div
             aria-hidden="true"
             style={{
-              width: 52,
-              height: 52,
-              borderRadius: 14,
+              width: 58,
+              height: 58,
+              borderRadius: 16,
               border: '1px solid var(--border)',
               display: 'grid',
               placeItems: 'center',
-              fontSize: 25,
+              fontSize: 28,
+              lineHeight: 1,
               background: 'var(--surface)',
             }}
           >
             +
           </div>
-          <strong style={{ fontSize: 18 }}><I18nText id="Property images" /></strong>
-          <div style={{ color: 'var(--muted)', lineHeight: 1.6 }}>
-            <I18nText id="Drag and drop images here, or click to choose files." />
+          <div style={{ display: 'grid', gap: 5 }}>
+            <strong style={{ fontSize: 19, letterSpacing: '-0.01em' }}>
+              <I18nText id="Property images" />
+            </strong>
+            <span style={{ color: 'var(--muted)', lineHeight: 1.6 }}>
+              <I18nText id="Drag and drop images here, or click to choose files." />
+            </span>
           </div>
-          <div style={{ color: 'var(--muted)', fontSize: 12 }}>
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              minHeight: 32,
+              padding: '0 11px',
+              border: '1px solid var(--border)',
+              borderRadius: 999,
+              color: 'var(--muted)',
+              fontSize: 12,
+            }}
+          >
             JPEG, PNG or WebP · {remaining} {remaining === 1 ? 'slot' : 'slots'} remaining · max 10 MB per image
-          </div>
+          </span>
         </div>
       </div>
 
-      <small style={{ color: 'var(--muted)' }}>
-        <I18nText id="Up to 20 images. The first image is the main image. Images are compressed before upload." />
-      </small>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 12,
+          flexWrap: 'wrap',
+          padding: '0 2px',
+        }}
+      >
+        <small style={{ color: 'var(--muted)', lineHeight: 1.5 }}>
+          <I18nText id="Up to 20 images. The first image is the main image. Images are compressed before upload." />
+        </small>
+        {!!images.length && (
+          <small style={{ color: 'var(--muted)', whiteSpace: 'nowrap' }}>
+            {images.length}/20 <I18nText id="images" />
+          </small>
+        )}
+      </div>
 
       {busy && (
         <div style={{ display: 'grid', gap: 7 }} role="status" aria-live="polite">
@@ -205,40 +241,57 @@ export default function AssetImageUploader({ inputName = 'images' }: { inputName
       )}
 
       {!!images.length && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(180px,1fr))', gap: 12 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(190px,1fr))', gap: 14 }}>
           {images.map((image, index) => (
             <div
               key={`${image.name}-${index}`}
               style={{
                 overflow: 'hidden',
-                border: '1px solid var(--border)',
-                borderRadius: 16,
+                border: `1px solid ${index === 0 ? 'var(--text)' : 'var(--border)'}`,
+                borderRadius: 18,
                 background: 'var(--surface)',
               }}
             >
-              {image.preview ? (
-                <img
-                  src={image.preview}
-                  alt={image.name}
-                  style={{ width: '100%', aspectRatio: '4 / 3', objectFit: 'cover', display: 'block' }}
-                />
-              ) : (
-                <div
-                  role="alert"
-                  style={{ aspectRatio: '4 / 3', display: 'grid', placeItems: 'center', color: 'var(--muted)', fontSize: 12 }}
+              <div style={{ position: 'relative' }}>
+                {image.preview ? (
+                  <img
+                    src={image.preview}
+                    alt={image.name}
+                    style={{ width: '100%', aspectRatio: '4 / 3', objectFit: 'cover', display: 'block' }}
+                  />
+                ) : (
+                  <div
+                    role="alert"
+                    style={{ aspectRatio: '4 / 3', display: 'grid', placeItems: 'center', color: 'var(--muted)', fontSize: 12 }}
+                  >
+                    <I18nText id="Error" />
+                  </div>
+                )}
+                <span
+                  style={{
+                    position: 'absolute',
+                    top: 10,
+                    insetInlineStart: 10,
+                    padding: '5px 8px',
+                    borderRadius: 999,
+                    background: 'var(--surface)',
+                    border: '1px solid var(--border)',
+                    fontSize: 10,
+                    fontWeight: 600,
+                    letterSpacing: '.04em',
+                    textTransform: 'uppercase',
+                  }}
                 >
-                  <I18nText id="Error" />
-                </div>
-              )}
+                  {index === 0 ? <I18nText id="Main image" /> : <I18nText id="Gallery image" />}
+                </span>
+              </div>
 
-              <div style={{ padding: 10, display: 'grid', gap: 7 }}>
+              <div style={{ padding: 12, display: 'grid', gap: 8 }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-                  <strong style={{ fontSize: 11, letterSpacing: '.04em', textTransform: 'uppercase' }}>
-                    {index === 0 ? <I18nText id="Main image" /> : <I18nText id="Gallery image" />}
-                  </strong>
                   <span style={{ color: 'var(--muted)', fontSize: 11 }}>{index + 1}/{images.length}</span>
+                  <span style={{ color: 'var(--muted)', fontSize: 11 }}>WebP</span>
                 </div>
-                <div style={{ fontSize: 11, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <div style={{ fontSize: 11, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={image.name}>
                   {image.name}
                 </div>
                 {image.error && (
@@ -246,14 +299,14 @@ export default function AssetImageUploader({ inputName = 'images' }: { inputName
                     <I18nText id={image.error} />
                   </small>
                 )}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 5 }}>
-                  <button type="button" className="button" disabled={index === 0} onClick={() => move(index, -1)}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6 }}>
+                  <button type="button" className="button" disabled={index === 0 || busy} onClick={() => move(index, -1)}>
                     <I18nText id="Up" />
                   </button>
-                  <button type="button" className="button" disabled={index === images.length - 1} onClick={() => move(index, 1)}>
+                  <button type="button" className="button" disabled={index === images.length - 1 || busy} onClick={() => move(index, 1)}>
                     <I18nText id="Down" />
                   </button>
-                  <button type="button" className="button" onClick={() => remove(index)}>
+                  <button type="button" className="button" disabled={busy} onClick={() => remove(index)}>
                     <I18nText id="Remove" />
                   </button>
                 </div>
