@@ -75,7 +75,7 @@ test('rejects subtype mismatch', () => {
 });
 
 test('rejects short descriptions', () => {
-  assert.throws(() => parsePropertyDetails(form({ subtype: 'villa', common: { description: 'too short' }, details: {} }), 'residential'), /property_description_required/);
+  assert.throws(() => parsePropertyDetails(form({ subtype: 'villa', common: { description: 'too short' }, details: {} }), 'residential'), /invalid_property_details:common\.description/);
 });
 
 test('rejects invalid asset types with otherwise valid subtype', () => {
