@@ -50,6 +50,19 @@ for (const [file, source] of Object.entries(files)) {
     if (!sourcesByKey.has(key)) sourcesByKey.set(key, []);
     sourcesByKey.get(key).push(...defs);
   }
+  if (file === 'apps/web/src/lib/i18nBase.ts') {
+    const rawStart = source.indexOf('const RAW_BASE_TRANSLATIONS');
+    const objectStart = source.indexOf('=', rawStart) + 1;
+    const objectEnd = source.indexOf(';\\n\\nexport const BASE_TRANSLATIONS', objectStart);
+    if (rawStart >= 0 && objectStart > 0 && objectEnd > objectStart) {
+      const raw = JSON.parse(source.slice(objectStart, objectEnd).trim());
+      for (const [key, values] of Object.entries(raw)) {
+        if (!sourcesByKey.has(key)) sourcesByKey.set(key, []);
+        sourcesByKey.get(key).push({ file, values });
+      }
+    }
+  }
+
   if (file === 'apps/web/src/lib/i18nQualifiedInvestors.ts') {
     const sRe = /\bs\(\s*(['"])((?:\\.|[^'"])*)\1\s*,\s*(['"])((?:\\.|[^'"])*)\3\s*,\s*(['"])((?:\\.|[^'"])*)\5\s*,\s*(['"])((?:\\.|[^'"])*)\7\s*,\s*(['"])((?:\\.|[^'"])*)\9\s*\)/g;
     for (const m of source.matchAll(sRe)) {
