@@ -1,5 +1,8 @@
 import { notFound, redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { I18nText } from '@/components/LocaleShell';
+import { translate } from '@/lib/i18n';
+import '@/lib/i18nWorkspace';
 
 const SELLER_ROLES = ['seller_admin', 'operations_admin', 'deal_manager', 'platform_admin'] as const;
 
@@ -376,41 +379,41 @@ export default async function InterestDetailPage({ params }: { params: Promise<{
 
   return (
     <main className="app-shell">
-      <header className="app-header"><a className="brand" href="/">ASSETVEYRA</a><nav><a href="/workspace">Workspace</a><a href="/opportunities">Marketplace</a></nav></header>
-      <section className="page-head"><div className="eyebrow">INVESTMENT INTEREST</div><h1>{(i as any).opportunities?.assets?.title || 'Opportunity'}</h1><p>Pipeline state: <strong>{i.status}</strong>. Each transaction stage is gated by authorization and the required evidence.</p></section>
+      <header className="app-header"><a className="brand" href="/">ASSETVEYRA</a><nav><a href="/workspace"><I18nText id="Workspace" /></a><a href="/opportunities"><I18nText id="Marketplace" /></a></nav></header>
+      <section className="page-head"><div className="eyebrow"><I18nText id="Investment interest" /></div><h1>{(i as any).opportunities?.assets?.title || 'Opportunity'}</h1><p><I18nText id="Pipeline state" />: <strong>{i.status}</strong>. <I18nText id="Each transaction stage is gated by authorization and the required evidence." /></p></section>
 
       <section className="panel">
         <div className="detail-grid">
           <section>
             <div className="facts">
-              <div><span>Asking price</span><strong>{(i as any).opportunities?.assets?.asking_price ? `${(i as any).opportunities.assets.currency || ''} ${Number((i as any).opportunities.assets.asking_price).toLocaleString()}` : '—'}</strong></div>
-              <div><span>Interest opened</span><strong>{new Date(i.created_at).toLocaleDateString()}</strong></div>
-              <div><span>Offers</span><strong>{offers?.length || 0}</strong></div>
+              <div><span><I18nText id="Asking price" /></span><strong>{(i as any).opportunities?.assets?.asking_price ? `${(i as any).opportunities.assets.currency || ''} ${Number((i as any).opportunities.assets.asking_price).toLocaleString()}` : '—'}</strong></div>
+              <div><span><I18nText id="Interest opened" /></span><strong>{new Date(i.created_at).toLocaleDateString()}</strong></div>
+              <div><span><I18nText id="Offers" /></span><strong>{offers?.length || 0}</strong></div>
             </div>
 
             <div style={{ marginTop: 35 }}>
-              <div className="eyebrow">TRANSACTION GATES</div>
+              <div className="eyebrow"><I18nText id="Transaction gates" /></div>
               <div className="table">
-                {isSeller && i.status === 'interest' && <div className="row"><strong>Qualification</strong><span>Initial investor review</span><span>Required</span><form action={qualifyInterest}><input type="hidden" name="interest_id" value={id}/><button className="button primary" type="submit">Qualify investor</button></form></div>}
-                {isSeller && i.status === 'qualified' && <div className="row"><strong>NDA</strong><span>Request controlled disclosure</span><span>Required</span><form action={requestNda}><input type="hidden" name="interest_id" value={id}/><button className="button primary" type="submit">Request NDA</button></form></div>}
-                {isInvestor && (i.status === 'nda_pending' || i.status === 'nda_signed') && <div className="row"><strong>NDA / data room</strong><span>{nda ? (dataRoomReady ? 'NDA accepted and data-room access verified' : 'NDA accepted; waiting for data-room access') : 'Accept the NDA to continue'}</span><span>{nda ? 'Ready' : 'Blocked'}</span>{nda && <form action={advanceAfterNda}><input type="hidden" name="interest_id" value={id}/><button className="button primary" type="submit">{i.status === 'nda_pending' ? 'Record NDA signed' : 'Enter data room'}</button></form>}</div>}
-                {isInvestor && i.status === 'data_room' && <div className="row"><strong>Due diligence</strong><span>Start the formal diligence case</span><span>{dataRoomReady ? 'Ready' : 'Blocked'}</span>{dataRoomReady && <form action={startDiligence}><input type="hidden" name="interest_id" value={id}/><button className="button primary" type="submit">Start diligence</button></form>}</div>}
+                {isSeller && i.status === 'interest' && <div className="row"><strong><I18nText id="Qualification" /></strong><span><I18nText id="Initial investor review" /></span><span><I18nText id="Required" /></span><form action={qualifyInterest}><input type="hidden" name="interest_id" value={id}/><button className="button primary" type="submit"><I18nText id="Qualify investor" /></button></form></div>}
+                {isSeller && i.status === 'qualified' && <div className="row"><strong>NDA</strong><span><I18nText id="Request controlled disclosure" /></span><span><I18nText id="Required" /></span><form action={requestNda}><input type="hidden" name="interest_id" value={id}/><button className="button primary" type="submit"><I18nText id="Request NDA" /></button></form></div>}
+                {isInvestor && (i.status === 'nda_pending' || i.status === 'nda_signed') && <div className="row"><strong><I18nText id="NDA / data room" /></strong><span>{nda ? (dataRoomReady ? translate('NDA accepted and data-room access verified', locale) : translate('NDA accepted; waiting for data-room access', locale)) : translate('Accept the NDA to continue', locale)}</span><span>{nda ? <I18nText id="Ready" /> : <I18nText id="Blocked" />}</span>{nda && <form action={advanceAfterNda}><input type="hidden" name="interest_id" value={id}/><button className="button primary" type="submit">{i.status === 'nda_pending' ? 'Record NDA signed' : 'Enter data room'}</button></form>}</div>}
+                {isInvestor && i.status === 'data_room' && <div className="row"><strong><I18nText id="Due diligence" /></strong><span><I18nText id="Start the formal diligence case" /></span><span>{dataRoomReady ? <I18nText id="Ready" /> : <I18nText id="Blocked" />}</span>{dataRoomReady && <form action={startDiligence}><input type="hidden" name="interest_id" value={id}/><button className="button primary" type="submit"><I18nText id="Start diligence" /></button></form>}</div>}
               </div>
             </div>
 
             <div style={{ marginTop: 35 }}>
-              <div className="eyebrow">OFFERS</div>
+              <div className="eyebrow"><I18nText id="Offers" /></div>
               <div className="table">
-                {(offers ?? []).map((o: any) => <div className="row" key={o.id}><strong>{o.currency} {Number(o.amount).toLocaleString()}</strong><span>{o.status}</span><span>{new Date(o.created_at).toLocaleDateString()}</span><span>{o.expires_at ? new Date(o.expires_at).toLocaleDateString() : 'No expiry'}</span>{isSeller && (i.status === 'offer' || i.status === 'negotiation') && ['submitted', 'countered'].includes(o.status) && <form action={acceptOffer}><input type="hidden" name="interest_id" value={id}/><input type="hidden" name="offer_id" value={o.id}/><button className="button primary" type="submit">Accept & open deal</button></form>}</div>)}
-                {!(offers?.length) && <div className="empty-state"><strong>No offers submitted.</strong><span>Formal offers become available only after diligence has started.</span></div>}
+                {(offers ?? []).map((o: any) => <div className="row" key={o.id}><strong>{o.currency} {Number(o.amount).toLocaleString()}</strong><span>{o.status}</span><span>{new Date(o.created_at).toLocaleDateString()}</span><span>{o.expires_at ? new Date(o.expires_at).toLocaleDateString() : translate('No expiry', locale)}</span>{isSeller && (i.status === 'offer' || i.status === 'negotiation') && ['submitted', 'countered'].includes(o.status) && <form action={acceptOffer}><input type="hidden" name="interest_id" value={id}/><input type="hidden" name="offer_id" value={o.id}/><button className="button primary" type="submit"><I18nText id="Accept & open deal" /></button></form>}</div>)}
+                {!(offers?.length) && <div className="empty-state"><strong><I18nText id="No offers submitted." /></strong><span><I18nText id="Formal offers become available only after diligence has started." /></span></div>}
               </div>
             </div>
           </section>
 
           <aside className="deal-gate">
-            <div className="eyebrow">FORMAL OFFER</div><h2>Submit an offer</h2>
-            <p>Offers are gated until the investor reaches the diligence stage. This prevents a commercial offer from bypassing qualification, NDA and controlled disclosure.</p>
-            {isInvestor && (i.status === 'diligence' || i.status === 'offer') ? <form action={submitOffer} className="form-grid" style={{ gridTemplateColumns: '1fr' }}><input type="hidden" name="interest_id" value={id}/><label>Amount<input name="amount" type="number" min="1" step="0.01" required/></label><label>Currency<input name="currency" maxLength={3} defaultValue={(i as any).opportunities?.assets?.currency || 'USD'}/></label><label>Commercial terms<textarea name="terms" rows={6} placeholder="Key conditions, due diligence conditions, target closing…"/></label><button className="button primary" type="submit">Submit formal offer</button></form> : <div className="empty-state"><strong>Offer gate locked</strong><span>Current stage: {i.status}. Complete the required transaction gates first.</span></div>}
+            <div className="eyebrow"><I18nText id="Formal offer" /></div><h2><I18nText id="Submit an offer" /></h2>
+            <p><I18nText id="Offers are gated until the investor reaches the diligence stage. This prevents a commercial offer from bypassing qualification, NDA and controlled disclosure." /></p>
+            {isInvestor && (i.status === 'diligence' || i.status === 'offer') ? <form action={submitOffer} className="form-grid" style={{ gridTemplateColumns: '1fr' }}><input type="hidden" name="interest_id" value={id}/><label><I18nText id="Amount" /><input name="amount" type="number" min="1" step="0.01" required/></label><label><I18nText id="Currency" /><input name="currency" maxLength={3} defaultValue={(i as any).opportunities?.assets?.currency || 'USD'}/></label><label><I18nText id="Commercial terms" /><textarea name="terms" rows={6} placeholder={translate('Key conditions, due diligence conditions, target closing…', locale)}/></label><button className="button primary" type="submit"><I18nText id="Submit formal offer" /></button></form> : <div className="empty-state"><strong><I18nText id="Offer gate locked" /></strong><span><I18nText id="Current stage" />: {i.status}. <I18nText id="Complete the required transaction gates first." /></span></div>}
           </aside>
         </div>
       </section>
