@@ -1,6 +1,6 @@
-import { TRANSLATIONS, type Locale } from '@/lib/i18n';
+import type { Locale } from '@/lib/i18n';
 
-const workspaceEntries: Record<string, Record<Locale, string>> = {
+export const WORKSPACE_TRANSLATIONS: Record<string, Record<Locale, string>> = {
   'Add Property': {
     en: 'Add Property',
     ar: 'إضافة عقار',
@@ -9,7 +9,3 @@ const workspaceEntries: Record<string, Record<Locale, string>> = {
     fr: 'Ajouter un bien',
   },
 };
-
-for (const [key, value] of Object.entries(workspaceEntries)) {
-  TRANSLATIONS[key] = value;
-}
