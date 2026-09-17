@@ -11,8 +11,8 @@ export default async function InterestsPage() {
   const ids = (members ?? []).map((m: any) => m.organization_id);
   const isInvestor = (members ?? []).some((m: any) => m.organizations?.type === 'investor');
 
-  const { data: items } = isInvestor && ids.length
-    ? await s.from('investor_interests').select('id,status,created_at,updated_at,opportunities(id,slug,owner_organization_id,investment_thesis,assets(title,city,country_code))').in('investor_organization_id', ids).order('updated_at', { ascending: false })
+  const { data: items } = ids.length
+    ? await s.from('investor_interests').select('id,status,created_at,updated_at,investor_organization_id,opportunities(id,slug,owner_organization_id,investment_thesis,assets(title,city,country_code))').in('investor_organization_id', ids).order('updated_at', { ascending: false })
     : { data: [] as any[] };
 
   const { data: ownedOpps } = ids.length
@@ -41,7 +41,7 @@ export default async function InterestsPage() {
       <p><I18nText id="One place to track opportunity interest and its controlled progression toward a transaction."/></p>
     </section>
 
-    {isInvestor && <section className="panel">
+    {(isInvestor || !!items?.length) && <section className="panel">
       <div className="panel-title"><div><div className="eyebrow"><I18nText id="INVESTOR"/></div><h2><I18nText id="Opportunities I requested"/></h2></div></div>
       <div className="table">{(items ?? []).map((i: any) => <a className="row" href={`/workspace/interests/${i.id}`} key={`i-${i.id}`}><strong>{i.opportunities?.assets?.title || <I18nText id="Opportunity"/>}</strong><span>{[i.opportunities?.assets?.city, i.opportunities?.assets?.country_code].filter(Boolean).join(', ') || '—'}</span><span>{i.status}</span><span><I18nText id="Open →"/></span></a>)}{!items?.length && <div className="empty-state"><strong><I18nText id="No registered interests"/></strong><span><I18nText id="Open the marketplace to review available opportunities."/></span><a className="button secondary" href="/opportunities"><I18nText id="Marketplace"/></a></div>}</div>
     </section>}
@@ -51,6 +51,6 @@ export default async function InterestsPage() {
       <div className="table">{sellerItems.map((i: any) => <a className="row" href={`/workspace/interests/${i.id}`} key={`s-${i.id}`}><strong>{i.opportunities?.assets?.title || <I18nText id="Opportunity"/>}</strong><span><I18nText id="Investor organization"/></span><span>{i.status}</span><span><I18nText id="Review →"/></span></a>)}</div>
     </section>}
 
-    {!isInvestor && !sellerItems?.length && <section className="panel"><div className="empty-state"><strong><I18nText id="No interests available for this account."/></strong><span><I18nText id="Interest records appear here when your organization participates in an opportunity."/></span></div></section>}
+    {!items?.length && !sellerItems?.length && <section className="panel"><div className="empty-state"><strong><I18nText id="No interests available for this account."/></strong><span><I18nText id="Interest records appear here when your organization participates in an opportunity."/></span><a className="button secondary" href="/opportunities"><I18nText id="Marketplace"/></a></div></section>}
   </main>;
 }
