@@ -10,6 +10,11 @@ const MAX_BYTES = 10 * 1024 * 1024;
 
 type PreparedImage = { file: File; preview: string; name: string; error?: string };
 
+type AssetImageUploaderProps = {
+  inputName?: string | null;
+  onPreparedFiles?: (files: File[]) => void;
+};
+
 function compressImage(file: File): Promise<File> {
   return new Promise((resolve, reject) => {
     if (!file.type.startsWith('image/')) return reject(new Error('unsupported'));
@@ -39,12 +44,22 @@ function compressImage(file: File): Promise<File> {
   });
 }
 
-export default function AssetImageUploader({ inputName = 'images' }: { inputName?: string }) {
+export default function AssetImageUploader({ inputName = 'images', onPreparedFiles }: AssetImageUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [images, setImages] = useState<PreparedImage[]>([]);
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState(0);
   const [message, setMessage] = useState('');
+
+  function syncFiles(next: PreparedImage[]) {
+    const validFiles = next.filter((item) => !item.error).map((item) => item.file);
+    if (inputRef.current) {
+      const dt = new DataTransfer();
+      validFiles.forEach((file) => dt.items.add(file));
+      inputRef.current.files = dt.files;
+    }
+    onPreparedFiles?.(validFiles);
+  }
 
   async function onChange(event: ChangeEvent<HTMLInputElement>) {
     const files = Array.from(event.target.files ?? []);
@@ -68,11 +83,7 @@ export default function AssetImageUploader({ inputName = 'images' }: { inputName
     }
     const next = [...images, ...prepared];
     setImages(next);
-    if (inputRef.current) {
-      const dt = new DataTransfer();
-      next.filter((item) => !item.error).forEach((item) => dt.items.add(item.file));
-      inputRef.current.files = dt.files;
-    }
+    syncFiles(next);
     setBusy(false);
   }
 
@@ -81,18 +92,14 @@ export default function AssetImageUploader({ inputName = 'images' }: { inputName
     const removed = images[index];
     if (removed?.preview) URL.revokeObjectURL(removed.preview);
     setImages(next);
-    if (inputRef.current) {
-      const dt = new DataTransfer();
-      next.filter((item) => !item.error).forEach((item) => dt.items.add(item.file));
-      inputRef.current.files = dt.files;
-    }
+    syncFiles(next);
   }
 
   return (
     <div className="full" style={{ display: 'grid', gap: 10 }}>
       <label>
         <I18nText id="Property images" />
-        <input ref={inputRef} name={inputName} type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={onChange} />
+        <input ref={inputRef} {...(inputName ? { name: inputName } : {})} type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={onChange} />
       </label>
       <small style={{ color: 'var(--muted)' }}><I18nText id="Up to 20 images. Images are compressed before upload." /></small>
       {busy && (
