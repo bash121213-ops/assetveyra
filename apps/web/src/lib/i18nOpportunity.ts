@@ -1,6 +1,6 @@
-import { TRANSLATIONS, type Locale } from '@/lib/i18n';
+import type { Locale } from '@/lib/i18n';
 
-const entries: Record<string, Record<Locale, string>> = {
+export const OPPORTUNITY_TRANSLATIONS: Record<string, Record<Locale, string>> = {
   'Opportunity details': { en: 'Opportunity details', ar: 'تفاصيل الفرصة', zh: '机会详情', es: 'Detalles de la oportunidad', fr: 'Détails de l’opportunité' },
   'Property gallery': { en: 'Property gallery', ar: 'معرض صور العقار', zh: '物业图片库', es: 'Galería del inmueble', fr: 'Galerie du bien' },
   'View all property images': { en: 'View all property images', ar: 'عرض جميع صور العقار', zh: '查看全部 صور العقار', es: 'Ver todas las imágenes del inmueble', fr: 'Voir toutes les images du bien' },
@@ -30,5 +30,3 @@ const entries: Record<string, Record<Locale, string>> = {
   'Additional ownership, legal, financial or technical material may require qualification, confidentiality terms or Data Room access.': { en: 'Additional ownership, legal, financial or technical material may require qualification, confidentiality terms or Data Room access.', ar: 'قد تتطلب معلومات الملكية أو القانونية أو المالية أو الفنية الإضافية التأهيل أو شروط السرية أو الوصول إلى غرفة البيانات.', zh: '更多所有权、法律、财务或技术资料可能需要资格审查、保密条款或数据室访问权限。', es: 'La información adicional de propiedad, legal, financiera o técnica puede requerir cualificación, confidencialidad o acceso a la sala de datos.', fr: 'Les informations complémentaires relatives à la propriété, aux aspects juridiques, financiers ou techniques peuvent nécessiter une qualification, des conditions de confidentialité ou un accès à la data room.' },
   'Back to opportunities': { en: 'Back to opportunities', ar: 'العودة إلى الفرص', zh: '返回机会列表', es: 'Volver a oportunidades', fr: 'Retour aux opportunités' },
 };
-
-for (const [key, value] of Object.entries(entries)) TRANSLATIONS[key] = value;
