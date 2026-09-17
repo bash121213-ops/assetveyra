@@ -54,7 +54,7 @@ for (const [file, source] of Object.entries(files)) {
     const sRe = /\bs\(\s*(['"])((?:\\.|[^'"])*)\1\s*,\s*(['"])((?:\\.|[^'"])*)\3\s*,\s*(['"])((?:\\.|[^'"])*)\5\s*,\s*(['"])((?:\\.|[^'"])*)\7\s*,\s*(['"])((?:\\.|[^'"])*)\9\s*\)/g;
     for (const m of source.matchAll(sRe)) {
       const key = m[2];
-      const values = { en: m[4], ar: m[6], zh: m[8], es: m[10], fr: m[12] };
+      const values = { en: m[4], ar: m[6], zh: m[8], es: m[10], fr: m[10] };
       if (!sourcesByKey.has(key)) sourcesByKey.set(key, []);
       sourcesByKey.get(key).push({ file, values });
     }
