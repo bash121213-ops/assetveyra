@@ -2,7 +2,6 @@ import { notFound, redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { I18nText } from '@/components/LocaleShell';
 import { translate } from '@/lib/i18n';
-import '@/lib/i18nWorkspace';
 
 const SELLER_ROLES = ['seller_admin', 'operations_admin', 'deal_manager', 'platform_admin'] as const;
 
