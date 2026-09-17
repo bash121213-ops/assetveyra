@@ -29,7 +29,7 @@ export default async function InterestsPage() {
       <nav>
         <a href="/workspace"><I18nText id="Overview"/></a>
         <a href="/opportunities"><I18nText id="Marketplace"/></a>
-        {isInvestor && <a href="/workspace/interests"><I18nText id="My Interests"/></a>}
+        <a href="/workspace/interests"><I18nText id="My Interests"/></a>
         <a href="/workspace/deals"><I18nText id="Transactions"/></a>
         <form action="/logout" method="post"><button className="text-button"><I18nText id="Sign out"/></button></form>
       </nav>
