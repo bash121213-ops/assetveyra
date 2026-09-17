@@ -2,7 +2,6 @@ import { notFound, redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { I18nText } from '@/components/LocaleShell';
 import PublicAssetGallery from '@/components/PublicAssetGallery';
-import '@/lib/i18nOpportunity';
 import '../../opportunity-detail.css';
 
 const sectorKeys: Record<string, string> = {
