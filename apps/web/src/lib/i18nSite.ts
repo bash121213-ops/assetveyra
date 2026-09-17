@@ -102,12 +102,6 @@ export const SITE_TRANSLATIONS: Record<string, Record<Locale, string>> = {
   'Verification scope': { en:'Verification scope', ar:'نطاق التحقق', zh:'验证范围', es:'Alcance de la verificación', fr:'Périmètre de vérification' },
   'Verified does not mean guaranteed': { en:'Verified does not mean guaranteed', ar:'التوثيق لا يعني الضمان', zh:'已验证不代表保证', es:'Verificada no significa garantizada', fr:'Vérifiée ne signifie pas garantie' },
   'External market references': { en:'External market references', ar:'مراجع السوق الخارجية', zh:'外部市场参考', es:'Referencias del mercado externo', fr:'Références du marché externe' },
-  'Conflicts of Interest': { en:'Conflicts of Interest', ar:'تضارب المصالح', zh:'利益冲突', es:'Conflictos de intereses', fr:'Conflits d’intérêts' },
-  'Complaints': { en:'Complaints', ar:'الشكاوى', zh:'投诉', es:'Reclamaciones', fr:'Réclamations' },
-  'AML/KYC': { en:'AML/KYC', ar:'AML/KYC', zh:'AML/KYC', es:'AML/KYC', fr:'AML/KYC' },
-  'Privacy': { en:'Privacy', ar:'الخصوصية', zh:'隐私', es:'Privacidad', fr:'Confidentialité' },
-  'Terms': { en:'Terms', ar:'الشروط', zh:'条款', es:'Términos', fr:'Conditions' },
-  'Legal': { en:'Legal', ar:'قانوني', zh:'法律', es:'Legal', fr:'Juridique' },
   'Copyright': { en:'Copyright', ar:'حقوق النشر', zh:'版权', es:'Derechos de autor', fr:'Droits d’auteur' },
   'Kassab and Sons for Land and Real Estate Trading': { en:'Kassab and Sons for Land and Real Estate Trading', ar:'كساب وأبنائه لتجارة الأراضي والعقار', zh:'Kassab及子公司土地与房地产贸易', es:'Kassab y Hijos para el Comercio de Tierras e Inmuebles', fr:'Kassab et Fils pour le commerce des terrains et de l’immobilier' },
 };
