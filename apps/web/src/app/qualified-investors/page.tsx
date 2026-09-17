@@ -4,8 +4,6 @@ import { FormEvent, useState } from 'react';
 import Link from 'next/link';
 import { I18nText, useLocale } from '@/components/LocaleShell';
 import { createClient } from '@/lib/supabase/client';
-import '@/lib/i18nQualifiedInvestors';
-
 const option = (value: string, label: string) => ({ value, label });
 
 const investorTypes = [
