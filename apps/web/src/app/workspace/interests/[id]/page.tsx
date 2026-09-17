@@ -1,7 +1,8 @@
 import { notFound, redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { I18nText } from '@/components/LocaleShell';
-import { translate } from '@/lib/i18n';
+import { cookies } from 'next/headers';
+import { normalizeLocale, translate } from '@/lib/i18n';
 
 const SELLER_ROLES = ['seller_admin', 'operations_admin', 'deal_manager', 'platform_admin'] as const;
 
@@ -364,6 +365,7 @@ async function acceptOffer(formData: FormData) {
 export default async function InterestDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const { s, user, interest: i } = await getContext(id);
+  const locale = normalizeLocale((await cookies()).get('assetveyra-locale')?.value);
   const { data: offers } = await s.from('offers').select('id,amount,currency,status,expires_at,created_at,terms,submitted_by').eq('interest_id', id).order('created_at', { ascending: false });
 
   const ownerOrg = (i as any).opportunities?.owner_organization_id as string | undefined;
@@ -412,7 +414,7 @@ export default async function InterestDetailPage({ params }: { params: Promise<{
           <aside className="deal-gate">
             <div className="eyebrow"><I18nText id="Formal offer" /></div><h2><I18nText id="Submit an offer" /></h2>
             <p><I18nText id="Offers are gated until the investor reaches the diligence stage. This prevents a commercial offer from bypassing qualification, NDA and controlled disclosure." /></p>
-            {isInvestor && (i.status === 'diligence' || i.status === 'offer') ? <form action={submitOffer} className="form-grid" style={{ gridTemplateColumns: '1fr' }}><input type="hidden" name="interest_id" value={id}/><label><I18nText id="Amount" /><input name="amount" type="number" min="1" step="0.01" required/></label><label><I18nText id="Currency" /><input name="currency" maxLength={3} defaultValue={(i as any).opportunities?.assets?.currency || 'USD'}/></label><label><I18nText id="Commercial terms" /><textarea name="terms" rows={6} placeholder="Key conditions, due diligence conditions, target closing…"/></label><button className="button primary" type="submit"><I18nText id="Submit formal offer" /></button></form> : <div className="empty-state"><strong><I18nText id="Offer gate locked" /></strong><span><I18nText id="Current stage" />: {i.status}. <I18nText id="Complete the required transaction gates first." /></span></div>}
+            {isInvestor && (i.status === 'diligence' || i.status === 'offer') ? <form action={submitOffer} className="form-grid" style={{ gridTemplateColumns: '1fr' }}><input type="hidden" name="interest_id" value={id}/><label><I18nText id="Amount" /><input name="amount" type="number" min="1" step="0.01" required/></label><label><I18nText id="Currency" /><input name="currency" maxLength={3} defaultValue={(i as any).opportunities?.assets?.currency || 'USD'}/></label><label><I18nText id="Commercial terms" /><textarea name="terms" rows={6} placeholder={translate('Key conditions, due diligence conditions, target closing…', locale)}/></label><button className="button primary" type="submit"><I18nText id="Submit formal offer" /></button></form> : <div className="empty-state"><strong><I18nText id="Offer gate locked" /></strong><span><I18nText id="Current stage" />: {i.status}. <I18nText id="Complete the required transaction gates first." /></span></div>}
           </aside>
         </div>
       </section>
