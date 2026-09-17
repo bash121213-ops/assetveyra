@@ -1,0 +1,29 @@
+'use client';
+import { useEffect, useState } from 'react';
+import { I18nText } from '@/components/LocaleShell';
+import PropertyDetailsSummary from './PropertyDetailsSummary';
+
+type PreviewData={title:string;assetType:string;subtype:string;country:string;region:string;city:string;price:string;currency:string;summary:string;details:unknown;images:string[]};
+const initial:PreviewData={title:'',assetType:'',subtype:'',country:'',region:'',city:'',price:'',currency:'USD',summary:'',details:{},images:[]};
+
+export default function ListingPreview(){
+  const [data,setData]=useState<PreviewData>(initial);
+  useEffect(()=>{
+    const form=document.querySelector<HTMLFormElement>('form[data-listing-form]');
+    if(!form)return;
+    let urls:string[]=[];
+    const revoke=()=>{urls.forEach(url=>URL.revokeObjectURL(url));urls=[];};
+    const read=()=>{
+      const get=(name:string)=>form.querySelector<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>(`[name="${name}"]`)?.value??'';
+      let details:unknown={};try{details=JSON.parse(get('property_details')||'{}')}catch{details={};}
+      revoke();
+      const files=Array.from(form.querySelector<HTMLInputElement>('[name="images"]')?.files??[]);
+      urls=files.map(file=>URL.createObjectURL(file));
+      const common=details&&typeof details==='object'&&'common' in details&&typeof (details as {common?:unknown}).common==='object'?(details as {common:Record<string,unknown>}).common:{};
+      setData({title:get('title'),assetType:get('asset_type'),subtype:details&&typeof details==='object'&&'subtype' in details?String((details as {subtype?:unknown}).subtype??''):get('property_subtype'),country:get('country_code'),region:get('region'),city:get('city'),price:get('asking_price'),currency:get('currency'),summary:String(common.description??get('public_summary')),details,images:urls});
+    };
+    read();form.addEventListener('input',read);form.addEventListener('change',read);
+    return()=>{form.removeEventListener('input',read);form.removeEventListener('change',read);revoke();};
+  },[]);
+  return <aside className="panel" style={{display:'grid',gap:14}}><div className="eyebrow"><I18nText id="LIVE PREVIEW"/></div><h2>{data.title||<I18nText id="Listing title"/>}</h2>{data.images.length?<div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(120px,1fr))',gap:8}}>{data.images.map((src,index)=><div key={src} style={{position:'relative'}}><img src={src} alt="" style={{width:'100%',aspectRatio:'4 / 3',objectFit:'cover',borderRadius:10}}/>{index===0&&<strong style={{position:'absolute',top:6,left:6,background:'var(--surface)',padding:'4px 7px',borderRadius:6,fontSize:11}}><I18nText id="Main image"/></strong>}</div>)}</div>:<div className="empty-state"><span><I18nText id="No images selected yet."/></span></div>}<div className="facts"><div><span><I18nText id="Asset type"/></span><strong>{data.assetType||'—'}</strong></div><div><span><I18nText id="Property subtype"/></span><strong>{data.subtype||'—'}</strong></div><div><span><I18nText id="Location"/></span><strong>{[data.city,data.region,data.country].filter(Boolean).join(', ')||'—'}</strong></div><div><span><I18nText id="Asking price"/></span><strong>{data.price?`${data.currency||'USD'} ${Number(data.price).toLocaleString()}`:'—'}</strong></div></div><p>{data.summary||<I18nText id="Your public summary will appear here."/>}</p><PropertyDetailsSummary propertyDetails={data.details}/><p style={{color:'var(--muted)'}}><I18nText id="This preview uses the same submitted data model. Publication remains controlled by verification and compliance."/></p></aside>;
+}

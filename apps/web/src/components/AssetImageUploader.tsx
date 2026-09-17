@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, useRef, useState } from 'react';
+import { ChangeEvent, DragEvent, useRef, useState } from 'react';
 import { I18nText } from '@/components/LocaleShell';
 import '@/lib/i18nAssetImages';
 
@@ -34,7 +34,10 @@ function compressImage(file: File): Promise<File> {
         resolve(out);
       }, 'image/webp', 0.82);
     };
-    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('decode')); };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error('decode'));
+    };
     img.src = url;
   });
 }
@@ -45,15 +48,23 @@ export default function AssetImageUploader({ inputName = 'images' }: { inputName
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState(0);
   const [message, setMessage] = useState('');
+  const [dragging, setDragging] = useState(false);
 
-  async function onChange(event: ChangeEvent<HTMLInputElement>) {
-    const files = Array.from(event.target.files ?? []);
-    if (!files.length) return;
+  function sync(next: PreparedImage[]) {
+    if (!inputRef.current) return;
+    const dt = new DataTransfer();
+    next.filter((item) => !item.error).forEach((item) => dt.items.add(item.file));
+    inputRef.current.files = dt.files;
+  }
+
+  async function prepareFiles(files: File[]) {
+    if (!files.length || busy) return;
     const available = Math.max(0, MAX_IMAGES - images.length);
     const selected = files.slice(0, available);
     setBusy(true);
     setProgress(0);
     setMessage(files.length > available ? '20 images maximum.' : '');
+
     const prepared: PreparedImage[] = [];
     for (let index = 0; index < selected.length; index += 1) {
       const file = selected[index];
@@ -66,50 +77,240 @@ export default function AssetImageUploader({ inputName = 'images' }: { inputName
         setProgress(Math.round(((index + 1) / selected.length) * 100));
       }
     }
+
     const next = [...images, ...prepared];
     setImages(next);
-    if (inputRef.current) {
-      const dt = new DataTransfer();
-      next.filter((item) => !item.error).forEach((item) => dt.items.add(item.file));
-      inputRef.current.files = dt.files;
-    }
+    sync(next);
     setBusy(false);
+  }
+
+  async function onChange(event: ChangeEvent<HTMLInputElement>) {
+    await prepareFiles(Array.from(event.target.files ?? []));
+    event.target.value = '';
+  }
+
+  async function onDrop(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    setDragging(false);
+    await prepareFiles(Array.from(event.dataTransfer.files ?? []));
   }
 
   function remove(index: number) {
     const next = images.filter((_, i) => i !== index);
-    const removed = images[index];
-    if (removed?.preview) URL.revokeObjectURL(removed.preview);
+    if (images[index]?.preview) URL.revokeObjectURL(images[index].preview);
     setImages(next);
-    if (inputRef.current) {
-      const dt = new DataTransfer();
-      next.filter((item) => !item.error).forEach((item) => dt.items.add(item.file));
-      inputRef.current.files = dt.files;
-    }
+    sync(next);
   }
 
+  function move(index: number, delta: number) {
+    const target = index + delta;
+    if (target < 0 || target >= images.length) return;
+    const next = [...images];
+    [next[index], next[target]] = [next[target], next[index]];
+    setImages(next);
+    sync(next);
+  }
+
+  const remaining = MAX_IMAGES - images.length;
+
   return (
-    <div className="full" style={{ display: 'grid', gap: 10 }}>
-      <label>
-        <I18nText id="Property images" />
-        <input ref={inputRef} name={inputName} type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={onChange} />
-      </label>
-      <small style={{ color: 'var(--muted)' }}><I18nText id="Up to 20 images. Images are compressed before upload." /></small>
+    <div className="full" style={{ display: 'grid', gap: 16 }}>
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label="Upload property images"
+        onClick={() => inputRef.current?.click()}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            inputRef.current?.click();
+          }
+        }}
+        onDragEnter={(event) => {
+          event.preventDefault();
+          setDragging(true);
+        }}
+        onDragOver={(event) => event.preventDefault()}
+        onDragLeave={(event) => {
+          if (event.currentTarget === event.target) setDragging(false);
+        }}
+        onDrop={onDrop}
+        style={{
+          position: 'relative',
+          border: `1px dashed ${dragging ? 'var(--text)' : 'var(--border)'}`,
+          borderRadius: 20,
+          padding: '34px 24px',
+          minHeight: 220,
+          display: 'grid',
+          placeItems: 'center',
+          textAlign: 'center',
+          background: dragging ? 'var(--surface)' : 'transparent',
+          cursor: busy ? 'wait' : 'pointer',
+          transition: 'border-color 160ms ease, background 160ms ease, transform 160ms ease',
+          outline: 'none',
+          opacity: busy ? 0.82 : 1,
+        }}
+      >
+        <input
+          ref={inputRef}
+          name={inputName}
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          multiple
+          onChange={onChange}
+          tabIndex={-1}
+          disabled={busy || remaining === 0}
+          style={{ position: 'absolute', width: 1, height: 1, opacity: 0, pointerEvents: 'none' }}
+        />
+
+        <div style={{ display: 'grid', justifyItems: 'center', gap: 12, maxWidth: 640 }}>
+          <div
+            aria-hidden="true"
+            style={{
+              width: 58,
+              height: 58,
+              borderRadius: 16,
+              border: '1px solid var(--border)',
+              display: 'grid',
+              placeItems: 'center',
+              fontSize: 28,
+              lineHeight: 1,
+              background: 'var(--surface)',
+            }}
+          >
+            +
+          </div>
+          <div style={{ display: 'grid', gap: 5 }}>
+            <strong style={{ fontSize: 19, letterSpacing: '-0.01em' }}>
+              <I18nText id="Property images" />
+            </strong>
+            <span style={{ color: 'var(--muted)', lineHeight: 1.6 }}>
+              <I18nText id="Drag and drop images here, or click to choose files." />
+            </span>
+          </div>
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              minHeight: 32,
+              padding: '0 11px',
+              border: '1px solid var(--border)',
+              borderRadius: 999,
+              color: 'var(--muted)',
+              fontSize: 12,
+            }}
+          >
+            JPEG, PNG or WebP · {remaining} {remaining === 1 ? 'slot' : 'slots'} remaining · max 10 MB per image
+          </span>
+        </div>
+      </div>
+
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 12,
+          flexWrap: 'wrap',
+          padding: '0 2px',
+        }}
+      >
+        <small style={{ color: 'var(--muted)', lineHeight: 1.5 }}>
+          <I18nText id="Up to 20 images. The first image is the main image. Images are compressed before upload." />
+        </small>
+        {!!images.length && (
+          <small style={{ color: 'var(--muted)', whiteSpace: 'nowrap' }}>
+            {images.length}/20 <I18nText id="images" />
+          </small>
+        )}
+      </div>
+
       {busy && (
-        <div style={{ display: 'grid', gap: 6 }} role="status" aria-live="polite">
-          <div style={{ color: 'var(--muted)' }}><I18nText id="Preparing images…" /> {progress}%</div>
-          <progress max={100} value={progress} style={{ width: '100%' }} />
+        <div style={{ display: 'grid', gap: 7 }} role="status" aria-live="polite">
+          <div style={{ color: 'var(--muted)', fontSize: 13 }}>
+            <I18nText id="Preparing images…" /> {progress}%
+          </div>
+          <progress max={100} value={progress} style={{ width: '100%', height: 5 }} />
         </div>
       )}
-      {message && <div role="status" style={{ color: 'var(--muted)' }}><I18nText id={message} /></div>}
+
+      {message && (
+        <div role="status" style={{ color: 'var(--muted)', fontSize: 13 }}>
+          <I18nText id={message} />
+        </div>
+      )}
+
       {!!images.length && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(120px,1fr))', gap: 10 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(190px,1fr))', gap: 14 }}>
           {images.map((image, index) => (
-            <div key={`${image.name}-${index}`} style={{ border: '1px solid var(--border)', borderRadius: 12, padding: 6, background: 'var(--surface)' }}>
-              {image.preview ? <img src={image.preview} alt={image.name} style={{ width: '100%', aspectRatio: '1 / 1', objectFit: 'cover', borderRadius: 8 }} /> : <div role="alert" style={{ aspectRatio: '1 / 1', display: 'grid', placeItems: 'center', color: 'var(--muted)', fontSize: 12 }}><I18nText id="Error" /></div>}
-              <div style={{ fontSize: 11, marginTop: 5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{image.name}</div>
-              {image.error && <small role="alert" style={{ display: 'block', marginTop: 4, color: 'var(--muted)' }}><I18nText id={image.error} /></small>}
-              <button type="button" className="button" style={{ marginTop: 6, width: '100%' }} onClick={() => remove(index)}><I18nText id="Remove" /></button>
+            <div
+              key={`${image.name}-${index}`}
+              style={{
+                overflow: 'hidden',
+                border: `1px solid ${index === 0 ? 'var(--text)' : 'var(--border)'}`,
+                borderRadius: 18,
+                background: 'var(--surface)',
+              }}
+            >
+              <div style={{ position: 'relative' }}>
+                {image.preview ? (
+                  <img
+                    src={image.preview}
+                    alt={image.name}
+                    style={{ width: '100%', aspectRatio: '4 / 3', objectFit: 'cover', display: 'block' }}
+                  />
+                ) : (
+                  <div
+                    role="alert"
+                    style={{ aspectRatio: '4 / 3', display: 'grid', placeItems: 'center', color: 'var(--muted)', fontSize: 12 }}
+                  >
+                    <I18nText id="Error" />
+                  </div>
+                )}
+                <span
+                  style={{
+                    position: 'absolute',
+                    top: 10,
+                    insetInlineStart: 10,
+                    padding: '5px 8px',
+                    borderRadius: 999,
+                    background: 'var(--surface)',
+                    border: '1px solid var(--border)',
+                    fontSize: 10,
+                    fontWeight: 600,
+                    letterSpacing: '.04em',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  {index === 0 ? <I18nText id="Main image" /> : <I18nText id="Gallery image" />}
+                </span>
+              </div>
+
+              <div style={{ padding: 12, display: 'grid', gap: 8 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+                  <span style={{ color: 'var(--muted)', fontSize: 11 }}>{index + 1}/{images.length}</span>
+                  <span style={{ color: 'var(--muted)', fontSize: 11 }}>WebP</span>
+                </div>
+                <div style={{ fontSize: 11, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={image.name}>
+                  {image.name}
+                </div>
+                {image.error && (
+                  <small role="alert" style={{ color: 'var(--muted)' }}>
+                    <I18nText id={image.error} />
+                  </small>
+                )}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6 }}>
+                  <button type="button" className="button" disabled={index === 0 || busy} onClick={() => move(index, -1)}>
+                    <I18nText id="Up" />
+                  </button>
+                  <button type="button" className="button" disabled={index === images.length - 1 || busy} onClick={() => move(index, 1)}>
+                    <I18nText id="Down" />
+                  </button>
+                  <button type="button" className="button" disabled={busy} onClick={() => remove(index)}>
+                    <I18nText id="Remove" />
+                  </button>
+                </div>
+              </div>
             </div>
           ))}
         </div>
