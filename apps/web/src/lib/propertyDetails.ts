@@ -3,150 +3,26 @@ import { z } from 'zod';
 const nonNegativeInt = (max: number) => z.number().finite().int().min(0).max(max);
 const nonNegativeNumber = (max = 1_000_000_000) => z.number().finite().min(0).max(max);
 const text = (max: number) => z.string().trim().min(1).max(max);
-const common = z.object({
-  condition: z.enum(['new', 'excellent', 'good', 'fair', 'needs_renovation', 'under_construction']).optional(),
-  construction_year: z.number().int().min(1800).max(new Date().getFullYear() + 2).optional(),
-  furnished: z.boolean().optional(),
-  parking_spaces: nonNegativeInt(1000).optional(),
-  total_floors: nonNegativeInt(1000).optional(),
-  floor_number: z.number().int().min(-10).max(1000).optional(),
-  amenities: z.array(text(120)).max(50).optional(),
-  description: z.string().trim().min(50).max(12000).optional(),
-  transaction_type: z.enum(['sale', 'lease', 'sale_or_lease']).optional(),
-  negotiable: z.boolean().optional(),
-}).strict();
-
-const land = z.object({
-  land_use: z.enum(['residential', 'commercial', 'agricultural', 'industrial', 'mixed_use', 'recreational', 'institutional', 'other']).optional(),
-  zoning: text(160).optional(),
-  development_potential: text(1000).optional(),
-  road_access: z.enum(['direct', 'shared', 'planned', 'none', 'unknown']).optional(),
-  utilities: z.array(z.enum(['water', 'electricity', 'sewage', 'gas', 'telecom'])).max(5).optional(),
-  water: z.boolean().optional(),
-  electricity: z.boolean().optional(),
-  sewage: z.boolean().optional(),
-  frontage_m: nonNegativeNumber(1_000_000).optional(),
-  topography: z.enum(['flat', 'sloped', 'hilly', 'mixed', 'unknown']).optional(),
-  development_status: z.enum(['raw', 'planned', 'permitted', 'under_development', 'serviced']).optional(),
-}).strict();
-
-const residential = z.object({
-  building_area_sqm: nonNegativeNumber().optional(),
-  bedrooms: nonNegativeInt(100).optional(),
-  bathrooms: z.number().finite().min(0).max(100).optional(),
-  floors: nonNegativeInt(100).optional(),
-  parking_spaces: nonNegativeInt(100).optional(),
-  pool: z.boolean().optional(),
-  garden: z.boolean().optional(),
-  furnished: z.boolean().optional(),
-  condition: common.shape.condition,
-  construction_year: common.shape.construction_year,
-  additional_rooms: z.array(text(120)).max(30).optional(),
-  amenities: z.array(text(120)).max(50).optional(),
-}).strict();
-
-const apartment = z.object({
-  building_area_sqm: nonNegativeNumber().optional(),
-  bedrooms: nonNegativeInt(100).optional(),
-  bathrooms: z.number().finite().min(0).max(100).optional(),
-  floor_number: z.number().int().min(-10).max(1000).optional(),
-  total_floors: nonNegativeInt(1000).optional(),
-  parking_spaces: nonNegativeInt(100).optional(),
-  balcony: z.boolean().optional(),
-  furnished: z.boolean().optional(),
-  condition: common.shape.condition,
-  construction_year: common.shape.construction_year,
-  amenities: z.array(text(120)).max(50).optional(),
-}).strict();
-
-const hospitality = z.object({
-  building_area_sqm: nonNegativeNumber().optional(),
-  rooms: nonNegativeInt(100000).optional(),
-  suites: nonNegativeInt(100000).optional(),
-  floors: nonNegativeInt(1000).optional(),
-  restaurants: nonNegativeInt(1000).optional(),
-  conference_facilities: z.boolean().optional(),
-  pool: z.boolean().optional(),
-  parking_spaces: nonNegativeInt(100000).optional(),
-  classification: text(80).optional(),
-  operating_status: z.enum(['operating', 'closed', 'under_renovation', 'under_construction', 'planned']).optional(),
-  occupancy: z.number().finite().min(0).max(100).optional(),
-  facilities: z.array(text(120)).max(80).optional(),
-}).strict();
-
-const commercial = z.object({
-  building_area_sqm: nonNegativeNumber().optional(),
-  units: nonNegativeInt(100000).optional(),
-  floors: nonNegativeInt(1000).optional(),
-  occupancy: z.number().finite().min(0).max(100).optional(),
-  current_use: text(500).optional(),
-  rental_income: nonNegativeNumber(1_000_000_000).optional(),
-  parking_spaces: nonNegativeInt(100000).optional(),
-  condition: common.shape.condition,
-  amenities: z.array(text(120)).max(50).optional(),
-}).strict();
-
-const development = z.object({
-  development_status: z.enum(['concept', 'planned', 'permitted', 'under_construction', 'completed']).optional(),
-  permitted_use: text(300).optional(),
-  planned_units: nonNegativeInt(1_000_000).optional(),
-  planned_area_sqm: nonNegativeNumber().optional(),
-  development_potential: text(1000).optional(),
-  zoning: text(160).optional(),
-  utilities: z.array(z.enum(['water', 'electricity', 'sewage', 'gas', 'telecom'])).max(5).optional(),
-}).strict();
-
+const common = z.object({ condition: z.enum(['new','excellent','good','fair','needs_renovation','under_construction']).optional(), construction_year: z.number().int().min(1800).max(new Date().getFullYear()+2).optional(), furnished: z.boolean().optional(), parking_spaces: nonNegativeInt(1000).optional(), total_floors: nonNegativeInt(1000).optional(), floor_number: z.number().int().min(-10).max(1000).optional(), amenities: z.array(text(120)).max(50).optional(), description: z.string().trim().min(50).max(12000).optional(), transaction_type: z.enum(['sale','lease','sale_or_lease']).optional(), negotiable: z.boolean().optional() }).strict();
+const land = z.object({ land_use:z.enum(['residential','commercial','agricultural','industrial','mixed_use','recreational','institutional','other']).optional(), zoning:text(160).optional(), development_potential:text(1000).optional(), road_access:z.enum(['direct','shared','planned','none','unknown']).optional(), utilities:z.array(z.enum(['water','electricity','sewage','gas','telecom'])).max(5).optional(), water:z.boolean().optional(), electricity:z.boolean().optional(), sewage:z.boolean().optional(), frontage_m:nonNegativeNumber(1_000_000).optional(), topography:z.enum(['flat','sloped','hilly','mixed','unknown']).optional(), development_status:z.enum(['raw','planned','permitted','under_development','serviced']).optional() }).strict();
+const residential = z.object({ building_area_sqm:nonNegativeNumber().optional(), bedrooms:nonNegativeInt(100).optional(), bathrooms:z.number().finite().min(0).max(100).optional(), floors:nonNegativeInt(100).optional(), parking_spaces:nonNegativeInt(100).optional(), pool:z.boolean().optional(), garden:z.boolean().optional(), furnished:z.boolean().optional(), condition:common.shape.condition, construction_year:common.shape.construction_year, additional_rooms:z.array(text(120)).max(30).optional(), amenities:z.array(text(120)).max(50).optional() }).strict();
+const apartment = z.object({ building_area_sqm:nonNegativeNumber().optional(), bedrooms:nonNegativeInt(100).optional(), bathrooms:z.number().finite().min(0).max(100).optional(), floor_number:z.number().int().min(-10).max(1000).optional(), total_floors:nonNegativeInt(1000).optional(), parking_spaces:nonNegativeInt(100).optional(), balcony:z.boolean().optional(), furnished:z.boolean().optional(), condition:common.shape.condition, construction_year:common.shape.construction_year, amenities:z.array(text(120)).max(50).optional() }).strict();
+const hospitality = z.object({ building_area_sqm:nonNegativeNumber().optional(), rooms:nonNegativeInt(100000).optional(), suites:nonNegativeInt(100000).optional(), floors:nonNegativeInt(1000).optional(), restaurants:nonNegativeInt(1000).optional(), conference_facilities:z.boolean().optional(), pool:z.boolean().optional(), parking_spaces:nonNegativeInt(100000).optional(), classification:text(80).optional(), operating_status:z.enum(['operating','closed','under_renovation','under_construction','planned']).optional(), occupancy:z.number().finite().min(0).max(100).optional(), facilities:z.array(text(120)).max(80).optional() }).strict();
+const commercial = z.object({ building_area_sqm:nonNegativeNumber().optional(), units:nonNegativeInt(100000).optional(), floors:nonNegativeInt(1000).optional(), occupancy:z.number().finite().min(0).max(100).optional(), current_use:text(500).optional(), rental_income:nonNegativeNumber(1_000_000_000).optional(), parking_spaces:nonNegativeInt(100000).optional(), condition:common.shape.condition, amenities:z.array(text(120)).max(50).optional() }).strict();
+const development = z.object({ development_status:z.enum(['concept','planned','permitted','under_construction','completed']).optional(), permitted_use:text(300).optional(), planned_units:nonNegativeInt(1_000_000).optional(), planned_area_sqm:nonNegativeNumber().optional(), development_potential:text(1000).optional(), zoning:text(160).optional(), utilities:z.array(z.enum(['water','electricity','sewage','gas','telecom'])).max(5).optional() }).strict();
 const empty = z.object({}).strict();
-const branch = <T extends z.ZodTypeAny>(subtype: string, specific: T) =>
-  z.object({ subtype: z.literal(subtype), common: common.default({}), details: specific.default({}) }).strict();
-
-export const propertyDetailsSchema = z.discriminatedUnion('subtype', [
-  branch('land', land), branch('agricultural_land', land), branch('development_land', land),
-  branch('villa', residential), branch('house', residential), branch('palace', residential), branch('residential_building', residential),
-  branch('apartment', apartment),
-  branch('commercial', commercial), branch('office', commercial), branch('retail', commercial),
-  branch('hotel', hospitality), branch('resort', hospitality), branch('apart_hotel', hospitality), branch('hospitality', hospitality),
-  branch('industrial', commercial), branch('mixed_use', commercial),
-  branch('development', development), branch('infrastructure', development), branch('renewable_energy', development),
-  branch('other', empty),
+const branch = <T extends z.ZodTypeAny>(subtype:string,specific:T) => z.object({ subtype:z.literal(subtype), common:common.default({}), details:specific.default({}) }).strict();
+export const propertyDetailsSchema = z.union([
+  branch('land',land),branch('agricultural_land',land),branch('development_land',land),branch('villa',residential),branch('house',residential),branch('palace',residential),branch('residential_building',residential),branch('apartment',apartment),branch('commercial',commercial),branch('office',commercial),branch('retail',commercial),branch('hotel',hospitality),branch('resort',hospitality),branch('apart_hotel',hospitality),branch('hospitality',hospitality),branch('industrial',commercial),branch('mixed_use',commercial),branch('development',development),branch('infrastructure',development),branch('renewable_energy',development),branch('other',empty)
 ]);
-
 export type PropertyDetails = z.infer<typeof propertyDetailsSchema>;
-
-export const ASSET_SUBTYPES = {
-  land: ['land', 'agricultural_land', 'development_land'],
-  residential: ['villa', 'house', 'palace', 'apartment', 'residential_building'],
-  commercial: ['commercial', 'office', 'retail'],
-  hotel: ['hotel'],
-  hospitality: ['resort', 'apart_hotel', 'hospitality'],
-  industrial: ['industrial'],
-  mixed_use: ['mixed_use'],
-  development_project: ['development'],
-  infrastructure: ['infrastructure'],
-  renewable_energy: ['renewable_energy'],
-  other: ['other'],
-} as const;
-
-export function parsePropertyDetails(raw: FormDataEntryValue | null, assetType: string): PropertyDetails {
-  if (typeof raw !== 'string' || !raw.trim()) throw new Error('property_details_required');
-  let value: unknown;
-  try {
-    value = JSON.parse(raw);
-  } catch {
-    throw new Error('invalid_property_details');
-  }
-
-  const parsed = propertyDetailsSchema.safeParse(value);
-  if (!parsed.success) {
-    const issue = parsed.error.issues[0];
-    const field = issue?.path.map(String).filter(Boolean).join('.') || 'property_details';
-    throw new Error(`invalid_property_details:${field}`);
-  }
-
-  const allowed = (ASSET_SUBTYPES as Record<string, readonly string[]>)[assetType];
-  if (!allowed?.includes(parsed.data.subtype)) throw new Error('property_subtype_mismatch');
-  if (!parsed.data.common.description || parsed.data.common.description.length < 50) {
-    throw new Error('property_description_required');
-  }
+export const ASSET_SUBTYPES = { land:['land','agricultural_land','development_land'], residential:['villa','house','palace','apartment','residential_building'], commercial:['commercial','office','retail'], hotel:['hotel'], hospitality:['resort','apart_hotel','hospitality'], industrial:['industrial'], mixed_use:['mixed_use'], development_project:['development'], infrastructure:['infrastructure'], renewable_energy:['renewable_energy'], other:['other'] } as const;
+export function parsePropertyDetails(raw:FormDataEntryValue|null,assetType:string):PropertyDetails {
+  if(typeof raw!=='string'||!raw.trim()) throw new Error('property_details_required');
+  let value:unknown;try{value=JSON.parse(raw)}catch{throw new Error('invalid_property_details')}
+  const parsed=propertyDetailsSchema.safeParse(value);if(!parsed.success){const issue=parsed.error.issues[0];const field=issue?.path.map(String).filter(Boolean).join('.')||'property_details';throw new Error(`invalid_property_details:${field}`)}
+  const allowed=Object.prototype.hasOwnProperty.call(ASSET_SUBTYPES,assetType)?ASSET_SUBTYPES[assetType as keyof typeof ASSET_SUBTYPES]:undefined;
+  if(!allowed?.includes(parsed.data.subtype as never)) throw new Error('property_subtype_mismatch');
+  if(!parsed.data.common.description||parsed.data.common.description.length<50) throw new Error('property_description_required');
   return parsed.data;
 }
