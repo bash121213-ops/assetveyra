@@ -53,7 +53,7 @@ for (const [file, source] of Object.entries(files)) {
   if (file === 'apps/web/src/lib/i18nBase.ts') {
     const rawStart = source.indexOf('const RAW_BASE_TRANSLATIONS');
     const objectStart = source.indexOf('=', rawStart) + 1;
-    const objectEnd = source.indexOf(';\\n\\nexport const BASE_TRANSLATIONS', objectStart);
+    const objectEnd = source.indexOf(';\n\nexport const BASE_TRANSLATIONS', objectStart);
     if (rawStart >= 0 && objectStart > 0 && objectEnd > objectStart) {
       const raw = JSON.parse(source.slice(objectStart, objectEnd).trim());
       for (const [key, values] of Object.entries(raw)) {
