@@ -8,12 +8,6 @@ const RAW_BASE_TRANSLATIONS: Record<string, LocaleMap> = ({
 export const BASE_TRANSLATIONS: Record<string, Record<Locale, string>> = Object.fromEntries(
   Object.entries(RAW_BASE_TRANSLATIONS).map(([key, values]) => [
     key,
-    {
-      en: values.en ?? key,
-      ar: values.ar ?? key,
-      zh: values.zh ?? key,
-      es: values.es ?? key,
-      fr: values.fr ?? key,
-    },
+    { en: values.en ?? key, ar: values.ar ?? key, zh: values.zh ?? key, es: values.es ?? key, fr: values.fr ?? key },
   ]),
 ) as Record<string, Record<Locale, string>>;
