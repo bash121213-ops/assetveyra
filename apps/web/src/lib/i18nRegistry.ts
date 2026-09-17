@@ -51,6 +51,7 @@ const BASE_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   Overview: { en: 'Overview', ar: 'نظرة عامة', zh: '概览', es: 'Descripción general', fr: 'Vue d’ensemble' },
   'Additional Information': { en: 'Additional Information', ar: 'معلومات إضافية', zh: '其他信息', es: 'Información adicional', fr: 'Informations complémentaires' },
   Assets: { en: 'Assets', ar: 'الأصول', zh: '资产', es: 'Activos', fr: 'Actifs' },
+  MARKETPLACE: { en: 'MARKETPLACE', ar: 'السوق', zh: '市场', es: 'MERCADO', fr: 'MARCHÉ' },
   'MY ASSETS': { en: 'MY ASSETS', ar: 'أصولي', zh: 'أصولي', es: 'MIS ACTIVOS', fr: 'MES ACTIFS' },
   'Manage submitted assets and their controlled verification and publication status.': { en: 'Manage submitted assets and their controlled verification and publication status.', ar: 'إدارة الأصول المقدمة وحالة التحقق والنشر المنضبطة الخاصة بها.', zh: '管理已提交资产及其受控验证和发布状态。', es: 'Gestione los activos enviados y su estado controlado de verificación y publicación.', fr: 'Gérez les actifs soumis ainsi que leur statut contrôlé de vérification et de publication.' },
   TRANSACTION: { en: 'TRANSACTION', ar: 'المعاملة', zh: '交易', es: 'TRANSACCIÓN', fr: 'TRANSACTION' },
