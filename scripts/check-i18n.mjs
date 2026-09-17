@@ -154,7 +154,14 @@ for (const [key, locations] of used) {
 
 for (const [key, defs] of sourcesByKey) {
   const uniqueFiles = [...new Set(defs.map((d) => d.file))];
-  if (uniqueFiles.length > 1) duplicates.push({ key, sources: uniqueFiles });
+  if (uniqueFiles.length <= 1) continue;
+  const normalized = defs.map((def) => Object.fromEntries(
+    LOCALES.map((locale) => [locale, def.values[locale] ?? (locale === 'en' ? key : undefined)]),
+  ));
+  const first = JSON.stringify(normalized[0]);
+  if (normalized.some((value) => JSON.stringify(value) !== first)) {
+    duplicates.push({ key, sources: uniqueFiles });
+  }
 }
 
 const sideEffectImports = [];
