@@ -8,7 +8,8 @@
     "dev": "npm --workspace @assetveyra/web run dev",
     "build": "npm --workspace @assetveyra/web run build",
     "lint": "npm --workspace @assetveyra/web run lint",
-    "typecheck": "npm --workspace @assetveyra/web run typecheck"
+    "typecheck": "npm --workspace @assetveyra/web run typecheck",
+    "test": "node --experimental-strip-types --test apps/web/tests/*.test.ts"
   },
   "dependencies": {
     "next": "^16.0.0",
