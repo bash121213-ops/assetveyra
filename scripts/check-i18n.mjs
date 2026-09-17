@@ -68,6 +68,7 @@ for (const [key, defs] of sourcesByKey) {
       if (def.values[locale] !== undefined) merged[locale] = def.values[locale];
     }
   }
+  if (merged.en === undefined) merged.en = key;
   registry.set(key, merged);
 }
 
