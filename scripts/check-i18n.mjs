@@ -155,7 +155,7 @@ const result = {
   registryKeys: registry.size,
   usedStaticKeys: used.size,
   missingCount: missing.length,
-  missing: missing.slice(0, 30),
+  missing: missing.slice(0, 5),
   untranslatedCount: untranslated.length,
   duplicateKeyCount: duplicates.length,
   dynamicStatusOrAssetTypeExpressions: dynamic.length,
