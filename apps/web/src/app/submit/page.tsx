@@ -6,13 +6,145 @@ import AssetImageUploader from '@/components/AssetImageUploader';
 import PropertyDetailsFields from '@/components/PropertyDetailsFields';
 import ListingLocationFields from '@/components/ListingLocationFields';
 import ListingPreview from '@/components/ListingPreview';
-import { uploadAssetImages } from '@/app/workspace/assets/actions';
+import { cleanupAssetImages, uploadAssetImages } from '@/app/workspace/assets/actions';
 import { parsePropertyDetails } from '@/lib/propertyDetails';
 
-const SELLER_ROLES=['seller_admin','seller_member','platform_admin','operations_admin'] as const;
-const ASSET_TYPES=['land','residential','commercial','hotel','hospitality','industrial','mixed_use','development_project','infrastructure','renewable_energy','other'] as const;
-const baseSchema=z.object({title:z.string().trim().min(3).max(200),asset_type:z.enum(ASSET_TYPES),country_code:z.string().trim().toUpperCase().regex(/^[A-Z]{2}$/),region:z.string().trim().min(1).max(160),city:z.string().trim().min(1).max(120),address_private:z.string().trim().max(500).optional(),area_sqm:z.coerce.number().finite().positive(),currency:z.string().trim().toUpperCase().regex(/^[A-Z]{3}$/),asking_price:z.coerce.number().finite().positive(),public_summary:z.string().trim().min(20).max(4000),latitude:z.coerce.number().finite().min(-90).max(90).optional(),longitude:z.coerce.number().finite().min(-180).max(180).optional()}).superRefine((v,ctx)=>{if((v.latitude===undefined)!==(v.longitude===undefined))ctx.addIssue({code:'custom',path:['latitude'],message:'coordinates_pair_required'})});
-function errorMessage(value:string|undefined){const map:Record<string,string>={invalid_input:'Please review the required listing fields.',property_details_required:'Property details are required.',invalid_property_details:'Property details are invalid.',property_subtype_mismatch:'The selected property subtype does not match the asset type.',image_limit:'The listing cannot contain more than 20 images.',invalid_image:'One or more selected images are invalid.',image_upload_failed:'The selected images could not be uploaded. No submission was reported as successful.',image_record_failed:'The image records could not be saved. Please retry.',submission_failed:'The listing could not be submitted. No successful submission was reported.',coordinates_pair_required:'Latitude and longitude must be provided together.'};return map[value??'']??''}
-async function submit(formData:FormData){'use server';const s=await createClient();const {data:{user}}=await s.auth.getUser();if(!user)redirect('/login');const {data:memberships}=await s.from('organization_members').select('organization_id,role').eq('user_id',user.id);const membership=(memberships??[]).find(m=>SELLER_ROLES.includes(m.role as typeof SELLER_ROLES[number]));if(!membership)redirect('/workspace?error=seller_access_required');let parsed:z.infer<typeof baseSchema>;let propertyDetails:ReturnType<typeof parsePropertyDetails>;try{parsed=baseSchema.parse({title:formData.get('title'),asset_type:formData.get('asset_type'),country_code:formData.get('country_code'),region:formData.get('region'),city:formData.get('city'),address_private:formData.get('address_private')||undefined,area_sqm:formData.get('area_sqm'),currency:formData.get('currency'),asking_price:formData.get('asking_price'),public_summary:formData.get('public_summary'),latitude:formData.get('latitude')||undefined,longitude:formData.get('longitude')||undefined});propertyDetails=parsePropertyDetails(formData.get('property_details'),parsed.asset_type);if(!propertyDetails.common.description||propertyDetails.common.description.length<50)throw new Error('invalid_input')}catch(error){redirect(`/submit?error=${encodeURIComponent(error instanceof Error&&error.message!=='invalid_input'?error.message:'invalid_input')}`)}let assetId:string|undefined,opportunityId:string|undefined,verificationId:string|undefined;try{const {data:asset,error:assetError}=await s.from('assets').insert({organization_id:membership.organization_id,asset_type:parsed.asset_type,title:parsed.title,country_code:parsed.country_code,region:parsed.region,city:parsed.city,address_private:parsed.address_private||null,latitude:parsed.latitude??null,longitude:parsed.longitude??null,area_sqm:parsed.area_sqm,asking_price:parsed.asking_price,currency:parsed.currency,public_summary:parsed.public_summary,property_details:propertyDetails,created_by:user.id,status:'submitted'}).select('id').single();if(assetError||!asset)throw new Error('submission_failed');assetId=asset.id;const slug=`${parsed.title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}-${asset.id.slice(0,8)}`;const {data:opportunity,error:opportunityError}=await s.from('opportunities').insert({asset_id:asset.id,owner_organization_id:membership.organization_id,slug,status:'submitted',visibility:'private',investment_thesis:propertyDetails.common.description}).select('id').single();if(opportunityError||!opportunity)throw new Error('submission_failed');opportunityId=opportunity.id;const {data:verification,error:verificationError}=await s.from('verification_cases').insert({organization_id:membership.organization_id,asset_id:asset.id,opportunity_id:opportunity.id,category:'asset_intake',status:'open'}).select('id').single();if(verificationError||!verification)throw new Error('submission_failed');verificationId=verification.id;const {error:eventError}=await s.from('workflow_events').insert({organization_id:membership.organization_id,actor_id:user.id,event_type:'opportunity.submitted',entity_type:'opportunity',entity_id:opportunity.id,payload:{asset_id:asset.id}});if(eventError)throw new Error('submission_failed');await uploadAssetImages(asset.id,formData);redirect(`/workspace/assets/${asset.id}?submitted=1`)}catch(error){if(opportunityId)await s.from('workflow_events').delete().eq('entity_id',opportunityId).eq('entity_type','opportunity');if(verificationId)await s.from('verification_cases').delete().eq('id',verificationId);if(opportunityId)await s.from('opportunities').delete().eq('id',opportunityId);if(assetId)await s.from('assets').delete().eq('id',assetId);const message=error instanceof Error?error.message:'submission_failed';redirect(`/submit?error=${encodeURIComponent(message.startsWith('invalid_image')?'invalid_image':message)}`)}}
+const SELLER_ROLES = ['seller_admin', 'seller_member', 'platform_admin', 'operations_admin'] as const;
+const ASSET_TYPES = ['land', 'residential', 'commercial', 'hotel', 'hospitality', 'industrial', 'mixed_use', 'development_project', 'infrastructure', 'renewable_energy', 'other'] as const;
+const baseSchema = z.object({
+  title: z.string().trim().min(3).max(200),
+  asset_type: z.enum(ASSET_TYPES),
+  country_code: z.string().trim().toUpperCase().regex(/^[A-Z]{2}$/),
+  region: z.string().trim().min(1).max(160),
+  city: z.string().trim().min(1).max(120),
+  address_private: z.string().trim().max(500).optional(),
+  area_sqm: z.coerce.number().finite().positive().max(1_000_000_000),
+  currency: z.string().trim().toUpperCase().regex(/^[A-Z]{3}$/),
+  asking_price: z.coerce.number().finite().positive().max(1_000_000_000_000),
+  public_summary: z.string().trim().min(20).max(4000),
+  latitude: z.coerce.number().finite().min(-90).max(90).optional(),
+  longitude: z.coerce.number().finite().min(-180).max(180).optional(),
+}).superRefine((value, ctx) => {
+  if ((value.latitude === undefined) !== (value.longitude === undefined)) ctx.addIssue({ code: 'custom', path: ['latitude'], message: 'coordinates_pair_required' });
+});
 
-export default async function SubmitPage({searchParams}:{searchParams?:Promise<{error?:string}>}){const s=await createClient();const {data:{user}}=await s.auth.getUser();if(!user)redirect('/login');const {data:memberships}=await s.from('organization_members').select('role').eq('user_id',user.id);if(!(memberships??[]).some(m=>SELLER_ROLES.includes(m.role as typeof SELLER_ROLES[number])))redirect('/workspace');const params=await searchParams;const message=errorMessage(params?.error);return <main className="app-shell"><header className="app-header"><a className="brand" href="/">ASSETVEYRA</a><nav><a href="/dashboard"><I18nText id="Workspace"/></a><a href="/opportunities"><I18nText id="Marketplace"/></a></nav></header><section className="page-head"><div className="eyebrow"><I18nText id="SELLER INTAKE"/></div><h1><I18nText id="Create listing"/></h1><p><I18nText id="Create a complete property record. Submission enters verification and is not published automatically."/></p></section>{message&&<div className="form-error" style={{maxWidth:1280,margin:'0 auto 24px',width:'88%'}} role="alert"><I18nText id={message}/></div>}<section className="form-page"><form action={submit} className="form-grid" encType="multipart/form-data" data-listing-form><div className="full"><div className="eyebrow"><I18nText id="BASIC INFORMATION"/></div></div><label><I18nText id="Asset title"/><input name="title" required maxLength={200}/></label><label className="full"><I18nText id="Public summary"/><textarea name="public_summary" rows={5} maxLength={4000} required/></label><div className="full"><div className="eyebrow"><I18nText id="LOCATION"/></div></div><ListingLocationFields/><div className="full"><div className="eyebrow"><I18nText id="PRICING"/></div></div><label><I18nText id="Asking price"/><input name="asking_price" type="number" min="0.01" step="0.01" required/></label><label><I18nText id="Currency"/><input name="currency" defaultValue="USD" maxLength={3} required/></label><div className="full"><div className="eyebrow"><I18nText id="PROPERTY DETAILS"/></div></div><PropertyDetailsFields initialAssetType="residential"/><div className="full"><div className="eyebrow"><I18nText id="MEDIA"/></div><AssetImageUploader/><small style={{color:'var(--muted)'}}><I18nText id="Images are optional, but every selected image must upload successfully before submission is reported successful."/></small></div><div className="full"><div className="eyebrow"><I18nText id="PREVIEW"/></div><ListingPreview/></div><div className="full"><button className="button primary" type="submit"><I18nText id="Submit Asset for Verification"/></button></div></form></section></main>}
+function errorMessage(value: string | undefined) {
+  const key = value?.split(':', 1)[0];
+  const map: Record<string, string> = {
+    invalid_input: 'Please review the required listing fields.',
+    property_details_required: 'Property details are required.',
+    property_description_required: 'A full property description of at least 50 characters is required.',
+    invalid_property_details: 'Property details are invalid. Check the entered values and try again.',
+    property_subtype_mismatch: 'The selected property subtype does not match the asset type.',
+    image_limit: 'The listing cannot contain more than 20 images.',
+    invalid_image: 'One or more selected images are invalid.',
+    image_upload_failed: 'The selected images could not be uploaded. No successful submission was reported.',
+    image_record_failed: 'The image records could not be saved. Please retry.',
+    image_cleanup_failed: 'The submission could not be safely rolled back. Contact an administrator before retrying.',
+    submission_failed: 'The listing could not be submitted. No successful submission was reported.',
+    coordinates_pair_required: 'Latitude and longitude must be provided together.',
+  };
+  return map[key ?? ''] ?? '';
+}
+
+async function submit(formData: FormData) {
+  'use server';
+  const s = await createClient();
+  const { data: { user } } = await s.auth.getUser();
+  if (!user) redirect('/login');
+  const { data: memberships } = await s.from('organization_members').select('organization_id,role').eq('user_id', user.id);
+  const membership = (memberships ?? []).find(m => SELLER_ROLES.includes(m.role as typeof SELLER_ROLES[number]));
+  if (!membership) redirect('/workspace?error=seller_access_required');
+
+  let parsed: z.infer<typeof baseSchema>;
+  let propertyDetails: ReturnType<typeof parsePropertyDetails>;
+  try {
+    parsed = baseSchema.parse({
+      title: formData.get('title'), asset_type: formData.get('asset_type'), country_code: formData.get('country_code'),
+      region: formData.get('region'), city: formData.get('city'), address_private: formData.get('address_private') || undefined,
+      area_sqm: formData.get('area_sqm'), currency: formData.get('currency'), asking_price: formData.get('asking_price'),
+      public_summary: formData.get('public_summary'), latitude: formData.get('latitude') || undefined, longitude: formData.get('longitude') || undefined,
+    });
+    propertyDetails = parsePropertyDetails(formData.get('property_details'), parsed.asset_type);
+  } catch (error) {
+    const code = error instanceof Error ? error.message : 'invalid_input';
+    redirect(`/submit?error=${encodeURIComponent(code.startsWith('coordinates_pair_required') ? 'coordinates_pair_required' : code.startsWith('property_') || code.startsWith('invalid_property_details') ? code : 'invalid_input')}`);
+  }
+
+  let assetId: string | undefined;
+  let opportunityId: string | undefined;
+  let verificationId: string | undefined;
+  try {
+    const { data: asset, error: assetError } = await s.from('assets').insert({
+      organization_id: membership.organization_id, asset_type: parsed.asset_type, title: parsed.title,
+      country_code: parsed.country_code, region: parsed.region, city: parsed.city, address_private: parsed.address_private || null,
+      latitude: parsed.latitude ?? null, longitude: parsed.longitude ?? null, area_sqm: parsed.area_sqm,
+      asking_price: parsed.asking_price, currency: parsed.currency, public_summary: parsed.public_summary,
+      property_details: propertyDetails, created_by: user.id, status: 'submitted',
+    }).select('id').single();
+    if (assetError || !asset) throw new Error('submission_failed');
+    assetId = asset.id;
+
+    const slug = `${parsed.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}-${asset.id.slice(0, 8)}`;
+    const { data: opportunity, error: opportunityError } = await s.from('opportunities').insert({
+      asset_id: asset.id, owner_organization_id: membership.organization_id, slug, status: 'submitted', visibility: 'private', investment_thesis: propertyDetails.common.description,
+    }).select('id').single();
+    if (opportunityError || !opportunity) throw new Error('submission_failed');
+    opportunityId = opportunity.id;
+
+    const { data: verification, error: verificationError } = await s.from('verification_cases').insert({
+      organization_id: membership.organization_id, asset_id: asset.id, opportunity_id: opportunity.id, category: 'asset_intake', status: 'open',
+    }).select('id').single();
+    if (verificationError || !verification) throw new Error('submission_failed');
+    verificationId = verification.id;
+
+    const { error: eventError } = await s.from('workflow_events').insert({
+      organization_id: membership.organization_id, actor_id: user.id, event_type: 'opportunity.submitted', entity_type: 'opportunity', entity_id: opportunity.id, payload: { asset_id: asset.id },
+    });
+    if (eventError) throw new Error('submission_failed');
+
+    await uploadAssetImages(asset.id, formData);
+    redirect(`/workspace/assets/${asset.id}?submitted=1`);
+  } catch (error) {
+    if (assetId) {
+      try { await cleanupAssetImages(assetId); } catch { /* best-effort storage/row cleanup before asset deletion */ }
+    }
+    if (opportunityId) await s.from('workflow_events').delete().eq('entity_id', opportunityId).eq('entity_type', 'opportunity');
+    if (verificationId) await s.from('verification_cases').delete().eq('id', verificationId);
+    if (opportunityId) await s.from('opportunities').delete().eq('id', opportunityId);
+    if (assetId) await s.from('assets').delete().eq('id', assetId);
+    const message = error instanceof Error ? error.message : 'submission_failed';
+    redirect(`/submit?error=${encodeURIComponent(message.startsWith('invalid_image') ? 'invalid_image' : message)}`);
+  }
+}
+
+export default async function SubmitPage({ searchParams }: { searchParams?: Promise<{ error?: string }> }) {
+  const s = await createClient();
+  const { data: { user } } = await s.auth.getUser();
+  if (!user) redirect('/login');
+  const { data: memberships } = await s.from('organization_members').select('role').eq('user_id', user.id);
+  if (!(memberships ?? []).some(m => SELLER_ROLES.includes(m.role as typeof SELLER_ROLES[number]))) redirect('/workspace');
+  const params = await searchParams;
+  const message = errorMessage(params?.error);
+  return <main className="app-shell">
+    <header className="app-header"><a className="brand" href="/">ASSETVEYRA</a><nav><a href="/dashboard"><I18nText id="Workspace"/></a><a href="/opportunities"><I18nText id="Marketplace"/></a></nav></header>
+    <section className="page-head"><div className="eyebrow"><I18nText id="SELLER INTAKE"/></div><h1><I18nText id="Create listing"/></h1><p><I18nText id="Create a complete property record. Submission enters verification and is not published automatically."/></p></section>
+    {message && <div className="form-error" style={{ maxWidth: 1280, margin: '0 auto 24px', width: '88%' }} role="alert"><I18nText id={message}/></div>}
+    <section className="form-page"><form action={submit} className="form-grid" encType="multipart/form-data" data-listing-form>
+      <div className="full"><div className="eyebrow"><I18nText id="BASIC INFORMATION"/></div></div>
+      <label><I18nText id="Asset title"/><input name="title" required maxLength={200}/></label>
+      <label className="full"><I18nText id="Public summary"/><textarea name="public_summary" rows={5} maxLength={4000} required/></label>
+      <div className="full"><div className="eyebrow"><I18nText id="LOCATION"/></div></div>
+      <ListingLocationFields/>
+      <div className="full"><div className="eyebrow"><I18nText id="PRICING"/></div></div>
+      <label><I18nText id="Area m²"/><input name="area_sqm" type="number" min="0.01" step="0.01" required/></label>
+      <label><I18nText id="Asking price"/><input name="asking_price" type="number" min="0.01" step="0.01" required/></label>
+      <label><I18nText id="Currency"/><input name="currency" defaultValue="USD" maxLength={3} required/></label>
+      <div className="full"><div className="eyebrow"><I18nText id="PROPERTY DETAILS"/></div></div>
+      <PropertyDetailsFields initialAssetType="residential"/>
+      <div className="full"><div className="eyebrow"><I18nText id="MEDIA"/></div><AssetImageUploader/><small style={{ color: 'var(--muted)' }}><I18nText id="Images are optional, but every selected image must upload successfully before submission is reported successful."/></small></div>
+      <div className="full"><div className="eyebrow"><I18nText id="PREVIEW"/></div><ListingPreview/></div>
+      <div className="full"><button className="button primary" type="submit"><I18nText id="Submit Asset for Verification"/></button></div>
+    </form></section>
+  </main>;
+}
