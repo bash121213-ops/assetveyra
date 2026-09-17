@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const ROOT = process.cwd();
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const LOCALES = ['en', 'ar', 'zh', 'es', 'fr'];
 const SOURCE_FILES = [
   'apps/web/src/lib/i18n.ts',
