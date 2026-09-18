@@ -4678,7 +4678,14 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   "Ownership information reviewed": {"en":"Ownership information reviewed","ar":"تمت مراجعة معلومات الملكية","zh":"所有权信息已审核","es":"Información de propiedad revisada","fr":"Informations de propriété examinées"},
   "Site visit completed": {"en":"Site visit completed","ar":"تمت الزيارة الميدانية","zh":"现场考察已完成","es":"Visita al sitio completada","fr":"Visite du site effectuée"},
   "More opportunities": {"en":"More opportunities","ar":"مزيد من الفرص","zh":"更多机会","es":"Más oportunidades","fr":"Plus d’opportunités"},
-  "Similar properties": {"en":"Similar properties","ar":"عقارات مشابهة","zh":"类似资产","es":"Propiedades similares","fr":"Biens similaires"}
+  "Similar properties": {"en":"Similar properties","ar":"عقارات مشابهة","zh":"类似资产","es":"Propiedades similares","fr":"Biens similaires"},
+  "Search": {"en":"Search","ar":"بحث","zh":"搜索","es":"Buscar","fr":"Rechercher"},
+  "Price": {"en":"Price","ar":"السعر","zh":"价格","es":"Precio","fr":"Prix"},
+  "Filters": {"en":"Filters","ar":"الفلاتر","zh":"筛选","es":"Filtros","fr":"Filtres"},
+  "Minimum area m²": {"en":"Minimum area m²","ar":"الحد الأدنى للمساحة م²","zh":"最小面积 m²","es":"Área mínima m²","fr":"Surface minimale m²"},
+  "Sort": {"en":"Sort","ar":"ترتيب","zh":"排序","es":"Ordenar","fr":"Trier"},
+  "Clear all": {"en":"Clear all","ar":"مسح الكل","zh":"清除全部","es":"Borrar todo","fr":"Tout effacer"},
+  "Apply filters": {"en":"Apply filters","ar":"تطبيق الفلاتر","zh":"应用筛选","es":"Aplicar filtros","fr":"Appliquer les filtres"}
 };
 
 export const STATUS_TRANSLATIONS = {
