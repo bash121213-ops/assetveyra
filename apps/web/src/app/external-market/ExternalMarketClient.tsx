@@ -48,7 +48,7 @@ const listings: Listing[] = [
       { label: L('Listing reference', 'مرجع الإعلان'), value: L('3405', '3405') },
     ],
     features: [L('Beachfront', 'واجهة بحرية'), L('Wellness', 'عافية'), L('Restaurants & bars', 'مطاعم وبارات'), L('Retail', 'تجزئة'), L('Spa', 'سبا'), L('Conference facilities', 'مؤتمرات'), L('Private beach', 'شاطئ خاص')],
-    imageUrl: 'https://www.luxuryestate.com/p132160711-hotel-for-sale-dubai', imageAlt: L('Original public listing image, if available from the source', 'الصورة الأصلية للإعلان العام إذا كانت متاحة من المصدر'), sourceUrl: 'https://www.luxuryestate.com/p132160711-hotel-for-sale-dubai'
+    imageUrl: 'https://www.luxuryestate.com/p132160711-hotel-for-sale-dubai', imageAlt: L('Property image', 'صورة العقار'), sourceUrl: 'https://www.luxuryestate.com/p132160711-hotel-for-sale-dubai'
   },
   {
     id: 'dubai-jumeirah-garden-city', country: L('United Arab Emirates', 'الإمارات العربية المتحدة'), city: L('Dubai · Jumeirah Garden City', 'دبي · جميرا جاردن سيتي'),
@@ -64,7 +64,7 @@ const listings: Listing[] = [
       { label: L('Operator', 'المشغّل'), value: L('Flexible operator selection stated', 'مرونة اختيار المشغّل بحسب الإعلان') }, { label: L('Additional material', 'مواد إضافية'), value: L('Presentation, ROI analysis, floor plans and payment schedule available by request', 'العرض وتحليل ROI والمخططات وجدول الدفعات متاحة عند الطلب') }
     ],
     features: [L('Central Dubai', 'موقع مركزي في دبي'), L('Retail component', 'مكوّن تجاري'), L('Skyline views', 'إطلالات على الأفق'), L('Off-plan', 'قيد التطوير'), L('Flexible operator', 'مرونة اختيار المشغّل')],
-    imageUrl: 'https://d1ov4zfz2t2vta.cloudfront.net/storage/project_files/135r325.jpg', imageAlt: L('Published project image for the Jumeirah Garden City hotel development', 'الصورة المنشورة لمشروع الفندق في جميرا جاردن سيتي'), sourceUrl: 'https://dxboffplan.com/properties/hotel-for-sale-in-jumeirah-garden-city/'
+    imageUrl: 'https://d1ov4zfz2t2vta.cloudfront.net/storage/project_files/135r325.jpg', imageAlt: L('Property image', 'صورة العقار'), sourceUrl: 'https://dxboffplan.com/properties/hotel-for-sale-in-jumeirah-garden-city/'
   },
   {
     id: 'st-simons-ocean-lodge', country: L('United States', 'الولايات المتحدة'), city: L('St. Simons Island, Georgia', 'جزيرة سانت سايمونز، جورجيا'),
@@ -80,7 +80,7 @@ const listings: Listing[] = [
       { label: L('Operations', 'التشغيل'), value: L('Operated by a lender for continuity and asset preservation, according to the listing', 'يذكر الإعلان أنه يُدار من قبل جهة ممولة للحفاظ على استمرارية التشغيل والأصل') }, { label: L('Value-add', 'إمكانات التطوير'), value: L('Operations, marketing, events and capital improvements are identified as potential value-add areas', 'التشغيل والتسويق والفعاليات والتحسينات الرأسمالية مذكورة كمجالات محتملة لزيادة القيمة') }
     ],
     features: [L('Rooftop restaurant', 'مطعم على السطح'), L('Private balconies', 'شرفات خاصة'), L('Full kitchens', 'مطابخ كاملة'), L('Ocean proximity', 'قرب المحيط'), L('Event potential', 'إمكانات الفعاليات')],
-    imageUrl: 'https://assets.simpleviewinc.com/simpleview/image/upload/c_fill%2Ch_798%2Cq_75%2Cw_1200/v1/clients/goldenislesga/ocean_lodge_day_34dbd79b-4eff-42c5-9978-7b1014bae2b7.jpg', imageAlt: L('Published Ocean Lodge exterior image', 'الصورة المنشورة لواجهة منتجع Ocean Lodge'), sourceUrl: 'https://www.commercialsearch.com/commercial-property/us/ga/st-simons-island/boutique-resort-in-the-heart-of-st-simons-island/'
+    imageUrl: 'https://assets.simpleviewinc.com/simpleview/image/upload/c_fill%2Ch_798%2Cq_75%2Cw_1200/v1/clients/goldenislesga/ocean_lodge_day_34dbd79b-4eff-42c5-9978-7b1014bae2b7.jpg', imageAlt: L('Property image', 'صورة العقار'), sourceUrl: 'https://www.commercialsearch.com/commercial-property/us/ga/st-simons-island/boutique-resort-in-the-heart-of-st-simons-island/'
   },
   {
     id: 'amman-apart-hotel', country: L('Jordan', 'الأردن'), city: L('Amman', 'عمّان'), title: L('Newly Established Apart-Hotel', 'شقق فندقية حديثة التأسيس'), type: L('Apart-Hotel / Hospitality', 'شقق فندقية / ضيافة'), price: 'JOD 930,000',
@@ -96,7 +96,7 @@ const listings: Listing[] = [
       { label: L('Ownership', 'الملكية'), value: L('Single owner; no loans, debts or shareholders stated', 'مالك واحد؛ دون قروض أو ديون أو مساهمين بحسب الإعلان') }, { label: L('Included intangible asset', 'الأصل غير الملموس'), value: L('Building permit license', 'رخصة بناء') }
     ],
     features: [L('LEED-certified', 'حاصل على LEED'), L('Panoramic views', 'إطلالات بانورامية'), L('Rooftop', 'سطح قابل للتشغيل'), L('5 retail shops', '5 محلات تجارية'), L('7-car garage', 'مرآب 7 سيارات')],
-    imageUrl: 'https://www.smergers.com/media/businessphoto/113009-1741767127-b2b1be01-41f0-43f9-8a52-6326da40a62e.png', imageAlt: L('Published image from the Amman apart-hotel listing', 'الصورة المنشورة لإعلان الشقق الفندقية في عمّان'), sourceUrl: 'https://www.smergers.com/business/newly-established-hotel-for-sale-in-amman-jordan/1y5n5/'
+    imageUrl: 'https://www.smergers.com/media/businessphoto/113009-1741767127-b2b1be01-41f0-43f9-8a52-6326da40a62e.png', imageAlt: L('Property image', 'صورة العقار'), sourceUrl: 'https://www.smergers.com/business/newly-established-hotel-for-sale-in-amman-jordan/1y5n5/'
   },
   {
     id: 'marbella-golf-resort', country: L('Spain', 'إسبانيا'), city: L('San Pedro de Alcántara · Marbella, Málaga', 'سان بيدرو دي ألكانتارا · ماربيا، مالقة'), title: L('5-Star Golf Resort Hotel', 'منتجع فندقي 5 نجوم مع ملعب غولف'), type: L('Luxury Hospitality / Golf', 'ضيافة فاخرة / غولف'), price: '€125,000,000',
@@ -112,7 +112,7 @@ const listings: Listing[] = [
       { label: L('Golf', 'الغولف'), value: L('27 holes across three 9-hole courses', '27 حفرة موزعة على ثلاثة ملاعب من 9 حفر') }, { label: L('Nearby', 'المعالم القريبة'), value: L('Puerto Banús approx. 10 minutes; Marbella centre approx. 15 minutes', 'بورتو بانوس نحو 10 دقائق؛ مركز ماربيا نحو 15 دقيقة') }
     ],
     features: [L('27-hole golf', 'غولف 27 حفرة'), L('1,500 sq m spa', 'سبا 1,500 م²'), L('Outdoor pool', 'مسبح خارجي'), L('Kids club', 'نادي أطفال'), L('Year-round operation stated', 'تشغيل سنوي بحسب الإعلان')],
-    imageUrl: 'https://cdn.thinkwebcontent.com/property/40791/9782021/20260417114351/w800h600/s1600x1200/x-279027633.jpg', imageAlt: L('Published listing image for the Marbella golf resort', 'الصورة المنشورة لإعلان منتجع الغولف في ماربيا'), sourceUrl: 'https://www.thinkspain.com/property-for-sale/9782021'
+    imageUrl: 'https://cdn.thinkwebcontent.com/property/40791/9782021/20260417114351/w800h600/s1600x1200/x-279027633.jpg', imageAlt: L('Property image', 'صورة العقار'), sourceUrl: 'https://www.thinkspain.com/property-for-sale/9782021'
   },
   {
     id: 'ibiza-seafront-hotel', country: L('Spain', 'إسبانيا'), city: L('Sant Antoni de Portmany, Ibiza', 'سانت أنتوني دي بورتماني، إيبيزا'), title: L('Seafront 3-Star Hotel Asset', 'أصل فندقي 3 نجوم على الواجهة البحرية'), type: L('Hospitality / Repositioning', 'ضيافة / إعادة تموضع'), price: '€22,000,000',
@@ -129,7 +129,7 @@ const listings: Listing[] = [
       { label: L('Repositioning', 'إعادة التموضع'), value: L('Full renovation, modernization, upgraded dining and premium positioning are identified opportunities', 'التجديد والتحديث ورفع مستوى المطاعم واستهداف شريحة أعلى هي فرص مذكورة لإعادة التموضع') }
     ],
     features: [L('Seafront', 'واجهة بحرية'), L('Sea views', 'إطلالات بحرية'), L('Pool', 'مسبح'), L('Restaurant', 'مطعم'), L('Parking / garage', 'مواقف / مرآب'), L('Lift', 'مصعد'), L('Repositioning potential', 'إمكانات إعادة التموضع')],
-    imageUrl: 'https://cdn.thinkwebcontent.com/property/32695/9519372/20260117152701/w800h533/s1600x1200/x-270873193.jpg', imageAlt: L('Published listing image for the Sant Antoni hotel', 'الصورة المنشورة لإعلان فندق سانت أنتوني'), sourceUrl: 'https://www.thinkspain.com/property-for-sale/9519372'
+    imageUrl: 'https://cdn.thinkwebcontent.com/property/32695/9519372/20260117152701/w800h533/s1600x1200/x-270873193.jpg', imageAlt: L('Property image', 'صورة العقار'), sourceUrl: 'https://www.thinkspain.com/property-for-sale/9519372'
   },
 ];
 
@@ -173,17 +173,16 @@ export default function ExternalMarketClient() {
           const title = textFor(listing.title);
           const failed = failedImages[listing.id];
           return <article className="external-listing-card" key={listing.id}>
-            <a className="external-listing-image-link" href={listing.sourceUrl} target="_blank" rel="noreferrer noopener" aria-label={`${title} — ${t.source}`}>
+            <div className="external-listing-image-link" aria-label={title}>
               <div className="external-listing-image">
                 {listing.imageUrl && !failed ? <img src={imageSrc(listing)} alt={textFor(listing.imageAlt)} loading="lazy" onError={() => setFailedImages((current) => ({ ...current, [listing.id]: true }))}/> : <div className="external-image-missing"><strong>{t.unavailable}</strong><span>{t.source}</span></div>}
-                <div className="external-image-watermark" aria-hidden="true">MARKET REFERENCE</div>
+                
               </div>
-            </a>
-            <div className="card-meta"><span>{textFor(listing.country)}</span><span>{textFor(listing.city)}</span></div>
+            </div><div className="card-meta"><span>{textFor(listing.country)}</span><span>{textFor(listing.city)}</span></div>
             <h4>{title}</h4>
             <p>{textFor(listing.type)} · {textFor(listing.summary)}</p>
             <div className="external-facts">{listing.facts.map((fact, index) => <span key={index}><b>•</b>{textFor(fact)}</span>)}</div>
-            <div className="external-card-footer"><strong>{authenticated ? listing.price : t.pricing}</strong><div className="external-card-actions"><details className="external-inline-details"><summary>{t.details}</summary><div className="external-inline-details-body"><div className="external-detail-table">{listing.details.map((detail, index) => <div className="external-detail-row" key={index}><strong>{textFor(detail.label)}</strong><span>{textFor(detail.value)}</span></div>)}</div><h5>{t.features}</h5><div className="external-feature-list">{listing.features.map((feature, index) => <span key={index}>{textFor(feature)}</span>)}</div></div></details><a className="external-source-link" href={listing.sourceUrl} target="_blank" rel="noreferrer noopener">{t.source}</a><a className="external-market-contact-link" href={authenticated ? `/contact?opportunity=${encodeURIComponent(title)}` : '/login'}>{t.request}</a></div></div>
+            <div className="external-card-footer"><strong>{authenticated ? listing.price : t.pricing}</strong><div className="external-card-actions"><details className="external-inline-details" open><summary>{t.details}</summary><div className="external-inline-details-body"><div className="external-detail-table">{listing.details.map((detail, index) => <div className="external-detail-row" key={index}><strong>{textFor(detail.label)}</strong><span>{textFor(detail.value)}</span></div>)}</div><h5>{t.features}</h5><div className="external-feature-list">{listing.features.map((feature, index) => <span key={index}>{textFor(feature)}</span>)}</div></div></details><a className="external-market-contact-link" href={authenticated ? `/contact?opportunity=${encodeURIComponent(title)}` : '/login'}>{t.request}</a></div></div>
           </article>;
         })}
       </div>
