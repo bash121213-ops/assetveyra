@@ -4644,6 +4644,25 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
     "es": "Comprobado",
     "fr": "Vérifié"
   }
+
+  "Search": {"en":"Search","ar":"بحث","zh":"搜索","es":"Buscar","fr":"Rechercher"},
+  "Country": {"en":"Country","ar":"الدولة","zh":"国家","es":"País","fr":"Pays"},
+  "All countries": {"en":"All countries","ar":"كل الدول","zh":"所有国家","es":"Todos los países","fr":"Tous les pays"},
+  "All cities": {"en":"All cities","ar":"كل المدن","zh":"所有城市","es":"Todas las ciudades","fr":"Toutes les villes"},
+  "All asset types": {"en":"All asset types","ar":"كل أنواع الأصول","zh":"所有资产类型","es":"Todos los tipos de activos","fr":"Tous les types d’actifs"},
+  "Min price": {"en":"Min price","ar":"أدنى سعر","zh":"最低价格","es":"Precio mínimo","fr":"Prix minimum"},
+  "Max price": {"en":"Max price","ar":"أعلى سعر","zh":"最高价格","es":"Precio máximo","fr":"Prix maximum"},
+  "Min area m²": {"en":"Min area m²","ar":"أدنى مساحة م²","zh":"最小面积（平方米）","es":"Superficie mínima m²","fr":"Surface minimale m²"},
+  "Sort": {"en":"Sort","ar":"ترتيب","zh":"排序","es":"Ordenar","fr":"Trier"},
+  "Newest": {"en":"Newest","ar":"الأحدث","zh":"最新","es":"Más recientes","fr":"Plus récents"},
+  "Price: low to high": {"en":"Price: low to high","ar":"السعر: من الأقل إلى الأعلى","zh":"价格：从低到高","es":"Precio: de menor a mayor","fr":"Prix : croissant"},
+  "Price: high to low": {"en":"Price: high to low","ar":"السعر: من الأعلى إلى الأقل","zh":"价格：从高到低","es":"Precio: de mayor a menor","fr":"Prix : décroissant"},
+  "Largest area": {"en":"Largest area","ar":"أكبر مساحة","zh":"面积最大","es":"Mayor superficie","fr":"Plus grande surface"},
+  "results": {"en":"results","ar":"نتيجة","zh":"个结果","es":"resultados","fr":"résultats"},
+  "Clear filters": {"en":"Clear filters","ar":"مسح الفلاتر","zh":"清除筛选","es":"Borrar filtros","fr":"Effacer les filtres"},
+  "Property": {"en":"Property","ar":"عقار","zh":"物业","es":"Inmueble","fr":"Bien immobilier"},
+  "No matching properties": {"en":"No matching properties","ar":"لا توجد عقارات مطابقة","zh":"没有匹配的物业","es":"No hay inmuebles coincidentes","fr":"Aucun bien correspondant"},
+  "Adjust your search or filters to see available opportunities.": {"en":"Adjust your search or filters to see available opportunities.","ar":"عدّل البحث أو الفلاتر لعرض الفرص المتاحة.","zh":"调整搜索或筛选条件以查看可用机会。","es":"Ajuste la búsqueda o los filtros para ver oportunidades disponibles.","fr":"Modifiez votre recherche ou vos filtres pour voir les opportunités disponibles."},
 };
 
 export const STATUS_TRANSLATIONS = {
