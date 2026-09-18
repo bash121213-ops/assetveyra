@@ -4646,7 +4646,6 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   },
 
   "Search": {"en":"Search","ar":"بحث","zh":"搜索","es":"Buscar","fr":"Rechercher"},
-  "Country": {"en":"Country","ar":"الدولة","zh":"国家","es":"País","fr":"Pays"},
   "All countries": {"en":"All countries","ar":"كل الدول","zh":"所有国家","es":"Todos los países","fr":"Tous les pays"},
   "All cities": {"en":"All cities","ar":"كل المدن","zh":"所有城市","es":"Todas las ciudades","fr":"Toutes les villes"},
   "All asset types": {"en":"All asset types","ar":"كل أنواع الأصول","zh":"所有资产类型","es":"Todos los tipos de activos","fr":"Tous les types d’actifs"},
