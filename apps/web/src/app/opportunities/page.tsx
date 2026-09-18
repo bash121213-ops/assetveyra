@@ -15,8 +15,8 @@ function formatAmount(value:number|null,currency:string|null){if(value===null)re
 function formatArea(value:number|null){if(value===null)return '—';return `${new Intl.NumberFormat('en-US',{maximumFractionDigits:0}).format(Number(value))} m²`;}
 function externalTypeLabel(type:string){if(type==='land')return <ExternalMarketText id="Land"/>;if(type==='hotel')return <ExternalMarketText id="Hotel"/>;if(type==='hospitality')return <ExternalMarketText id="Hospitality"/>;return type;}
 
-export default async function OpportunitiesPage({searchParams}:{searchParams:Promise<Record<string,string|undefined>>}){
-  const params=await searchParams;
+export default async function OpportunitiesPage({searchParams}:{searchParams:Record<string,string|undefined>}){
+  const params=searchParams;
   const q=(params.q||'').trim();
   const country=(params.country||'').trim();
   const city=(params.city||'').trim();
