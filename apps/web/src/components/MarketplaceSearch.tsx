@@ -8,6 +8,7 @@ type Props = {
   countries:string[];
   cities:string[];
   assetTypes:string[];
+  selectedCountry?:string;
   initialParams?:Record<string,string|undefined>;
 };
 
@@ -30,7 +31,7 @@ export default function MarketplaceSearch({ countries, cities, assetTypes, initi
       <button className="button primary" type="submit"><I18nText id="Search"/></button>
     </div>
     <div className="marketplace-filters">
-      <label><span><I18nText id="Country"/></span><select name="country" defaultValue={initialParams.country||''}><option value=""><I18nText id="All countries"/></option>{countries.map((value)=><option key={value} value={value}>{value}</option>)}</select></label>
+      <label><span><I18nText id="Country"/></span><select name="country" defaultValue={initialParams.country||''} onChange={(event)=>{ const url=new URL(window.location.href); url.searchParams.set('country',event.target.value); url.searchParams.delete('city'); router.push(url.pathname+'?'+url.searchParams.toString()); }}><option value=""><I18nText id="All countries"/></option>{countries.map((value)=><option key={value} value={value}>{value}</option>)}</select></label>
       <label><span><I18nText id="City"/></span><select name="city" defaultValue={initialParams.city||''}><option value=""><I18nText id="All cities"/></option>{cities.map((value)=><option key={value} value={value}>{value}</option>)}</select></label>
       <label><span><I18nText id="Asset type"/></span><select name="type" defaultValue={initialParams.type||''}><option value=""><I18nText id="All asset types"/></option>{assetTypes.map((value)=><option key={value} value={value}>{value.replace(/_/g,' ')}</option>)}</select></label>
       <label><span><I18nText id="Min price"/></span><input name="min" inputMode="numeric" defaultValue={initialParams.min||''} placeholder="100000"/></label>
