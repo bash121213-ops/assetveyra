@@ -23,7 +23,7 @@ function clean(value:unknown){
     .normalize('NFKD')
     .replace(/[\u0300-\u036f]/g,'')
     .toLowerCase()
-    .replace(/[^\\p{L}\\p{N}]+/gu,' ')
+     .replace(/[^\p{L}\p{N}]+/gu,' ')
     .trim();
 }
 function numberParam(value:string|undefined){const n=Number(value);return Number.isFinite(n)&&n>=0?n:null;}
