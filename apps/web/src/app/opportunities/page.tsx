@@ -18,8 +18,57 @@ function externalTypeLabel(type:string){if(type==='land')return <ExternalMarketT
 type SearchParams = Record<string,string|string[]|undefined>;
 function firstParam(value:string|string[]|undefined){return Array.isArray(value)?value[0]:value;}
 
-function clean(value:unknown){return String(value??'').trim().toLowerCase();}
+function clean(value:unknown){
+  return String(value??'')
+    .normalize('NFKD')
+    .replace(/[\\u0300-\\u036f]/g,'')
+    .toLowerCase()
+    .replace(/[^\\p{L}\\p{N}]+/gu,' ')
+    .trim();
+}
 function numberParam(value:string|undefined){const n=Number(value);return Number.isFinite(n)&&n>=0?n:null;}
+
+const searchAliases:Record<string,string[]> = {
+  land:['land','plot','parcel','site','terrain'],
+  plot:['plot','parcel','land','site'],
+  parcel:['parcel','plot','land','site'],
+  coastal:['coastal','beach','seafront','waterfront'],
+  beach:['beach','coastal','seafront','waterfront'],
+  commercial:['commercial','retail','business'],
+  residential:['residential','housing','home','villa','apartment'],
+  hotel:['hotel','hospitality','resort'],
+  hospitality:['hospitality','hotel','resort'],
+  industrial:['industrial','warehouse','factory'],
+  development:['development','development project','project'],
+  investment:['investment','opportunity','development'],
+};
+
+function queryTokens(query:string){
+  return clean(query).split(/\\s+/).filter(Boolean);
+}
+
+function tokenMatches(token:string, haystack:string){
+  const candidates=[token,...(searchAliases[token]??[])];
+  return candidates.some(candidate=>haystack.includes(clean(candidate)));
+}
+
+function relevanceScore(query:string, fields:Record<string,string>){
+  const tokens=queryTokens(query);
+  if(!tokens.length)return 0;
+  let score=0;
+  for(const token of tokens){
+    const title=fields.title;
+    const location=fields.location;
+    const type=fields.type;
+    const reference=fields.reference;
+    if(tokenMatches(token,title))score+=8;
+    else if(tokenMatches(token,location))score+=5;
+    else if(tokenMatches(token,type))score+=4;
+    else if(tokenMatches(token,reference))score+=3;
+    else if(tokenMatches(token,fields.all))score+=1;
+  }
+  return score;
+}
 
 export default async function OpportunitiesPage({searchParams}:{searchParams:Promise<SearchParams>}) {
   const params=await searchParams;
@@ -55,10 +104,20 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
   const max=numberParam(normalizedParams.max);
   const areaMin=numberParam(normalizedParams.areaMin);
 
-  const filteredRows=rows.filter(({opportunity,asset})=>{
-    if(!asset)return false;
-    const haystack=clean([asset.title,asset.public_summary,asset.city,asset.region,asset.country_code,asset.asset_type,opportunity.slug,opportunity.id,opportunity.investment_thesis].join(' '));
-    if(q&&!haystack.includes(q))return false;
+  const scoredRows=rows.map(({opportunity,asset})=>{
+    if(!asset)return null;
+    const fields={
+      title:clean(asset.title),
+      location:clean([asset.city,asset.region,asset.country_code].join(' ')),
+      type:clean(asset.asset_type),
+      reference:clean([opportunity.slug,opportunity.id].join(' ')),
+      all:clean([asset.title,asset.public_summary,asset.city,asset.region,asset.country_code,asset.asset_type,opportunity.slug,opportunity.id,opportunity.investment_thesis].join(' ')),
+    };
+    return {opportunity,asset,score:q?relevanceScore(q,fields):0};
+  }).filter((row):row is {opportunity:Opportunity;asset:Asset;score:number}=>Boolean(row));
+
+  const filteredRows=scoredRows.filter(({opportunity,asset,score})=>{
+    if(q&&!score)return false;
     if(country&&clean(asset.country_code)!==country)return false;
     if(city&&clean(asset.city)!==city)return false;
     if(type&&clean(asset.asset_type)!==type)return false;
@@ -69,8 +128,9 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
     return true;
   });
 
-  const sort=normalizedParams.sort||'newest';
+  const sort=normalizedParams.sort||(q?'relevance':'newest');
   filteredRows.sort((a,b)=>{
+    if(sort==='relevance')return b.score-a.score;
     if(sort==='price_asc')return Number(a.asset?.asking_price??Infinity)-Number(b.asset?.asking_price??Infinity);
     if(sort==='price_desc')return Number(b.asset?.asking_price??0)-Number(a.asset?.asking_price??0);
     if(sort==='area_desc')return Number(b.asset?.area_sqm??0)-Number(a.asset?.area_sqm??0);
