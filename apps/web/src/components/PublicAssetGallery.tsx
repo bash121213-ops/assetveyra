@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { useLocale } from '@/components/LocaleShell';
+import { useEffect, useRef, useState, type TouchEvent } from 'react';
+import { I18nText, useLocale } from '@/components/LocaleShell';
 import { translate } from '@/lib/i18n';
 
 type Image = { id: string; signed_url: string; sort_order: number; alt?: string | null };
@@ -76,7 +76,7 @@ export default function PublicAssetGallery({ images }: { images: Image[] }) {
     setActive((value) => (value + delta + validImages.length) % validImages.length);
   };
 
-  const onTouchStart = (event: React.TouchEvent) => {
+  const onTouchStart = (event: TouchEvent) => {
     touchStartX.current = event.changedTouches[0]?.clientX ?? null;
   };
 
@@ -174,8 +174,4 @@ export default function PublicAssetGallery({ images }: { images: Image[] }) {
       )}
     </>
   );
-}
-
-function I18nText({ id }: { id: string }) {
-  return <span><span>{translate(id, useLocale())}</span></span>;
 }
