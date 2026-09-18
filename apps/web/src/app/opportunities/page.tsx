@@ -4,7 +4,7 @@ import { ExternalMarketText } from '@/components/ExternalMarketText';
 import MarketplaceSearch from '@/components/MarketplaceSearch';
 
 type Opportunity = { id:string; slug:string; status:string; investment_thesis:string|null; structure:string|null; minimum_ticket:number|null; target_return:number|null; asset_id:string };
-type Asset = { id:string; title:string; asset_type:string; country_code:string|null; region:string|null; city:string|null; area_sqm:number|null; currency:string|null; asking_price:number|null; public_summary:string|null };
+type Asset = { id:string; title:string; asset_type:string; country_code:string|null; region:string|null; city:string|null; area_sqm:number|null; currency:string|null; asking_price:number|null; public_summary:string|null; image_url?:string };
 type ExternalListing = { id:string; country_code:string; country_name:string; city:string|null; title:string; asset_type:string; price_amount:number|null; currency:string|null; area_sqm:number|null; rooms:number|null; summary:string|null; source_name:string; source_url:string; listed_at:string|null; checked_at:string };
 
 const MIN_PUBLIC_VALUE = 100_000;
@@ -39,6 +39,16 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
     }
   }
 
+  if(assets.length){
+    const imageResult=await s.from('asset_images').select('asset_id,storage_path,sort_order').in('asset_id',assets.map(asset=>asset.id)).order('sort_order',{ascending:true});
+    const firstImage=new Map<string,string>();
+    for(const image of (imageResult.data??[]) as Array<{asset_id:string;storage_path:string;sort_order:number}>){
+      if(firstImage.has(image.asset_id)) continue;
+      const signed=await s.storage.from('property-images').createSignedUrl(image.storage_path,60*60);
+      if(signed.data?.signedUrl) firstImage.set(image.asset_id,signed.data.signedUrl);
+    }
+    assets=assets.map(asset=>({...asset,image_url:firstImage.get(asset.id)}));
+  }
   const assetById=new Map(assets.map(asset=>[asset.id,asset]));
   let rows=(opportunities??[]).map(opportunity=>({opportunity:opportunity as Opportunity,asset:assetById.get((opportunity as Opportunity).asset_id)}))
     .filter(({asset})=>Boolean(asset?.asking_price&&Number(asset.asking_price)>=MIN_PUBLIC_VALUE))
@@ -78,7 +88,7 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
     <div className="marketplace-results-head"><strong>{rows.length} <I18nText id="results"/></strong><a href="/opportunities"><I18nText id="Clear filters"/></a></div>
     <section className="opportunity-grid">
       {rows.map(({opportunity,asset})=>asset?<a className="opportunity-card" href={user?`/opportunities/${opportunity.slug}`:'/login'} key={opportunity.id}>
-        <div className="market-card-image">{asset.title&&<div className="market-card-image-placeholder"><I18nText id="Property"/></div>}</div>
+        <div className="market-card-image">{asset.image_url?<img src={asset.image_url} alt="" loading="lazy"/>:<div className="market-card-image-placeholder"><I18nText id="Property"/></div>}</div>
         <div className="card-meta"><span>{sectorKeys[asset.asset_type]?<I18nText id={sectorKeys[asset.asset_type]}/>:asset.asset_type}</span><span>{asset.country_code??'—'}</span></div>
         <h2>{asset.title}</h2>
         <p>{asset.public_summary||opportunity.investment_thesis||<I18nText id="Investment opportunity"/>}</p>
