@@ -36,7 +36,21 @@ export const TRANSLATIONS: Record<string, TranslationSet> = {
 };
 
 export function translate(key: string, locale: Locale): string {
-  return TRANSLATIONS[key]?.[locale] ?? TRANSLATIONS[key]?.en ?? key;
+  const entry = TRANSLATIONS[key];
+  if (!entry) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(`Missing i18n key: ${key}`);
+    }
+    return key;
+  }
+
+  const value = entry[locale];
+  if (value) return value;
+
+  if (process.env.NODE_ENV !== 'production') {
+    console.warn(`Missing i18n locale "${locale}" for key: ${key}`);
+  }
+  return key;
 }
 
 export const CORE_TRANSLATION_KEYS = Object.freeze(Object.keys(TRANSLATIONS));
