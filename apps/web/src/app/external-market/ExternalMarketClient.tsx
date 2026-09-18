@@ -11,7 +11,7 @@ type Localized = { en: string; ar: string };
 type Detail = { label: Localized; value: Localized };
 type Listing = {
   id: string;
-  sourceReference: string;
+  sourceReference?: string;
   country: Localized;
   city: Localized;
   title: Localized;
