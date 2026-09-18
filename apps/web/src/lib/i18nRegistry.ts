@@ -4657,7 +4657,16 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
     "zh": "参考编号",
     "es": "Referencia",
     "fr": "Référence"
-  }
+  },
+  "Verification status": {"en":"Verification status","ar":"حالة التحقق","zh":"验证状态","es":"Estado de verificación","fr":"Statut de vérification"},
+  "Verification in progress": {"en":"Verification in progress","ar":"التحقق قيد التنفيذ","zh":"验证进行中","es":"Verificación en curso","fr":"Vérification en cours"},
+  "Verification record": {"en":"Verification record","ar":"سجل التحقق","zh":"验证记录","es":"Registro de verificación","fr":"Dossier de vérification"},
+  "Listing information submitted": {"en":"Listing information submitted","ar":"تم تقديم معلومات العرض","zh":"已提交挂牌信息","es":"Información del anuncio enviada","fr":"Informations de l’annonce soumises"},
+  "Documents reviewed": {"en":"Documents reviewed","ar":"تمت مراجعة المستندات","zh":"文件已审核","es":"Documentos revisados","fr":"Documents examinés"},
+  "Ownership information reviewed": {"en":"Ownership information reviewed","ar":"تمت مراجعة معلومات الملكية","zh":"所有权信息已审核","es":"Información de propiedad revisada","fr":"Informations de propriété examinées"},
+  "Site visit completed": {"en":"Site visit completed","ar":"تمت الزيارة الميدانية","zh":"现场考察已完成","es":"Visita al sitio completada","fr":"Visite du site effectuée"},
+  "More opportunities": {"en":"More opportunities","ar":"مزيد من الفرص","zh":"更多机会","es":"Más oportunidades","fr":"Plus d’opportunités"},
+  "Similar properties": {"en":"Similar properties","ar":"عقارات مشابهة","zh":"类似资产","es":"Propiedades similares","fr":"Biens similaires"}
 };
 
 export const STATUS_TRANSLATIONS = {
