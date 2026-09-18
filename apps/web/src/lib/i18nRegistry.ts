@@ -1811,22 +1811,22 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   },
   "Pipeline state": {
     "en": "Pipeline state",
-    "ar": "حالة مسار المعاملة",
+    "ar": "حالة المسار",
     "zh": "流程状态",
-    "es": "Estado del flujo",
-    "fr": "État du pipeline"
+    "es": "Estado del proceso",
+    "fr": "État du processus"
   },
   "Each transaction stage is gated by authorization and the required evidence.": {
     "en": "Each transaction stage is gated by authorization and the required evidence.",
-    "ar": "تخضع كل مرحلة من مراحل المعاملة للتفويض والأدلة المطلوبة.",
-    "zh": "每个交易阶段都受授权和所需证据控制。",
-    "es": "Cada etapa de la transacción requiere autorización y la evidencia necesaria.",
+    "ar": "كل مرحلة من مراحل المعاملة تخضع للتفويض والأدلة المطلوبة.",
+    "zh": "每个交易阶段都受授权和所需证据的控制。",
+    "es": "Cada etapa de la transacción está sujeta a autorización y a las pruebas requeridas.",
     "fr": "Chaque étape de la transaction est soumise à autorisation et aux justificatifs requis."
   },
   "Interest opened": {
     "en": "Interest opened",
-    "ar": "تم فتح الاهتمام",
-    "zh": "已开启意向",
+    "ar": "تاريخ فتح الاهتمام",
+    "zh": "意向开启时间",
     "es": "Interés abierto",
     "fr": "Intérêt ouvert"
   },
@@ -1840,21 +1840,21 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   "Transaction gates": {
     "en": "Transaction gates",
     "ar": "بوابات المعاملة",
-    "zh": "交易门槛",
-    "es": "Controles de la transacción",
-    "fr": "Étapes de contrôle de la transaction"
+    "zh": "交易关卡",
+    "es": "Etapas de la transacción",
+    "fr": "Étapes de la transaction"
   },
   "Qualification": {
     "en": "Qualification",
     "ar": "التأهيل",
-    "zh": "资格审核",
-    "es": "Calificación",
+    "zh": "资格审查",
+    "es": "Cualificación",
     "fr": "Qualification"
   },
   "Initial investor review": {
     "en": "Initial investor review",
     "ar": "المراجعة الأولية للمستثمر",
-    "zh": "初步投资者审核",
+    "zh": "投资者初步审核",
     "es": "Revisión inicial del inversor",
     "fr": "Examen initial de l’investisseur"
   },
@@ -1869,50 +1869,50 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
     "en": "Qualify investor",
     "ar": "تأهيل المستثمر",
     "zh": "审核投资者资格",
-    "es": "Calificar inversor",
+    "es": "Cualificar al inversor",
     "fr": "Qualifier l’investisseur"
   },
   "Request controlled disclosure": {
     "en": "Request controlled disclosure",
-    "ar": "طلب إفصاح خاضع للضوابط",
-    "zh": "申请受控披露",
+    "ar": "طلب الإفصاح المنضبط",
+    "zh": "请求受控披露",
     "es": "Solicitar divulgación controlada",
     "fr": "Demander une divulgation contrôlée"
   },
   "Request NDA": {
     "en": "Request NDA",
-    "ar": "طلب اتفاقية عدم إفصاح",
+    "ar": "طلب اتفاقية عدم الإفصاح",
     "zh": "请求保密协议",
     "es": "Solicitar NDA",
-    "fr": "Demander un NDA"
+    "fr": "Demander une NDA"
   },
   "NDA / data room": {
     "en": "NDA / data room",
-    "ar": "اتفاقية عدم إفصاح / غرفة بيانات",
+    "ar": "اتفاقية عدم الإفصاح / غرفة البيانات",
     "zh": "保密协议 / 数据室",
     "es": "NDA / sala de datos",
-    "fr": "NDA / salle de données"
+    "fr": "NDA / data room"
   },
   "NDA accepted and data-room access verified": {
     "en": "NDA accepted and data-room access verified",
     "ar": "تم قبول اتفاقية عدم الإفصاح والتحقق من الوصول إلى غرفة البيانات",
-    "zh": "保密协议已接受并已验证数据室访问权限",
-    "es": "NDA aceptado y acceso a la sala de datos verificado",
-    "fr": "NDA accepté et accès à la salle de données vérifié"
+    "zh": "保密协议已接受，数据室访问已验证",
+    "es": "NDA aceptada y acceso a la sala de datos verificado",
+    "fr": "NDA acceptée et accès à la data room vérifié"
   },
   "NDA accepted; waiting for data-room access": {
     "en": "NDA accepted; waiting for data-room access",
     "ar": "تم قبول اتفاقية عدم الإفصاح؛ بانتظار الوصول إلى غرفة البيانات",
     "zh": "保密协议已接受；等待数据室访问权限",
-    "es": "NDA aceptado; esperando acceso a la sala de datos",
-    "fr": "NDA accepté ; en attente de l’accès à la salle de données"
+    "es": "NDA aceptada; esperando el acceso a la sala de datos",
+    "fr": "NDA acceptée ; en attente de l’accès à la data room"
   },
   "Accept the NDA to continue": {
     "en": "Accept the NDA to continue",
     "ar": "اقبل اتفاقية عدم الإفصاح للمتابعة",
-    "zh": "接受保密协议以继续",
-    "es": "Acepta el NDA para continuar",
-    "fr": "Acceptez le NDA pour continuer"
+    "zh": "接受保密协议后继续",
+    "es": "Acepte la NDA para continuar",
+    "fr": "Acceptez la NDA pour continuer"
   },
   "Ready": {
     "en": "Ready",
@@ -1931,30 +1931,30 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   "Record NDA signed": {
     "en": "Record NDA signed",
     "ar": "تسجيل توقيع اتفاقية عدم الإفصاح",
-    "zh": "记录保密协议签署",
-    "es": "Registrar NDA firmado",
-    "fr": "Enregistrer le NDA signé"
+    "zh": "记录保密协议已签署",
+    "es": "Registrar NDA firmada",
+    "fr": "Enregistrer la signature de la NDA"
   },
   "Enter data room": {
     "en": "Enter data room",
     "ar": "دخول غرفة البيانات",
     "zh": "进入数据室",
     "es": "Entrar en la sala de datos",
-    "fr": "Entrer dans la salle de données"
+    "fr": "Entrer dans la data room"
   },
   "Start the formal diligence case": {
     "en": "Start the formal diligence case",
     "ar": "بدء ملف العناية الواجبة الرسمي",
-    "zh": "启动正式尽调案件",
+    "zh": "开始正式尽职调查案件",
     "es": "Iniciar el expediente formal de diligencia",
-    "fr": "Lancer le dossier formel de diligence"
+    "fr": "Démarrer le dossier formel de due diligence"
   },
   "Start diligence": {
     "en": "Start diligence",
     "ar": "بدء العناية الواجبة",
-    "zh": "开始尽调",
+    "zh": "开始尽职调查",
     "es": "Iniciar diligencia",
-    "fr": "Démarrer la diligence"
+    "fr": "Démarrer la due diligence"
   },
   "No expiry": {
     "en": "No expiry",
@@ -1966,7 +1966,7 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   "Accept & open deal": {
     "en": "Accept & open deal",
     "ar": "قبول وفتح الصفقة",
-    "zh": "接受并开启交易",
+    "zh": "接受并创建交易",
     "es": "Aceptar y abrir la operación",
     "fr": "Accepter et ouvrir la transaction"
   },
@@ -1980,9 +1980,9 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   "Formal offers become available only after diligence has started.": {
     "en": "Formal offers become available only after diligence has started.",
     "ar": "تصبح العروض الرسمية متاحة فقط بعد بدء العناية الواجبة.",
-    "zh": "正式报价仅在尽调开始后可用。",
-    "es": "Las ofertas formales estarán disponibles solo después de iniciar la diligencia.",
-    "fr": "Les offres formelles deviennent disponibles uniquement après le début de la diligence."
+    "zh": "正式报价仅在尽职调查开始后可用。",
+    "es": "Las ofertas formales solo están disponibles después de iniciar la diligencia.",
+    "fr": "Les offres formelles sont disponibles uniquement après le début de la due diligence."
   },
   "Formal offer": {
     "en": "Formal offer",
@@ -2000,10 +2000,10 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   },
   "Offers are gated until the investor reaches the diligence stage. This prevents a commercial offer from bypassing qualification, NDA and controlled disclosure.": {
     "en": "Offers are gated until the investor reaches the diligence stage. This prevents a commercial offer from bypassing qualification, NDA and controlled disclosure.",
-    "ar": "تظل العروض مقيدة حتى يصل المستثمر إلى مرحلة العناية الواجبة، لمنع تجاوز التأهيل واتفاقية عدم الإفصاح والإفصاح الخاضع للضوابط.",
-    "zh": "在投资者进入尽调阶段前，报价受到限制，以防止商业报价绕过资格审核、保密协议和受控披露。",
-    "es": "Las ofertas están restringidas hasta que el inversor alcance la fase de diligencia para evitar que una oferta comercial omita la calificación, el NDA y la divulgación controlada.",
-    "fr": "Les offres sont bloquées jusqu’à ce que l’investisseur atteigne l’étape de diligence afin d’éviter de contourner la qualification, le NDA et la divulgation contrôlée."
+    "ar": "تظل العروض مقيدة حتى يصل المستثمر إلى مرحلة العناية الواجبة، لمنع تجاوز التأهيل واتفاقية السرية والإفصاح المنضبط.",
+    "zh": "在投资者进入尽职调查阶段前，报价受到限制，以防商业报价绕过资格审查、保密协议和受控披露。",
+    "es": "Las ofertas están restringidas hasta que el inversor alcanza la diligencia, evitando que una oferta comercial omita la cualificación, la NDA y la divulgación controlada.",
+    "fr": "Les offres sont bloquées jusqu’à l’étape de due diligence afin d’éviter qu’une offre commerciale contourne la qualification, la NDA et la divulgation contrôlée."
   },
   "Amount": {
     "en": "Amount",
@@ -2021,23 +2021,23 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   },
   "Key conditions, due diligence conditions, target closing…": {
     "en": "Key conditions, due diligence conditions, target closing…",
-    "ar": "الشروط الرئيسية وشروط العناية الواجبة والإغلاق المستهدف…",
-    "zh": "主要条件、尽调条件、目标成交日期…",
+    "ar": "الشروط الأساسية وشروط العناية الواجبة وموعد الإغلاق المستهدف…",
+    "zh": "主要条件、尽职调查条件、目标交割时间……",
     "es": "Condiciones clave, condiciones de diligencia, cierre previsto…",
-    "fr": "Conditions clés, conditions de diligence, clôture prévue…"
+    "fr": "Conditions clés, conditions de due diligence, clôture cible…"
   },
   "Submit formal offer": {
     "en": "Submit formal offer",
-    "ar": "تقديم العرض الرسمي",
+    "ar": "إرسال العرض الرسمي",
     "zh": "提交正式报价",
-    "es": "Presentar oferta formal",
-    "fr": "Soumettre une offre formelle"
+    "es": "Enviar oferta formal",
+    "fr": "Soumettre l’offre formelle"
   },
   "Offer gate locked": {
     "en": "Offer gate locked",
     "ar": "بوابة العرض مقفلة",
-    "zh": "报价门槛已锁定",
-    "es": "Control de oferta bloqueado",
+    "zh": "报价关卡已锁定",
+    "es": "Etapa de oferta bloqueada",
     "fr": "Étape de l’offre verrouillée"
   },
   "Current stage": {
@@ -2050,30 +2050,30 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   "Complete the required transaction gates first.": {
     "en": "Complete the required transaction gates first.",
     "ar": "أكمل بوابات المعاملة المطلوبة أولًا.",
-    "zh": "请先完成所需的交易门槛。",
-    "es": "Completa primero los controles de transacción requeridos.",
-    "fr": "Terminez d’abord les étapes de contrôle requises."
+    "zh": "请先完成所需的交易关卡。",
+    "es": "Complete primero las etapas requeridas de la transacción.",
+    "fr": "Complétez d’abord les étapes requises de la transaction."
   },
   "Checking your account…": {
     "en": "Checking your account…",
     "ar": "جارٍ التحقق من حسابك…",
-    "zh": "正在检查您的账户…",
-    "es": "Comprobando tu cuenta…",
+    "zh": "正在检查您的账户……",
+    "es": "Comprobando su cuenta…",
     "fr": "Vérification de votre compte…"
   },
   "Transaction Agreement": {
     "en": "Transaction Agreement",
     "ar": "اتفاقية المعاملة",
-    "zh": "اتفاقية المعاملة",
+    "zh": "交易协议",
     "es": "Acuerdo de transacción",
     "fr": "Accord de transaction"
   },
   "1% transaction fee, non-circumvention and service terms": {
     "en": "1% transaction fee, non-circumvention and service terms",
-    "ar": "أتعاب معاملة 1% وشروط عدم الالتفاف والخدمة",
-    "zh": "1% 交易服务费、反规避及服务条款",
-    "es": "Comisión de transacción del 1 %, no elusión y condiciones del servicio",
-    "fr": "Frais de transaction de 1 %, non-contournement et conditions de service"
+    "ar": "رسوم معاملة بنسبة 1% وشروط عدم الالتفاف وشروط الخدمة",
+    "zh": "1%交易费、禁止规避及服务条款",
+    "es": "Comisión de transacción del 1 %, términos de no elusión y condiciones del servicio",
+    "fr": "Frais de transaction de 1 %, conditions de non-contournement et conditions de service"
   },
   "Overview": {
     "en": "Overview",
@@ -2112,10 +2112,10 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   },
   "Manage submitted assets and their controlled verification and publication status.": {
     "en": "Manage submitted assets and their controlled verification and publication status.",
-    "ar": "إدارة الأصول المقدمة وحالة التحقق والنشر الخاضعة للضوابط.",
+    "ar": "إدارة الأصول المقدمة وحالة التحقق والنشر المنضبطة الخاصة بها.",
     "zh": "管理已提交资产及其受控验证和发布状态。",
-    "es": "Gestiona los activos enviados y su estado controlado de verificación y publicación.",
-    "fr": "Gérez les actifs soumis et leur statut contrôlé de vérification et de publication."
+    "es": "Gestione los activos enviados y su estado controlado de verificación y publicación.",
+    "fr": "Gérez les actifs soumis ainsi que leur statut contrôlé de vérification et de publication."
   },
   "TRANSACTION": {
     "en": "TRANSACTION",
@@ -2141,9 +2141,9 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   "Target closing": {
     "en": "Target closing",
     "ar": "الإغلاق المستهدف",
-    "zh": "目标成交日期",
+    "zh": "目标交割",
     "es": "Cierre previsto",
-    "fr": "Clôture prévue"
+    "fr": "Clôture cible"
   },
   "Accepted offer": {
     "en": "Accepted offer",
@@ -2161,7 +2161,7 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   },
   "CONTROLLED ACCESS": {
     "en": "CONTROLLED ACCESS",
-    "ar": "وصول خاضع للضوابط",
+    "ar": "الوصول المنضبط",
     "zh": "受控访问",
     "es": "ACCESO CONTROLADO",
     "fr": "ACCÈS CONTRÔLÉ"
@@ -2171,55 +2171,55 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
     "ar": "غرف البيانات",
     "zh": "数据室",
     "es": "Salas de datos",
-    "fr": "Salles de données"
+    "fr": "Data rooms"
   },
   "Confidential disclosure remains inside the transaction context. Access is controlled by the existing data-room and NDA rules.": {
     "en": "Confidential disclosure remains inside the transaction context. Access is controlled by the existing data-room and NDA rules.",
-    "ar": "يبقى الإفصاح السري ضمن سياق المعاملة، ويخضع الوصول لقواعد غرفة البيانات واتفاقية عدم الإفصاح القائمة.",
+    "ar": "يبقى الإفصاح السري ضمن سياق المعاملة. ويخضع الوصول لقواعد غرفة البيانات واتفاقية عدم الإفصاح الحالية.",
     "zh": "机密披露仅限于交易范围内。访问受现有数据室和保密协议规则控制。",
-    "es": "La divulgación confidencial permanece dentro del contexto de la transacción. El acceso está controlado por las reglas existentes de la sala de datos y del NDA.",
-    "fr": "Les informations confidentielles restent dans le cadre de la transaction. L’accès est contrôlé par les règles existantes de la salle de données et de l’accord de confidentialité."
+    "es": "La divulgación confidencial permanece dentro del contexto de la transacción. El acceso se controla mediante las reglas existentes de la sala de datos y la NDA.",
+    "fr": "La divulgation confidentielle reste dans le contexte de la transaction. L’accès est contrôlé par les règles existantes de la data room et de la NDA."
   },
   "NDA required": {
     "en": "NDA required",
-    "ar": "اتفاقية عدم إفصاح مطلوبة",
+    "ar": "اتفاقية عدم الإفصاح مطلوبة",
     "zh": "需要保密协议",
-    "es": "NDA obligatorio",
-    "fr": "NDA requis"
+    "es": "NDA obligatoria",
+    "fr": "NDA requise"
   },
   "NDA optional": {
     "en": "NDA optional",
-    "ar": "اتفاقية عدم إفصاح اختيارية",
+    "ar": "اتفاقية عدم الإفصاح اختيارية",
     "zh": "保密协议可选",
     "es": "NDA opcional",
-    "fr": "NDA facultatif"
+    "fr": "NDA facultative"
   },
   "Open Data Room →": {
     "en": "Open Data Room →",
     "ar": "فتح غرفة البيانات ←",
     "zh": "打开数据室 →",
     "es": "Abrir sala de datos →",
-    "fr": "Ouvrir la salle de données →"
+    "fr": "Ouvrir la data room →"
   },
   "No data room currently linked.": {
     "en": "No data room currently linked.",
     "ar": "لا توجد غرفة بيانات مرتبطة حاليًا.",
-    "zh": "当前未关联数据室。",
-    "es": "No hay una sala de datos vinculada.",
-    "fr": "Aucune salle de données n’est actuellement liée."
+    "zh": "目前没有关联的数据室。",
+    "es": "No hay ninguna sala de datos vinculada actualmente.",
+    "fr": "Aucune data room n’est actuellement liée."
   },
   "A controlled data room may be created when the transaction reaches the appropriate disclosure stage.": {
     "en": "A controlled data room may be created when the transaction reaches the appropriate disclosure stage.",
-    "ar": "يمكن إنشاء غرفة بيانات خاضعة للضوابط عند وصول المعاملة إلى مرحلة الإفصاح المناسبة.",
-    "zh": "交易达到适当披露阶段后，可以创建受控数据室。",
-    "es": "Puede crearse una sala de datos controlada cuando la transacción alcance la fase de divulgación adecuada.",
-    "fr": "Une salle de données contrôlée peut être créée lorsque la transaction atteint l’étape de divulgation appropriée."
+    "ar": "يمكن إنشاء غرفة بيانات منضبطة عندما تصل المعاملة إلى مرحلة الإفصاح المناسبة.",
+    "zh": "当交易达到适当的披露阶段时，可以创建受控数据室。",
+    "es": "Puede crearse una sala de datos controlada cuando la transacción alcance la etapa de divulgación adecuada.",
+    "fr": "Une data room contrôlée peut être créée lorsque la transaction atteint l’étape de divulgation appropriée."
   },
   "TRANSACTION HISTORY": {
     "en": "TRANSACTION HISTORY",
     "ar": "سجل المعاملة",
     "zh": "交易历史",
-    "es": "HISTORIAL DE LA TRANSACCIÓN",
+    "es": "HISTORIAL DE TRANSACCIONES",
     "fr": "HISTORIQUE DE LA TRANSACTION"
   },
   "Recorded transaction events": {
@@ -2231,15 +2231,15 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   },
   "No events recorded.": {
     "en": "No events recorded.",
-    "ar": "لا توجد أحداث مسجلة.",
-    "zh": "暂无记录的事件。",
-    "es": "No hay eventos registrados.",
+    "ar": "لم يتم تسجيل أي أحداث.",
+    "zh": "尚未记录任何事件。",
+    "es": "No se han registrado eventos.",
     "fr": "Aucun événement enregistré."
   },
   "NEXT CONTROLLED STEP": {
     "en": "NEXT CONTROLLED STEP",
-    "ar": "الخطوة الخاضعة للضوابط التالية",
-    "zh": "下一项受控步骤",
+    "ar": "الخطوة المنضبطة التالية",
+    "zh": "下一受控步骤",
     "es": "SIGUIENTE PASO CONTROLADO",
     "fr": "PROCHAINE ÉTAPE CONTRÔLÉE"
   },
@@ -2252,23 +2252,23 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   },
   "Advance the transaction only when the current legal, diligence and commercial gate has been satisfied.": {
     "en": "Advance the transaction only when the current legal, diligence and commercial gate has been satisfied.",
-    "ar": "لا تُقدّم المعاملة إلا بعد استيفاء المتطلبات القانونية والعناية الواجبة والمتطلبات التجارية الحالية.",
-    "zh": "仅在当前法律、尽调和商业门槛满足后推进交易。",
-    "es": "Avanza la transacción solo cuando se hayan cumplido los requisitos legales, de diligencia y comerciales actuales.",
-    "fr": "Ne faites avancer la transaction qu’après satisfaction des exigences juridiques, de diligence et commerciales en cours."
+    "ar": "تابع المعاملة فقط بعد استيفاء المتطلبات القانونية والعناية الواجبة والتجارية الحالية.",
+    "zh": "仅在当前法律、尽职调查和商业关卡满足后推进交易。",
+    "es": "Avance la transacción solo cuando se hayan cumplido las condiciones legales, de diligencia y comerciales actuales.",
+    "fr": "Faites avancer la transaction uniquement lorsque les conditions juridiques, de due diligence et commerciales actuelles sont remplies."
   },
   "Execution note": {
     "en": "Execution note",
     "ar": "ملاحظة التنفيذ",
-    "zh": "执行说明",
+    "zh": "执行备注",
     "es": "Nota de ejecución",
     "fr": "Note d’exécution"
   },
   "Advance transaction": {
     "en": "Advance transaction",
-    "ar": "تقدّم بالمعاملة",
+    "ar": "متابعة المعاملة",
     "zh": "推进交易",
-    "es": "Avanzar transacción",
+    "es": "Avanzar la transacción",
     "fr": "Faire avancer la transaction"
   },
   "TRANSACTIONS": {
@@ -2280,10 +2280,10 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   },
   "Follow each transaction through its controlled lifecycle from initiation to closing.": {
     "en": "Follow each transaction through its controlled lifecycle from initiation to closing.",
-    "ar": "تابع كل معاملة عبر مراحلها الخاضعة للضوابط من البدء حتى الإغلاق.",
-    "zh": "跟踪每笔交易从启动到成交的受控流程。",
-    "es": "Sigue cada transacción a través de su ciclo controlado desde el inicio hasta el cierre.",
-    "fr": "Suivez chaque transaction dans son cycle contrôlé, du lancement à la clôture."
+    "ar": "تابع كل معاملة عبر دورة حياتها المنضبطة من البدء حتى الإغلاق.",
+    "zh": "从启动到交割，跟踪每笔交易的受控生命周期。",
+    "es": "Siga cada transacción durante su ciclo de vida controlado desde el inicio hasta el cierre.",
+    "fr": "Suivez chaque transaction dans son cycle de vie contrôlé, de l’initiation à la clôture."
   },
   "ACTIVE": {
     "en": "ACTIVE",
@@ -2309,7 +2309,7 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   "No active transactions.": {
     "en": "No active transactions.",
     "ar": "لا توجد معاملات نشطة.",
-    "zh": "没有进行中的交易。",
+    "zh": "暂无进行中的交易。",
     "es": "No hay transacciones activas.",
     "fr": "Aucune transaction active."
   },
@@ -2330,7 +2330,7 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   "No completed transactions yet.": {
     "en": "No completed transactions yet.",
     "ar": "لا توجد معاملات مكتملة بعد.",
-    "zh": "尚无已完成的交易。",
+    "zh": "暂无已完成的交易。",
     "es": "Aún no hay transacciones completadas.",
     "fr": "Aucune transaction terminée pour le moment."
   },
@@ -2338,22 +2338,22 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
     "en": "Due diligence",
     "ar": "العناية الواجبة",
     "zh": "尽职调查",
-    "es": "Diligencia debida",
-    "fr": "Diligence raisonnable"
+    "es": "Due diligence",
+    "fr": "Due diligence"
   },
   "MY INTERESTS": {
     "en": "MY INTERESTS",
     "ar": "اهتماماتي",
-    "zh": "اهتماماتي",
+    "zh": "我的意向",
     "es": "MIS INTERESES",
     "fr": "MES INTÉRÊTS"
   },
   "One place to track opportunity interest and its controlled progression toward a transaction.": {
     "en": "One place to track opportunity interest and its controlled progression toward a transaction.",
-    "ar": "مكان واحد لمتابعة الاهتمام بالفرص وتقدمه المنضبط نحو المعاملة.",
-    "zh": "集中跟踪机会意向及其受控推进至交易的过程。",
-    "es": "Un solo lugar para seguir el interés en oportunidades y su progreso controlado hacia una transacción.",
-    "fr": "Un seul endroit pour suivre l’intérêt pour les opportunités et sa progression contrôlée vers une transaction."
+    "ar": "مكان واحد لمتابعة الاهتمام بالفرص وتقدمها المنضبط نحو المعاملة.",
+    "zh": "在一个地方跟踪机会意向及其向交易推进的受控过程。",
+    "es": "Un solo lugar para seguir el interés en oportunidades y su avance controlado hacia una transacción.",
+    "fr": "Un seul endroit pour suivre les intérêts dans les opportunités et leur progression contrôlée vers une transaction."
   },
   "Opportunities I requested": {
     "en": "Opportunities I requested",
@@ -2365,14 +2365,14 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   "Interest in your opportunities": {
     "en": "Interest in your opportunities",
     "ar": "الاهتمام بفرصك",
-    "zh": "对您机会的兴趣",
-    "es": "Interés en tus oportunidades",
+    "zh": "对您机会的意向",
+    "es": "Interés en sus oportunidades",
     "fr": "Intérêt pour vos opportunités"
   },
   "Investor organization": {
     "en": "Investor organization",
-    "ar": "جهة المستثمر",
-    "zh": "投资者组织",
+    "ar": "مؤسسة المستثمر",
+    "zh": "投资者机构",
     "es": "Organización del inversor",
     "fr": "Organisation de l’investisseur"
   },
@@ -2393,13 +2393,13 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   "Interest records appear here when your organization participates in an opportunity.": {
     "en": "Interest records appear here when your organization participates in an opportunity.",
     "ar": "تظهر سجلات الاهتمام هنا عندما تشارك مؤسستك في فرصة.",
-    "zh": "当您的组织参与某个机会时，意向记录会显示在此处。",
-    "es": "Los registros de interés aparecen aquí cuando tu organización participa en una oportunidad.",
+    "zh": "当您的机构参与机会时，意向记录会显示在这里。",
+    "es": "Los registros de interés aparecen aquí cuando su organización participa en una oportunidad.",
     "fr": "Les enregistrements d’intérêt apparaissent ici lorsque votre organisation participe à une opportunité."
   },
   "Admin Console": {
     "en": "Admin Console",
-    "ar": "لوحة إدارة النظام",
+    "ar": "لوحة الإدارة",
     "zh": "管理控制台",
     "es": "Consola de administración",
     "fr": "Console d’administration"
@@ -2407,9 +2407,9 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   "Your authenticated view of opportunities, interests and transactions.": {
     "en": "Your authenticated view of opportunities, interests and transactions.",
     "ar": "عرضك الموثق للفرص والاهتمامات والمعاملات.",
-    "zh": "您已验证身份的机会、意向和交易视图。",
-    "es": "Vista autenticada de tus oportunidades, intereses y transacciones.",
-    "fr": "Vue authentifiée de vos opportunités, intérêts et transactions."
+    "zh": "您经过身份验证的机会、意向和交易视图。",
+    "es": "Su vista autenticada de oportunidades, intereses y transacciones.",
+    "fr": "Votre vue authentifiée des opportunités, intérêts et transactions."
   },
   "NEXT STEPS": {
     "en": "NEXT STEPS",
@@ -2422,21 +2422,21 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
     "en": "Your activity",
     "ar": "نشاطك",
     "zh": "您的活动",
-    "es": "Tu actividad",
+    "es": "Su actividad",
     "fr": "Votre activité"
   },
   "Explore opportunities": {
     "en": "Explore opportunities",
     "ar": "استكشف الفرص",
     "zh": "探索机会",
-    "es": "Explora oportunidades",
+    "es": "Explorar oportunidades",
     "fr": "Explorer les opportunités"
   },
   "Review the available real-estate opportunities and open an opportunity to see its permitted details.": {
     "en": "Review the available real-estate opportunities and open an opportunity to see its permitted details.",
-    "ar": "راجع الفرص العقارية المتاحة وافتح أي فرصة للاطلاع على تفاصيلها المسموح بها.",
-    "zh": "查看可用的房地产机会，并打开机会以查看允许披露的详细信息。",
-    "es": "Revisa las oportunidades inmobiliarias disponibles y abre una oportunidad para ver sus detalles permitidos.",
+    "ar": "راجع الفرص العقارية المتاحة وافتح فرصة لعرض تفاصيلها المسموح بها.",
+    "zh": "查看可用的房地产机会，并打开机会以查看获准的信息。",
+    "es": "Revise las oportunidades inmobiliarias disponibles y abra una para ver sus detalles permitidos.",
     "fr": "Consultez les opportunités immobilières disponibles et ouvrez-en une pour voir les détails autorisés."
   },
   "Open Marketplace →": {
@@ -2449,9 +2449,9 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   "Track qualification, NDA, data-room and diligence progress for opportunities you requested.": {
     "en": "Track qualification, NDA, data-room and diligence progress for opportunities you requested.",
     "ar": "تابع تقدم التأهيل واتفاقية عدم الإفصاح وغرفة البيانات والعناية الواجبة للفرص التي طلبتها.",
-    "zh": "跟踪您申请的机会的资格审核、保密协议、数据室和尽调进度。",
-    "es": "Sigue el progreso de calificación, NDA, sala de datos y diligencia de las oportunidades solicitadas.",
-    "fr": "Suivez la progression de la qualification, du NDA, de la salle de données et de la diligence pour les opportunités demandées."
+    "zh": "跟踪您申请的机会的资格审查、保密协议、数据室和尽职调查进度。",
+    "es": "Siga el progreso de cualificación, NDA, sala de datos y diligencia de las oportunidades que solicitó.",
+    "fr": "Suivez l’avancement de la qualification, de la NDA, de la data room et de la due diligence des opportunités demandées."
   },
   "Open My Interests →": {
     "en": "Open My Interests →",
@@ -2462,10 +2462,10 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   },
   "Follow active transactions through their controlled lifecycle to closing.": {
     "en": "Follow active transactions through their controlled lifecycle to closing.",
-    "ar": "تابع المعاملات النشطة عبر مراحلها الخاضعة للضوابط حتى الإغلاق.",
-    "zh": "跟踪活跃交易的受控流程直至成交。",
-    "es": "Sigue las transacciones activas a través de su ciclo controlado hasta el cierre.",
-    "fr": "Suivez les transactions actives dans leur cycle contrôlé jusqu’à la clôture."
+    "ar": "تابع المعاملات النشطة عبر دورتها المنضبطة حتى الإغلاق.",
+    "zh": "跟踪进行中的交易，直至其受控生命周期完成交割。",
+    "es": "Siga las transacciones activas durante su ciclo de vida controlado hasta el cierre.",
+    "fr": "Suivez les transactions actives dans leur cycle de vie contrôlé jusqu’à la clôture."
   },
   "Open Transactions →": {
     "en": "Open Transactions →",
@@ -2498,16 +2498,16 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   "No active transactions yet.": {
     "en": "No active transactions yet.",
     "ar": "لا توجد معاملات نشطة بعد.",
-    "zh": "暂无活跃交易。",
+    "zh": "暂无进行中的交易。",
     "es": "Aún no hay transacciones activas.",
     "fr": "Aucune transaction active pour le moment."
   },
   "Your transaction records will appear here after an offer is accepted.": {
     "en": "Your transaction records will appear here after an offer is accepted.",
     "ar": "ستظهر سجلات معاملاتك هنا بعد قبول عرض.",
-    "zh": "接受报价后，您的交易记录将显示在此处。",
-    "es": "Tus registros de transacciones aparecerán aquí después de aceptar una oferta.",
-    "fr": "Vos enregistrements de transaction apparaîtront ici après l’acceptation d’une offre."
+    "zh": "接受报价后，您的交易记录会显示在这里。",
+    "es": "Sus registros de transacciones aparecerán aquí después de aceptar una oferta.",
+    "fr": "Vos enregistrements de transactions apparaîtront ici après l’acceptation d’une offre."
   },
   "Add Property": {
     "en": "Add Property",
@@ -2589,14 +2589,14 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   "My Assets": {
     "en": "My Assets",
     "ar": "أصولي",
-    "zh": "أصولي",
+    "zh": "我的资产",
     "es": "Mis activos",
     "fr": "Mes actifs"
   },
   "My Interests": {
     "en": "My Interests",
     "ar": "اهتماماتي",
-    "zh": "اهتماماتي",
+    "zh": "我的关注",
     "es": "Mis intereses",
     "fr": "Mes intérêts"
   },
@@ -4581,6 +4581,76 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
     "es": "Kassab y Hijos para el Comercio de Tierras e Inmuebles",
     "fr": "Kassab et Fils pour le commerce des terrains et de l’immobilier"
   },
+  "en": {
+    "heading": "External Market Opportunities",
+    "intro": "Selected third-party market listings presented separately from AssetVeyra opportunities. Availability, pricing and transaction terms must be independently verified.",
+    "contact": "Contact AssetVeyra",
+    "request": "Request This Opportunity",
+    "pricing": "Sign in to view pricing",
+    "source": "View original listing",
+    "details": "Property details",
+    "features": "Key features",
+    "more": "Open full details",
+    "less": "Hide details",
+    "unavailable": "Original listing photo could not be retrieved",
+    "footer": "External listings are third-party market references, not verified AssetVeyra opportunities."
+  },
+  "ar": {
+    "heading": "فرص السوق الخارجي",
+    "intro": "قوائم عقارية مختارة من السوق الخارجي ومعروضة بشكل منفصل عن فرص AssetVeyra. يجب التحقق بشكل مستقل من التوفر والأسعار وشروط المعاملة.",
+    "contact": "تواصل مع AssetVeyra",
+    "request": "اطلب هذه الفرصة",
+    "pricing": "سجّل الدخول لعرض السعر",
+    "source": "عرض الإعلان الأصلي",
+    "details": "تفاصيل العقار",
+    "features": "أهم المزايا",
+    "more": "فتح كامل التفاصيل",
+    "less": "إخفاء التفاصيل",
+    "unavailable": "تعذر جلب الصورة الأصلية للإعلان",
+    "footer": "القوائم الخارجية هي مراجع من سوق الغير وليست فرصاً موثقة من AssetVeyra."
+  },
+  "zh": {
+    "heading": "外部市场机会",
+    "intro": "精选第三方市场挂牌，与 AssetVeyra 机会分开显示。可用性、价格和交易条款必须独立核实。",
+    "contact": "联系 AssetVeyra",
+    "request": "咨询此机会",
+    "pricing": "登录后查看价格",
+    "source": "查看原始挂牌",
+    "details": "物业详情",
+    "features": "主要特点",
+    "more": "打开完整详情",
+    "less": "隐藏详情",
+    "unavailable": "无法获取原始挂牌图片",
+    "footer": "外部挂牌是第三方市场参考，并非经 AssetVeyra 核实的机会。"
+  },
+  "es": {
+    "heading": "Oportunidades del mercado externo",
+    "intro": "Listados seleccionados de terceros, separados de las oportunidades de AssetVeyra. La disponibilidad, el precio y las condiciones deben verificarse de forma independiente.",
+    "contact": "Contactar con AssetVeyra",
+    "request": "Solicitar esta oportunidad",
+    "pricing": "Inicie sesión para ver el precio",
+    "source": "Ver anuncio original",
+    "details": "Detalles del inmueble",
+    "features": "Características",
+    "more": "Abrir todos los detalles",
+    "less": "Ocultar detalles",
+    "unavailable": "No se pudo recuperar la foto original",
+    "footer": "Los listados externos son referencias de terceros y no oportunidades verificadas por AssetVeyra."
+  },
+  "fr": {
+    "heading": "Opportunités du marché externe",
+    "intro": "Sélection de biens proposés par des tiers, séparés des opportunités AssetVeyra. La disponibilité, le prix et les conditions doivent être vérifiés indépendamment.",
+    "contact": "Contacter AssetVeyra",
+    "request": "Demander cette opportunité",
+    "pricing": "Connectez-vous pour voir le prix",
+    "source": "Voir l’annonce originale",
+    "details": "Détails du bien",
+    "features": "Caractéristiques",
+    "more": "Ouvrir tous les détails",
+    "less": "Masquer les détails",
+    "unavailable": "La photo originale n’a pas pu être récupérée",
+    "footer": "Les annonces externes sont des références de marché de tiers et non des opportunités vérifiées par AssetVeyra."
+  },
   "Global market watch": {
     "en": "Global market watch",
     "ar": "رصد السوق العالمي",
@@ -4644,9 +4714,7 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
     "es": "Comprobado",
     "fr": "Vérifié"
   }
-,
-
-} ;
+};
 
 export const STATUS_TRANSLATIONS = {
   "draft": {
