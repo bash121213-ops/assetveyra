@@ -77,7 +77,7 @@ export default function PublicAssetGallery({ images }: { images: Image[] }) {
     touchStartX.current = event.changedTouches[0]?.clientX ?? null;
   };
 
-  const onTouchEnd = (event: React.TouchEvent) => {
+  const onTouchEnd = (event: TouchEvent) => {
     if (touchStartX.current === null || validImages.length < 2) return;
     const delta = (event.changedTouches[0]?.clientX ?? 0) - touchStartX.current;
     touchStartX.current = null;
