@@ -6,20 +6,25 @@ import { FormEvent, useState } from 'react';
 type Props = {
   countries: string[];
   cities: string[];
+  regions: string[];
+  citiesByRegion: Record<string,string[]>;
+  regionsByCountry: Record<string,string[]>;
   assetTypes: string[];
   initialParams?: Record<string,string|undefined>;
 };
 
-export default function MarketplaceSearch({ countries, cities, assetTypes, initialParams = {} }: Props) {
+export default function MarketplaceSearch({ countries, cities, regions, citiesByRegion, regionsByCountry, assetTypes, initialParams = {} }: Props) {
   const router = useRouter();
   const [query, setQuery] = useState(initialParams.q || '');
+  const [country, setCountry] = useState(initialParams.country || '');
+  const [region, setRegion] = useState(initialParams.region || '');
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const next = new URLSearchParams();
 
-    for (const key of ['q','country','city','type','min','max','areaMin','sort']) {
+    for (const key of ['q','country','region','city','type','min','max','areaMin','sort']) {
       const value = String(form.get(key) || '').trim();
       if (value) next.set(key, value);
     }
@@ -38,8 +43,9 @@ export default function MarketplaceSearch({ countries, cities, assetTypes, initi
           <button className="button primary" type="submit">Search</button>
         </div>
         <div className="marketplace-filters">
-          <label><span>Country</span><select name="country" defaultValue={initialParams.country || ''}><option value="">All countries</option>{countries.map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
-          <label><span>City</span><select name="city" defaultValue={initialParams.city || ''}><option value="">All cities</option>{cities.map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
+          <label><span>Country</span><select name="country" value={country} onChange={(event) => { setCountry(event.target.value); setRegion(''); }}><option value="">All countries</option>{countries.map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
+          <label><span>Region</span><select name="region" value={region} onChange={(event) => setRegion(event.target.value)}><option value="">All regions</option>{(country ? (regionsByCountry[country.toLowerCase()] ?? regions) : regions).map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
+          <label><span>City</span><select name="city" defaultValue={initialParams.city || ''}><option value="">All cities</option>{(region ? (citiesByRegion[region.toLowerCase()] ?? cities) : cities).map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
           <label><span>Asset type</span><select name="type" defaultValue={initialParams.type || ''}><option value="">All asset types</option>{assetTypes.map((value) => <option key={value} value={value}>{value.replaceAll('_',' ')}</option>)}</select></label>
           <label><span>Min price</span><input name="min" inputMode="numeric" defaultValue={initialParams.min || ''} placeholder="100000" /></label>
           <label><span>Max price</span><input name="max" inputMode="numeric" defaultValue={initialParams.max || ''} placeholder="5000000" /></label>

@@ -93,11 +93,25 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
   const rows=(opportunities??[]).map(opportunity=>({opportunity:opportunity as Opportunity,asset:assetById.get((opportunity as Opportunity).asset_id)})).filter(({asset})=>Boolean(asset?.asking_price&&Number(asset.asking_price)>=MIN_PUBLIC_VALUE));
 
   const countries=[...new Set(rows.map(({asset})=>asset?.country_code).filter(Boolean) as string[])].sort();
+  const regions=[...new Set(rows.map(({asset})=>asset?.region).filter(Boolean) as string[])].sort();
   const cities=[...new Set(rows.map(({asset})=>asset?.city).filter(Boolean) as string[])].sort();
+  const citiesByRegion=rows.reduce<Record<string,string[]>>((acc,{asset})=>{
+    if(!asset?.region||!asset?.city)return acc;
+    const key=clean(asset.region);
+    acc[key]=[...new Set([...(acc[key]??[]),asset.city])].sort();
+    return acc;
+  },{});
+  const regionsByCountry=rows.reduce<Record<string,string[]>>((acc,{asset})=>{
+    if(!asset?.country_code||!asset?.region)return acc;
+    const key=clean(asset.country_code);
+    acc[key]=[...new Set([...(acc[key]??[]),asset.region])].sort();
+    return acc;
+  },{});
   const assetTypes=[...new Set(rows.map(({asset})=>asset?.asset_type).filter(Boolean) as string[])].sort();
 
   const q=clean(normalizedParams.q);
   const country=clean(normalizedParams.country);
+  const region=clean(normalizedParams.region);
   const city=clean(normalizedParams.city);
   const type=clean(normalizedParams.type);
   const min=numberParam(normalizedParams.min);
@@ -119,6 +133,7 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
   const filteredRows=scoredRows.filter(({opportunity,asset,score})=>{
     if(q&&!score)return false;
     if(country&&clean(asset.country_code)!==country)return false;
+    if(region&&clean(asset.region)!==region)return false;
     if(city&&clean(asset.city)!==city)return false;
     if(type&&clean(asset.asset_type)!==type)return false;
     const price=Number(asset.asking_price);
@@ -146,9 +161,9 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
     <section className="page-head"><div className="eyebrow"><I18nText id="Market"/></div><h1><I18nText id="Marketplace"/></h1><p><I18nText id="Curated opportunities for qualified investors worldwide."/></p></section>
     {error&&<div className="form-error" style={{maxWidth:1280,margin:'0 auto 30px',width:'88%'}}><I18nText id="The live marketplace could not be loaded. Please try again shortly."/></div>}
 
-    <MarketplaceSearch countries={countries} cities={cities} assetTypes={assetTypes} initialParams={initialParams}/>
+    <MarketplaceSearch countries={countries} regions={regions} cities={cities} citiesByRegion={citiesByRegion} regionsByCountry={regionsByCountry} assetTypes={assetTypes} initialParams={initialParams}/>
 
-    <section className="marketplace-results-bar"><strong>{filteredRows.length}</strong><span>matching opportunities</span>{(q||country||city||type||min!==null||max!==null||areaMin!==null)&&<a href="/opportunities">Clear filters</a>}</section>
+    <section className="marketplace-results-bar"><strong>{filteredRows.length}</strong><span>matching opportunities</span>{(q||country||region||city||type||min!==null||max!==null||areaMin!==null)&&<a href="/opportunities">Clear filters</a>}</section>
 
     <section className="opportunity-grid">{filteredRows.map(({opportunity,asset})=>asset?<a className="opportunity-card" href={user?`/opportunities/${opportunity.slug}`:'/login'} key={opportunity.id}>
       <div className="card-meta"><span>{sectorKeys[asset.asset_type]?<I18nText id={sectorKeys[asset.asset_type]}/>:asset.asset_type}</span><span>{asset.country_code??'—'}</span></div>
