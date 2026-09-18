@@ -90,6 +90,16 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
   const externalResult=await s.from('external_market_listings').select('id,country_code,country_name,city,title,asset_type,price_amount,currency,area_sqm,rooms,summary,source_name,source_url,listed_at,checked_at').eq('active',true).order('country_code',{ascending:true}).order('price_amount',{ascending:false});
   const externalListings=(externalResult.data??[]) as ExternalListing[];
   const assetById=new Map(assets.map(asset=>[asset.id,asset]));
+  const assetIds=[...assetById.keys()];
+  const {data:assetImages}=assetIds.length
+    ? await s.from('asset_images').select('id,asset_id,storage_path,sort_order').in('asset_id',assetIds).order('sort_order',{ascending:true})
+    : {data:[]};
+  const firstImageByAsset=new Map<string,string>();
+  await Promise.all((assetImages??[]).map(async (image:{id:string;asset_id:string;storage_path:string;sort_order:number|null})=>{
+    if(firstImageByAsset.has(image.asset_id))return;
+    const {data}=await s.storage.from('property-images').createSignedUrl(image.storage_path,60*60);
+    if(data?.signedUrl)firstImageByAsset.set(image.asset_id,data.signedUrl);
+  }));
   const rows=(opportunities??[]).map(opportunity=>({opportunity:opportunity as Opportunity,asset:assetById.get((opportunity as Opportunity).asset_id)})).filter(({asset})=>Boolean(asset?.asking_price&&Number(asset.asking_price)>=MIN_PUBLIC_VALUE));
 
   const countries=[...new Set(rows.map(({asset})=>asset?.country_code).filter(Boolean) as string[])].sort();
@@ -127,8 +137,8 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
       reference:clean([opportunity.slug,opportunity.id].join(' ')),
       all:clean([asset.title,asset.public_summary,asset.city,asset.region,asset.country_code,asset.asset_type,opportunity.slug,opportunity.id,opportunity.investment_thesis].join(' ')),
     };
-    return {opportunity,asset,score:q?relevanceScore(q,fields):0};
-  }).filter((row):row is {opportunity:Opportunity;asset:Asset;score:number}=>Boolean(row));
+    return {opportunity,asset,score:q?relevanceScore(q,fields):0,imageUrl:firstImageByAsset.get(asset.id)??null};
+  }).filter((row):row is {opportunity:Opportunity;asset:Asset;score:number;imageUrl:string|null}=>Boolean(row));
 
   const filteredRows=scoredRows.filter(({opportunity,asset,score})=>{
     if(q&&!score)return false;
@@ -165,12 +175,17 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
 
     <section className="marketplace-results-bar"><strong>{filteredRows.length}</strong><span>matching opportunities</span>{(q||country||region||city||type||min!==null||max!==null||areaMin!==null)&&<a href="/opportunities">Clear filters</a>}</section>
 
-    <section className="opportunity-grid">{filteredRows.map(({opportunity,asset})=>asset?<a className="opportunity-card" href={user?`/opportunities/${opportunity.slug}`:'/login'} key={opportunity.id}>
-      <div className="card-meta"><span>{sectorKeys[asset.asset_type]?<I18nText id={sectorKeys[asset.asset_type]}/>:asset.asset_type}</span><span>{asset.country_code??'—'}</span></div>
-      <h2>{asset.title}</h2>
-      <p>{asset.public_summary||opportunity.investment_thesis||<I18nText id="Investment opportunity"/>}</p>
-      <div className="card-data"><span>{asset.city||asset.region||'—'}</span><strong>{formatAmount(Number(asset.asking_price),asset.currency)}</strong></div>
-      <div className="card-data"><span><I18nText id="Area m²"/></span><span>{formatArea(asset.area_sqm)}</span></div>
+    <section className="opportunity-grid">{filteredRows.map(({opportunity,asset,imageUrl})=>asset?<a className="opportunity-card" href={user?`/opportunities/${opportunity.slug}`:'/login'} key={opportunity.id}>
+      <div className="opportunity-card-media">{imageUrl?<img src={imageUrl} alt={asset.title} loading="lazy"/>:<div className="opportunity-card-placeholder"><I18nText id="No image available"/></div>}<span className="opportunity-card-status"><I18nText id="Published opportunity"/></span></div>
+      <div className="opportunity-card-body">
+        <div className="card-meta"><span>{sectorKeys[asset.asset_type]?<I18nText id={sectorKeys[asset.asset_type]}/>:asset.asset_type}</span><span>{asset.country_code??'—'}</span></div>
+        <h2>{asset.title}</h2>
+        <p>{asset.public_summary||opportunity.investment_thesis||<I18nText id="Investment opportunity"/>}</p>
+        <div className="card-location">{[asset.city,asset.region,asset.country_code].filter(Boolean).join(', ')||'—'}</div>
+        <div className="card-data"><span><I18nText id="Area m²"/></span><span>{formatArea(asset.area_sqm)}</span></div>
+        <div className="card-data card-price"><span><I18nText id="Asking price"/></span><strong>{formatAmount(Number(asset.asking_price),asset.currency)}</strong></div>
+        <div className="card-reference"><I18nText id="Reference"/>: {opportunity.slug}</div>
+      </div>
     </a>:null)}{filteredRows.length===0&&<div className="empty-state wide"><strong>No matching opportunities</strong><span>Adjust your search or filters and try again.</span></div>}</section>
 
     <section className="external-market-section"><div className="external-market-heading"><div><div className="eyebrow"><ExternalMarketText id="Global market watch"/></div><h2><ExternalMarketText id="Real external listings, organized by country"/></h2><p><ExternalMarketText id="These are live third-party market listings discovered from public sources. They are not yet represented as verified AssetVeyra opportunities."/></p></div><div className="external-market-note"><ExternalMarketText id="External source · independently verify before transaction"/></div></div>

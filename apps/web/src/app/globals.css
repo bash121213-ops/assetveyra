@@ -88,18 +88,27 @@ button, a { -webkit-tap-highlight-color: transparent; }
   display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px;
 }
 .opportunity-card {
-  min-width: 0; min-height: 330px; padding: 25px; display: flex; flex-direction: column; gap: 0;
+  min-width: 0; overflow: hidden; display: flex; flex-direction: column;
   background: var(--av-white); border: 1px solid var(--av-line); border-radius: 3px;
   color: var(--av-charcoal); text-decoration: none; box-shadow: 0 8px 25px rgba(26,26,26,.035);
   transition: transform .2s, border-color .2s, box-shadow .2s;
 }
 .opportunity-card:hover { transform: translateY(-3px); border-color: rgba(184,138,77,.7); box-shadow: 0 14px 35px rgba(26,26,26,.08); }
+.opportunity-card-media { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: #ece9e1; }
+.opportunity-card-media img { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform .35s ease; }
+.opportunity-card:hover .opportunity-card-media img { transform: scale(1.025); }
+.opportunity-card-placeholder { height: 100%; display: grid; place-items: center; color: var(--av-muted); font-size: 12px; }
+.opportunity-card-status { position: absolute; top: 12px; left: 12px; padding: 6px 9px; background: rgba(26,26,26,.86); color: #fff; font-size: 9px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.opportunity-card-body { min-width: 0; padding: 22px; display: flex; flex-direction: column; }
 .opportunity-card .card-meta { display: flex; justify-content: space-between; gap: 16px; color: var(--av-muted); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
-.opportunity-card h2 { margin: 24px 0 12px; color: var(--av-green); font-size: 24px; line-height: 1.15; letter-spacing: -.025em; }
-.opportunity-card p { margin: 0; color: var(--av-muted); font-size: 14px; line-height: 1.65; }
-.opportunity-card .card-data { margin-top: auto; padding-top: 20px; display: flex; justify-content: space-between; align-items: flex-end; gap: 18px; border-top: 1px solid #e6e2da; }
+.opportunity-card h2 { margin: 17px 0 10px; color: var(--av-green); font-size: 24px; line-height: 1.15; letter-spacing: -.025em; }
+.opportunity-card p { margin: 0; color: var(--av-muted); font-size: 14px; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.opportunity-card .card-location { margin-top: 17px; color: var(--av-green); font-size: 12px; font-weight: 700; }
+.opportunity-card .card-data { margin-top: 14px; padding-top: 13px; display: flex; justify-content: space-between; align-items: center; gap: 18px; border-top: 1px solid #e6e2da; }
 .opportunity-card .card-data span { color: var(--av-muted); font-size: 12px; }
-.opportunity-card .card-data strong { color: var(--av-bronze); font-size: 22px; letter-spacing: -.035em; text-align: right; }
+.opportunity-card .card-data strong { color: var(--av-bronze); font-size: 21px; letter-spacing: -.035em; text-align: right; }
+.opportunity-card .card-price { margin-top: 10px; }
+.opportunity-card .card-reference { margin-top: 14px; color: #858b87; font-size: 10px; letter-spacing: .04em; overflow-wrap: anywhere; }
 .empty-state.wide { grid-column: 1 / -1; padding: 45px; background: #fff; border: 1px solid var(--av-line); display: grid; gap: 8px; }
 .empty-state.wide strong { color: var(--av-green); font-size: 20px; }
 .empty-state.wide span { color: var(--av-muted); }
@@ -211,8 +220,9 @@ a.row:hover { background: #fcfbf8; }
   .panel-title{align-items:flex-start;flex-direction:column}
   .row{grid-template-columns:1fr;gap:6px}
   .opportunity-grid{grid-template-columns:1fr;padding:0 5vw 60px;gap:14px}
-  .opportunity-card{min-height:0;padding:22px}
-  .opportunity-card h2{font-size:23px;margin:24px 0 10px}
+  .opportunity-card-body{padding:20px}
+  .opportunity-card h2{font-size:23px;margin:17px 0 10px}
+  .opportunity-card-status{top:10px;left:10px}
   .card-data{flex-wrap:wrap}
   .detail-grid{grid-template-columns:1fr;gap:30px;margin-top:30px}
   .facts{grid-template-columns:1fr 1fr}
