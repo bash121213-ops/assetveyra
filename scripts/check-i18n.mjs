@@ -6,15 +6,7 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const LOCALES = ['en', 'ar', 'zh', 'es', 'fr'];
 const SOURCE_FILES = [
-  'apps/web/src/lib/i18n.ts',
-  'apps/web/src/lib/i18nBase.ts',
   'apps/web/src/lib/i18nRegistry.ts',
-  'apps/web/src/lib/i18nWorkspace.ts',
-  'apps/web/src/lib/i18nOpportunity.ts',
-  'apps/web/src/lib/i18nAssetImages.ts',
-  'apps/web/src/lib/i18nLegalConsultation.ts',
-  'apps/web/src/lib/i18nQualifiedInvestors.ts',
-  'apps/web/src/lib/i18nSite.ts',
 ];
 
 const scanRoots = [
