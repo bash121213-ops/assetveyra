@@ -15,13 +15,15 @@ function formatAmount(value:number|null,currency:string|null){if(value===null)re
 function formatArea(value:number|null){if(value===null)return '—';return `${new Intl.NumberFormat('en-US',{maximumFractionDigits:0}).format(Number(value))} m²`;}
 function externalTypeLabel(type:string){if(type==='land')return <ExternalMarketText id="Land"/>;if(type==='hotel')return <ExternalMarketText id="Hotel"/>;if(type==='hospitality')return <ExternalMarketText id="Hospitality"/>;return type;}
 
-type SearchParams = Record<string,string|undefined>;
+type SearchParams = Record<string,string|string[]|undefined>;
+function firstParam(value:string|string[]|undefined){return Array.isArray(value)?value[0]:value;}
 
 function clean(value:unknown){return String(value??'').trim().toLowerCase();}
 function numberParam(value:string|undefined){const n=Number(value);return Number.isFinite(n)&&n>=0?n:null;}
 
 export default async function OpportunitiesPage({searchParams}:{searchParams:Promise<SearchParams>}) {
   const params=await searchParams;
+  const normalizedParams=Object.fromEntries(Object.entries(params).map(([key,value])=>[key,firstParam(value)])) as Record<string,string|undefined>;
   const s=await createClient();
   const {data:{user}}=await s.auth.getUser();
 
@@ -45,13 +47,13 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
   const cities=[...new Set(rows.map(({asset})=>asset?.city).filter(Boolean) as string[])].sort();
   const assetTypes=[...new Set(rows.map(({asset})=>asset?.asset_type).filter(Boolean) as string[])].sort();
 
-  const q=clean(params.q);
-  const country=clean(params.country);
-  const city=clean(params.city);
-  const type=clean(params.type);
-  const min=numberParam(params.min);
-  const max=numberParam(params.max);
-  const areaMin=numberParam(params.areaMin);
+  const q=clean(normalizedParams.q);
+  const country=clean(normalizedParams.country);
+  const city=clean(normalizedParams.city);
+  const type=clean(normalizedParams.type);
+  const min=numberParam(normalizedParams.min);
+  const max=numberParam(normalizedParams.max);
+  const areaMin=numberParam(normalizedParams.areaMin);
 
   const filteredRows=rows.filter(({opportunity,asset})=>{
     if(!asset)return false;
@@ -67,7 +69,7 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
     return true;
   });
 
-  const sort=params.sort||'newest';
+  const sort=normalizedParams.sort||'newest';
   filteredRows.sort((a,b)=>{
     if(sort==='price_asc')return Number(a.asset?.asking_price??Infinity)-Number(b.asset?.asking_price??Infinity);
     if(sort==='price_desc')return Number(b.asset?.asking_price??0)-Number(a.asset?.asking_price??0);
@@ -77,7 +79,7 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
 
   const error=opportunityError||assetError||externalResult.error;
   const grouped=externalCountryOrder.map(code=>({code,listings:externalListings.filter(item=>item.country_code===code)})).filter(group=>group.listings.length);
-  const initialParams=Object.fromEntries(Object.entries(params).map(([key,value])=>[key,value??undefined]));
+  const initialParams=normalizedParams;
 
   return <main className="app-shell">
     <header className="app-header"><a className="brand" href="/">ASSETVEYRA</a><nav><a href="/opportunities"><I18nText id="Marketplace"/></a><a href="/workspace"><I18nText id="Overview"/></a>{user?<form action="/logout" method="post"><button className="text-button"><I18nText id="Sign out"/></button></form>:<a href="/login"><I18nText id="Sign in"/></a>}</nav></header>
