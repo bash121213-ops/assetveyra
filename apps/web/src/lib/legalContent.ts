@@ -1,8 +1,9 @@
 import type { Locale } from '@/lib/i18n';
 
-export type LegalSection = { title: string; paragraphs?: string[]; bullets?: string[]; body?: string[] };
-export type TermsCopy = { eyebrow: string; title: string; updated: string; intro: string; sections: LegalSection[]; notice: string };
-export type TransactionCopy = { eyebrow: string; title: string; updated: string; intro: string; sections: LegalSection[]; notice: string };
+export type TermsSection = { title: string; paragraphs?: string[]; bullets?: string[] };
+export type TransactionSection = { title: string; body: string[]; bullets?: string[] };
+export type TermsCopy = { eyebrow: string; title: string; updated: string; intro: string; sections: TermsSection[]; notice: string };
+export type TransactionCopy = { eyebrow: string; title: string; updated: string; intro: string; sections: TransactionSection[]; notice: string };
 
 export const TERMS_COPY: Record<Locale, TermsCopy> = {
   "en": {
