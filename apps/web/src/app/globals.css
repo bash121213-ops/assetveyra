@@ -71,6 +71,17 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .app-header a:focus-visible,
 .auth-card input:focus-visible { outline: 2px solid var(--av-bronze); outline-offset: 3px; }
 
+/* Marketplace search */
+.marketplace-search-shell { max-width:1280px; margin:0 auto 24px; padding:0 6vw; }
+.marketplace-search { padding:20px; background:#fff; border:1px solid var(--av-line); box-shadow:0 10px 30px rgba(26,26,26,.045); }
+.marketplace-search-main { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; align-items:end; }
+.marketplace-search label { display:grid; gap:7px; min-width:0; color:var(--av-green); font-size:11px; font-weight:700; letter-spacing:.04em; }
+.marketplace-search input,.marketplace-search select { width:100%; min-height:46px; box-sizing:border-box; padding:11px 12px; border:1px solid #ccc8bf; border-radius:0; background:#fff; color:var(--av-charcoal); font-size:14px; }
+.marketplace-search input:focus,.marketplace-search select:focus { border-color:var(--av-bronze); outline:2px solid rgba(184,138,77,.15); outline-offset:1px; }
+.marketplace-filters { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:10px; margin-top:12px; }
+.marketplace-results-bar { max-width:1280px; margin:0 auto 14px; padding:0 6vw; display:flex; align-items:center; gap:8px; color:var(--av-muted); font-size:12px; }
+.marketplace-results-bar strong { color:var(--av-green); font-size:16px; }
+.marketplace-results-bar a { margin-left:auto; color:var(--av-bronze); font-weight:700; text-decoration:none; }
 /* Marketplace cards */
 .opportunity-grid {
   max-width: 1280px; margin: 0 auto; padding: 0 6vw 90px;
@@ -241,3 +252,17 @@ html.rtl .form-grid select { direction:rtl; }
 html.rtl .auth-card input[type='email'] { direction:ltr; text-align:left; }
 
 /* The public reference design remains isolated in av-final.css. */
+
+
+@media (max-width: 900px) {
+  .marketplace-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 640px) {
+  .marketplace-search-shell { padding: 0 5vw; }
+  .marketplace-search { padding: 14px; }
+  .marketplace-search-main { grid-template-columns: 1fr; }
+  .marketplace-search-main .button { width: 100%; }
+  .marketplace-filters { grid-template-columns: 1fr; }
+  .marketplace-results-bar { padding: 0 5vw; }
+}
