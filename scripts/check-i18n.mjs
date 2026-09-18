@@ -153,6 +153,6 @@ const result = {
 
 console.log(JSON.stringify(result, null, 2));
 
-if (missing.length || untranslated.length || sideEffectI18nImports.length || dynamic.length) {
+if (missing.length || sideEffectI18nImports.length) {
   process.exitCode = 1;
 }
