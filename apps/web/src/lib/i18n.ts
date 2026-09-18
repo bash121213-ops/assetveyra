@@ -1,12 +1,13 @@
 import { CENTRAL_TRANSLATION_REGISTRY } from '@/lib/i18nRegistry';
 
-export const SUPPORTED_LOCALES = ['en', 'ar', 'zh', 'es', 'fr'] as const;
+export const SUPPORTED_LOCALES = ['en', 'ar', 'fr', 'es', 'de', 'pt'] as const;
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
 
 export const LOCALE_LABELS: Record<Locale, string> = {
   en: 'English',
   ar: 'العربية',
-  zh: '中文',
+  de: 'Deutsch',
+  pt: 'Português',
   es: 'Español',
   fr: 'Français',
 };
@@ -30,7 +31,7 @@ export function detectLocaleFromLanguages(languages: readonly string[]): Locale 
   return 'en';
 }
 
-type TranslationSet = Record<Locale, string>;
+type TranslationSet = Partial<Record<Locale, string>>;
 export const TRANSLATIONS: Record<string, TranslationSet> = {
   ...CENTRAL_TRANSLATION_REGISTRY,
 };
@@ -44,13 +45,13 @@ export function translate(key: string, locale: Locale): string {
     return key;
   }
 
-  const value = entry[locale];
+  const value = entry[locale] ?? entry.en;
   if (value) return value;
 
   if (process.env.NODE_ENV !== 'production') {
     console.warn(`Missing i18n locale "${locale}" for key: ${key}`);
   }
-  return key;
+  return entry.en ?? key;
 }
 
 export const CORE_TRANSLATION_KEYS = Object.freeze(Object.keys(TRANSLATIONS));
