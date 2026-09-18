@@ -29,6 +29,82 @@ const L = (en: string, ar: string = en): Localized => ({ en, ar });
 
 const listings: Listing[] = [
   {
+    id: 'dubai-palm-jumeirah-frond-n-27158',
+    sourceReference: 'Property Finder listing 141441663 — checked 2026-09-18',
+    country: L('United Arab Emirates', 'الإمارات العربية المتحدة'),
+    city: L('Dubai · Palm Jumeirah · Frond N', 'دبي · نخلة جميرا · فروند N'),
+    title: L('27,158 sq ft Private Beachfront Land Plot', 'أرض بواجهة بحرية خاصة بمساحة 27,158 قدم²'),
+    type: L('Residential Land', 'أرض سكنية'),
+    price: 'AED 200,000,000',
+    summary: L('Land for sale on Palm Jumeirah Frond N. The listing states 27,158 sq ft, approximately 200 metres of private beachfront, Arabian Gulf and Dubai skyline views, and availability from 7 September 2026. The listing describes the plot for a bespoke ultra-luxury villa.', 'أرض للبيع في نخلة جميرا فروند N. يذكر الإعلان مساحة 27,158 قدم² وواجهة بحرية خاصة تقارب 200 متر وإطلالات على الخليج العربي وأفق دبي، مع إتاحة من 7 سبتمبر 2026. ويصف القطعة بأنها مناسبة لفيلا فاخرة مخصصة.'),
+    facts: [L('27,158 sq ft', '27,158 قدم²'), L('AED 200,000,000', '200,000,000 درهم'), L('AED 7,364/sq ft', '7,364 درهم/قدم²'), L('Approx. 200 m beachfront', 'واجهة بحرية تقارب 200 م')],
+    details: [
+      { label: L('Location', 'الموقع'), value: L('Palm Jumeirah Frond N, Dubai, UAE', 'نخلة جميرا فروند N، دبي، الإمارات') },
+      { label: L('Property type', 'نوع العقار'), value: L('Land', 'أرض') },
+      { label: L('Asking price', 'السعر المطلوب'), value: L('AED 200,000,000', '200,000,000 درهم إماراتي') },
+      { label: L('Area', 'المساحة'), value: L('27,158 sq ft', '27,158 قدم²') },
+      { label: L('Price per area', 'السعر حسب المساحة'), value: L('AED 7,364/ft²', '7,364 درهم/قدم²') },
+      { label: L('Beachfront', 'الواجهة البحرية'), value: L('Approximately 200 metres of private beachfront stated', 'واجهة بحرية خاصة تقارب 200 متر بحسب الإعلان') },
+      { label: L('Views', 'الإطلالات'), value: L('Arabian Gulf and Dubai skyline views stated', 'إطلالات على الخليج العربي وأفق دبي بحسب الإعلان') },
+      { label: L('Use', 'الاستخدام'), value: L('Bespoke ultra-luxury villa described', 'فيلا فاخرة مخصصة بحسب الإعلان') },
+      { label: L('Availability', 'الإتاحة'), value: L('Available from 7 September 2026', 'متاحة من 7 سبتمبر 2026') },
+      { label: L('Listing date', 'تاريخ الإدراج'), value: L('Listed 10 days before the 18 September 2026 check', 'مدرجة قبل 10 أيام من فحص 18 سبتمبر 2026') }
+    ],
+    features: [L('Palm Jumeirah', 'نخلة جميرا'), L('Private beachfront', 'واجهة بحرية خاصة'), L('Sea views', 'إطلالات بحرية'), L('Dubai skyline', 'أفق دبي'), L('Residential plot', 'قطعة سكنية')],
+    imageUrls: ['https://www.propertyfinder.ae/en/plp/buy/land-for-sale-dubai-palm-jumeirah-palm-jumeirah-frond-n-141441663.html'],
+    imageAlt: L('Palm Jumeirah Frond N land', 'أرض نخلة جميرا فروند N')
+  },
+  {
+    id: 'egypt-abu-ghaleb-21000',
+    sourceReference: 'Property Finder Egypt listing E6P2035YKCP74FA61QCA12C9T8 — checked 2026-09-18',
+    country: L('Egypt', 'مصر'),
+    city: L('Alexandria · King Mariout · Abu Ghaleb', 'الإسكندرية · كينج مريوط · أبو غالب'),
+    title: L('21,000 m² Registered Agricultural Land', 'أرض زراعية مسجلة بمساحة 21,000 م²'),
+    type: L('Agricultural Land', 'أرض زراعية'),
+    price: 'EGP 6,250,000',
+    summary: L('Agricultural land at Kilometer 64 on the Cairo–Alexandria Desert Road within Rowad El Bohouth Land. The listing states 5 feddans, available electricity and water, official registration at the Real Estate Registration Office with a documented chain of ownership, and cash payment.', 'أرض زراعية عند الكيلو 64 على طريق القاهرة–الإسكندرية الصحراوي ضمن أراضي رواد البحوث. يذكر الإعلان 5 أفدنة، وتوفر الكهرباء والمياه، والتسجيل الرسمي لدى مصلحة الشهر العقاري مع سلسلة ملكية موثقة، والدفع نقداً.'),
+    facts: [L('21,000 m² / 5 feddans', '21,000 م² / 5 أفدنة'), L('EGP 6,250,000', '6,250,000 جنيه'), L('EGP 297/m²', '297 جنيه/م²'), L('EGP 1,250,000/feddan', '1,250,000 جنيه/فدان')],
+    details: [
+      { label: L('Location', 'الموقع'), value: L('Km 64, Cairo–Alexandria Desert Road, King Mariout, Alexandria', 'الكيلو 64، طريق القاهرة–الإسكندرية الصحراوي، كينج مريوط، الإسكندرية') },
+      { label: L('Property type', 'نوع العقار'), value: L('Land', 'أرض') },
+      { label: L('Land use', 'استخدام الأرض'), value: L('Agricultural', 'زراعي') },
+      { label: L('Area', 'المساحة'), value: L('21,000 m² / 5 feddans', '21,000 م² / 5 أفدنة') },
+      { label: L('Asking price', 'السعر المطلوب'), value: L('EGP 6,250,000', '6,250,000 جنيه مصري') },
+      { label: L('Price per area', 'السعر حسب المساحة'), value: L('EGP 297/m²; EGP 1,250,000/feddan', '297 جنيه/م²؛ 1,250,000 جنيه/فدان') },
+      { label: L('Registration', 'التسجيل'), value: L('Registered with the Real Estate Registration Office; documented ownership chain stated', 'مسجلة لدى مصلحة الشهر العقاري؛ سلسلة ملكية موثقة بحسب الإعلان') },
+      { label: L('Utilities', 'الخدمات'), value: L('Electricity and water available', 'الكهرباء والمياه متوفرتان') },
+      { label: L('Surroundings', 'المحيط'), value: L('Villas and other agricultural plots', 'فلل وأراضٍ زراعية أخرى') },
+      { label: L('Payment', 'الدفع'), value: L('Cash', 'نقداً') },
+      { label: L('Availability', 'الإتاحة'), value: L('Available from 17 September 2026', 'متاحة من 17 سبتمبر 2026') }
+    ],
+    features: [L('Registered', 'مسجلة'), L('Agricultural', 'زراعية'), L('Water', 'مياه'), L('Electricity', 'كهرباء'), L('Cairo–Alexandria Desert Road', 'طريق القاهرة–الإسكندرية الصحراوي')],
+    imageUrls: ['https://www.propertyfinder.eg/en/plp/buy/land-for-sale-alexandria-hay-al-amereyah-king-mariout-alexandria-desert-road-109915388.html'],
+    imageAlt: L('Abu Ghaleb agricultural land', 'أرض أبو غالب الزراعية')
+  },
+  {
+    id: 'jordan-qweira-376000',
+    sourceReference: 'OpenSooq Jordan Qweira land listing — checked 2026-09-18',
+    country: L('Jordan', 'الأردن'),
+    city: L('Aqaba · Qweira', 'العقبة · القويرة'),
+    title: L('376,000 m² Agricultural Land Near Amman–Aqaba Road', 'أرض زراعية 376,000 م² قرب طريق عمّان–العقبة'),
+    type: L('Agricultural Land', 'أرض زراعية'),
+    price: 'JOD 215,000',
+    summary: L('A 376,000 m² agricultural land listing in Qweira, Aqaba. The listing states the land is approximately 400 metres from the Amman–Aqaba road and presents it as an investment opportunity.', 'إعلان أرض زراعية بمساحة 376,000 م² في القويرة بالعقبة. يذكر الإعلان أن الأرض تبعد نحو 400 متر عن شارع عمّان–العقبة ويعرضها كفرصة استثمارية.'),
+    facts: [L('376,000 m²', '376,000 م²'), L('JOD 215,000', '215,000 دينار'), L('Agricultural', 'زراعية'), L('Approx. 400 m from Amman–Aqaba road', 'نحو 400 م عن طريق عمّان–العقبة')],
+    details: [
+      { label: L('Location', 'الموقع'), value: L('Qweira, Aqaba, Jordan', 'القويرة، العقبة، الأردن') },
+      { label: L('Property type', 'نوع العقار'), value: L('Agricultural land', 'أرض زراعية') },
+      { label: L('Area', 'المساحة'), value: L('376,000 m² / 376 dunums', '376,000 م² / 376 دونماً') },
+      { label: L('Asking price', 'السعر المطلوب'), value: L('JOD 215,000', '215,000 دينار أردني') },
+      { label: L('Approx. price per m²', 'السعر التقريبي للمتر'), value: L('JOD 0.572/m²', 'نحو 0.572 دينار/م²') },
+      { label: L('Road distance', 'المسافة عن الطريق'), value: L('Approximately 400 m from the Amman–Aqaba road, according to the listing', 'نحو 400 متر عن طريق عمّان–العقبة بحسب الإعلان') },
+      { label: L('Availability', 'الإتاحة'), value: L('Listing dated 12 September 2026 in current search results', 'الإعلان مؤرخ 12 سبتمبر 2026 في نتائج البحث الحالية') }
+    ],
+    features: [L('Qweira', 'القويرة'), L('Aqaba', 'العقبة'), L('Agricultural', 'زراعية'), L('Large parcel', 'مساحة كبيرة'), L('Road proximity', 'قرب الطريق')],
+    imageUrls: ['https://jo.opensooq.com/en/aqaba/property/lands-for-sale'],
+    imageAlt: L('Qweira agricultural land listing', 'أرض زراعية في القويرة')
+  },
+  {
     id: 'syria-tartous-6500-coastal',
     sourceReference: 'Dalsyria listing 16543 — checked 2026-09-18',
     country: L('Syria', 'سوريا'), city: L('Tartous · Coastal Syria', 'طرطوس · الساحل السوري'),
