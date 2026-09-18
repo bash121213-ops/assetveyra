@@ -84,6 +84,42 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
     .maybeSingle();
   if (!asset || asset.asking_price === null || Number(asset.asking_price) < 100000) redirect('/opportunities');
 
+  const { data: verification } = await s
+    .from('verification_cases')
+    .select('status,category,decision_reason,resolved_at')
+    .eq('opportunity_id', opportunity.id)
+    .order('opened_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const { data: similarOpportunities } = await s
+    .from('public_opportunities')
+    .select('id,slug,asset_id')
+    .eq('status', 'published')
+    .neq('id', opportunity.id)
+    .limit(12);
+
+  const similarAssetIds = (similarOpportunities ?? []).map((item) => item.asset_id).filter(Boolean);
+  const { data: similarAssets } = similarAssetIds.length
+    ? await s
+        .from('public_assets')
+        .select('id,title,asset_type,country_code,city,area_sqm,currency,asking_price')
+        .in('id', similarAssetIds)
+    : { data: [] };
+
+  const similarById = new Map((similarAssets ?? []).map((item) => [item.id, item]));
+  const similar = (similarOpportunities ?? [])
+    .map((item) => ({ opportunity: item, asset: similarById.get(item.asset_id) }))
+    .filter((item) => item.asset && Number(item.asset.asking_price ?? 0) >= 100000)
+    .sort((a, b) => {
+      const aSameCity = a.asset?.city && a.asset.city === asset.city ? 2 : 0;
+      const bSameCity = b.asset?.city && b.asset.city === asset.city ? 2 : 0;
+      const aSameType = a.asset?.asset_type === asset.asset_type ? 1 : 0;
+      const bSameType = b.asset?.asset_type === asset.asset_type ? 1 : 0;
+      return (bSameCity + bSameType) - (aSameCity + aSameType);
+    })
+    .slice(0, 3);
+
   const { data: images } = await s
     .from('asset_images')
     .select('id,storage_path,sort_order')
@@ -114,7 +150,12 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
       <article className="detail opportunity-detail-page">
         <a className="detail-back" href="/opportunities">← <I18nText id="Back to opportunities" /></a>
         <div className="eyebrow"><I18nText id="Published opportunity" /> · <I18nText id="Controlled access" /></div>
-        <h1>{asset.title}</h1>
+        <div className="detail-title-row">
+          <div>
+            <h1>{asset.title}</h1>
+            <div className="detail-reference"><I18nText id="Reference" />: {slug}</div>
+          </div>
+        </div>
 
         <PublicAssetGallery images={gallery} />
 
@@ -142,6 +183,22 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
                   <div className="eyebrow"><I18nText id="Description" /></div>
                   <p>{asset.public_summary}</p>
                 </div>
+              </div>
+            )}
+
+            {verification && (
+              <div className="verification-panel">
+                <div>
+                  <div className="eyebrow"><I18nText id="Verification status" /></div>
+                  <strong>{verification.status === 'open' ? <I18nText id="Verification in progress" /> : <I18nText id="Verification record" />}</strong>
+                </div>
+                <div className="verification-items">
+                  <span><I18nText id="Listing information submitted" /></span>
+                  <span><I18nText id="Documents reviewed" /></span>
+                  <span><I18nText id="Ownership information reviewed" /></span>
+                  <span><I18nText id="Site visit completed" /></span>
+                </div>
+                {verification.decision_reason && <p>{verification.decision_reason}</p>}
               </div>
             )}
 
@@ -181,6 +238,29 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
             {location && <div className="deal-gate-location"><span><I18nText id="Location" /></span><strong>{location}</strong></div>}
           </aside>
         </div>
+
+        {similar.length > 0 && (
+          <section className="similar-properties">
+            <div className="section-heading">
+              <div className="eyebrow"><I18nText id="More opportunities" /></div>
+              <h2><I18nText id="Similar properties" /></h2>
+            </div>
+            <div className="similar-properties-grid">
+              {similar.map(({ opportunity: similarOpportunity, asset: similarAsset }) => similarAsset && (
+                <a className="similar-property-card" href={`/opportunities/${similarOpportunity.slug}`} key={similarOpportunity.id}>
+                  <div className="card-meta">
+                    <span>{sectorKeys[similarAsset.asset_type] ? <I18nText id={sectorKeys[similarAsset.asset_type]} /> : similarAsset.asset_type}</span>
+                    <span>{similarAsset.country_code || '—'}</span>
+                  </div>
+                  <h3>{similarAsset.title}</h3>
+                  <span>{[similarAsset.city, similarAsset.country_code].filter(Boolean).join(', ') || '—'}</span>
+                  <strong>{similarAsset.currency || 'USD'} {formatNumber(Number(similarAsset.asking_price))}</strong>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+      </article>
       </article>
     </main>
   );
