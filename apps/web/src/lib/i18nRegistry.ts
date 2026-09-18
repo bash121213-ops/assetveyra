@@ -4643,6 +4643,20 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
     "zh": "核查日期",
     "es": "Comprobado",
     "fr": "Vérifié"
+  },
+  "No image available": {
+    "en": "No image available",
+    "ar": "لا توجد صورة متاحة",
+    "zh": "暂无图片",
+    "es": "No hay imagen disponible",
+    "fr": "Aucune image disponible"
+  },
+  "Reference": {
+    "en": "Reference",
+    "ar": "المرجع",
+    "zh": "参考编号",
+    "es": "Referencia",
+    "fr": "Référence"
   }
 };
 
