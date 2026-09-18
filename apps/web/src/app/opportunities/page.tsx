@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { I18nText } from '@/components/LocaleShell';
 import { ExternalMarketText } from '@/components/ExternalMarketText';
 import MarketplaceSearch from '@/components/MarketplaceSearch';
+import Image from 'next/image';
 
 type Opportunity = { id:string; slug:string; status:string; investment_thesis:string|null; structure:string|null; minimum_ticket:number|null; target_return:number|null; asset_id:string };
 type Asset = { id:string; title:string; asset_type:string; country_code:string|null; region:string|null; city:string|null; area_sqm:number|null; currency:string|null; asking_price:number|null; public_summary:string|null };
@@ -87,7 +88,8 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
     }
   }
 
-  const externalResult=await s.from('external_market_listings').select('id,country_code,country_name,city,title,asset_type,price_amount,currency,area_sqm,rooms,summary,source_name,source_url,listed_at,checked_at').eq('active',true).order('country_code',{ascending:true}).order('price_amount',{ascending:false});
+  const externalPromise=s.from('external_market_listings').select('id,country_code,country_name,city,title,asset_type,price_amount,currency,area_sqm,rooms,summary,source_name,source_url,listed_at,checked_at').eq('active',true).order('country_code',{ascending:true}).order('price_amount',{ascending:false});
+  const externalResult=await externalPromise;
   const externalListings=(externalResult.data??[]) as ExternalListing[];
   const assetById=new Map(assets.map(asset=>[asset.id,asset]));
   const assetIds=[...assetById.keys()];
@@ -175,8 +177,8 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
 
     <section className="marketplace-results-bar"><strong>{filteredRows.length}</strong><span>matching opportunities</span>{(q||country||region||city||type||min!==null||max!==null||areaMin!==null)&&<a href="/opportunities">Clear filters</a>}</section>
 
-    <section className="opportunity-grid">{filteredRows.map(({opportunity,asset,imageUrl})=>asset?<a className="opportunity-card" href={user?`/opportunities/${opportunity.slug}`:'/login'} key={opportunity.id}>
-      <div className="opportunity-card-media">{imageUrl?<img src={imageUrl} alt={asset.title} loading="lazy"/>:<div className="opportunity-card-placeholder"><I18nText id="No image available"/></div>}<span className="opportunity-card-status"><I18nText id="Published opportunity"/></span></div>
+    <section className="opportunity-grid">{filteredRows.map(({opportunity,asset,imageUrl},index)=>asset?<a className="opportunity-card" href={user?`/opportunities/${opportunity.slug}`:'/login'} key={opportunity.id}>
+      <div className="opportunity-card-media">{imageUrl?<Image src={imageUrl} alt={asset.title} fill sizes="(max-width: 767px) 90vw, (max-width: 1024px) 45vw, 30vw" quality={75} priority={index < 3}/>:<div className="opportunity-card-placeholder"><I18nText id="No image available"/></div>}<span className="opportunity-card-status"><I18nText id="Published opportunity"/></span></div>
       <div className="opportunity-card-body">
         <div className="card-meta"><span>{sectorKeys[asset.asset_type]?<I18nText id={sectorKeys[asset.asset_type]}/>:asset.asset_type}</span><span>{asset.country_code??'—'}</span></div>
         <h2>{asset.title}</h2>

@@ -105,7 +105,7 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
     .maybeSingle();
   if (!asset || asset.asking_price === null || Number(asset.asking_price) < 100000) redirect('/opportunities');
 
-  const { data: verification } = await s
+  const verificationPromise = s
     .from('verification_cases')
     .select('status,category,decision_reason,resolved_at')
     .eq('opportunity_id', opportunity.id)
@@ -113,12 +113,24 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
     .limit(1)
     .maybeSingle();
 
-  const { data: similarOpportunities } = await s
+  const similarPromise = s
     .from('public_opportunities')
     .select('id,slug,asset_id')
     .eq('status', 'published')
     .neq('id', opportunity.id)
     .limit(12);
+
+  const imagesPromise = s
+    .from('asset_images')
+    .select('id,storage_path,sort_order')
+    .eq('asset_id', asset.id)
+    .order('sort_order', { ascending: true });
+
+  const [{ data: verification }, { data: similarOpportunities }, { data: images }] = await Promise.all([
+    verificationPromise,
+    similarPromise,
+    imagesPromise,
+  ]);
 
   const similarAssetIds = (similarOpportunities ?? []).map((item) => item.asset_id).filter(Boolean);
   const { data: similarAssets } = similarAssetIds.length
@@ -140,12 +152,6 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
       return (bSameCity + bSameType) - (aSameCity + aSameType);
     })
     .slice(0, 3);
-
-  const { data: images } = await s
-    .from('asset_images')
-    .select('id,storage_path,sort_order')
-    .eq('asset_id', asset.id)
-    .order('sort_order', { ascending: true });
 
   const gallery = await Promise.all((images ?? []).map(async (image) => {
     const { data } = await s.storage.from('property-images').createSignedUrl(image.storage_path, 60 * 60);
