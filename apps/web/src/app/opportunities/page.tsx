@@ -21,7 +21,7 @@ function firstParam(value:string|string[]|undefined){return Array.isArray(value)
 function clean(value:unknown){
   return String(value??'')
     .normalize('NFKD')
-    .replace(/[\\u0300-\\u036f]/g,'')
+    .replace(/[\u0300-\u036f]/g,'')
     .toLowerCase()
     .replace(/[^\\p{L}\\p{N}]+/gu,' ')
     .trim();
@@ -44,7 +44,7 @@ const searchAliases:Record<string,string[]> = {
 };
 
 function queryTokens(query:string){
-  return clean(query).split(/\\s+/).filter(Boolean);
+  return clean(query).split(/\s+/).filter(Boolean);
 }
 
 function tokenMatches(token:string, haystack:string){
