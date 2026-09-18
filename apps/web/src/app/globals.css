@@ -241,3 +241,17 @@ html.rtl .form-grid select { direction:rtl; }
 html.rtl .auth-card input[type='email'] { direction:ltr; text-align:left; }
 
 /* The public reference design remains isolated in av-final.css. */
+
+/* AssetVeyra marketplace discovery */
+.marketplace-search{max-width:1280px;margin:0 auto 28px;padding:24px 6vw;background:#fff;border:1px solid var(--av-line);box-shadow:0 8px 25px rgba(26,26,26,.035)}
+.marketplace-search-main{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end}
+.marketplace-search label{display:grid;gap:7px;color:var(--av-green);font-size:11px;font-weight:700}
+.marketplace-search input,.marketplace-search select{width:100%;min-height:44px;padding:10px 12px;border:1px solid #ccc8bf;border-radius:0;background:#fff;color:var(--av-charcoal);font-size:14px}
+.marketplace-search-main input{font-size:16px}
+.marketplace-filters{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;margin-top:14px}
+.marketplace-results-head{max-width:1280px;margin:0 auto 14px;padding:0 6vw;display:flex;justify-content:space-between;align-items:center;color:var(--av-muted);font-size:12px}
+.marketplace-results-head a{color:var(--av-bronze);text-decoration:none;font-weight:700}
+.market-card-image{height:180px;margin:-25px -25px 22px;background:#ece9e1;overflow:hidden}
+.market-card-image-placeholder{height:100%;display:grid;place-items:center;color:var(--av-muted);font-size:12px;text-transform:uppercase;letter-spacing:.12em}
+@media(max-width:1024px){.marketplace-filters{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:767px){.marketplace-search{margin:0 5vw 24px;padding:18px}.marketplace-search-main{grid-template-columns:1fr}.marketplace-search-main .button{width:100%}.marketplace-filters{grid-template-columns:1fr 1fr}.marketplace-results-head{padding:0 5vw}.market-card-image{height:190px;margin:-22px -22px 20px}}
