@@ -10,6 +10,9 @@ const ALLOWED_HOSTS = new Set([
   'img-2.aqarmap.com.eg',
   'img-4.aqarmap.com.eg',
   'yafaoffice.com',
+  'www.propertyfinder.ae',
+  'www.propertyfinder.eg',
+  'jo.opensooq.com',
 ]);
 
 function isAllowed(url: URL) {
