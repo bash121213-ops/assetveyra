@@ -176,6 +176,24 @@ const listings: Listing[] = [
     features: [L('Seafront', 'واجهة بحرية'), L('Sea views', 'إطلالات بحرية'), L('Pool', 'مسبح'), L('Restaurant', 'مطعم'), L('Parking / garage', 'مواقف / مرآب'), L('Lift', 'مصعد'), L('Repositioning potential', 'إمكانات إعادة التموضع')],
     imageUrls: ['https://cdn.thinkwebcontent.com/property/32695/9519372/20260117152701/w800h533/s1600x1200/x-270873193.jpg'], imageAlt: L('Property image', 'صورة العقار')
   },
+
+  {
+    id: 'jordan-umm-al-dananeer-600', sourceReference: 'Yafa Office listing YA-YA-23102 — checked 2026-09-18',
+    country: L('Jordan', 'الأردن'), city: L('Amman · Umm Al-Dananeer', 'عمّان · أم الدنانير'),
+    title: L('600 m² View Land Near Al-Ahliyya Amman University', 'أرض 600 م² مطلة قرب جامعة عمّان الأهلية'), type: L('Residential Land', 'أرض سكنية'), price: 'JOD 45,000',
+    summary: L('A 600 m² land plot in Umm Al-Dananeer, Al-Qusayr district, behind Al-Ahliyya Amman University and near Jabal Restaurant. The listing describes it as a distinctive plot with a view and an asking price of JOD 45,000.', 'قطعة أرض بمساحة 600 م² في أم الدنانير، حي القصير، خلف جامعة عمّان الأهلية وقرب مطعم جبل. يصفها الإعلان بأنها أرض مميزة ومطلة بسعر طلب 45,000 دينار أردني.'),
+    facts: [L('600 m²', '600 م²'), L('JOD 45,000 asking', 'السعر المطلوب 45,000 دينار'), L('View stated', 'إطلالة بحسب الإعلان'), L('Near university', 'قرب الجامعة')],
+    details: [
+      { label: L('Location', 'الموقع'), value: L('Umm Al-Dananeer · Al-Qusayr, Amman, Jordan', 'أم الدنانير · حي القصير، عمّان، الأردن') },
+      { label: L('Asking price', 'السعر المطلوب'), value: L('JOD 45,000', '45,000 دينار أردني') },
+      { label: L('Area', 'المساحة'), value: L('600 m²', '600 م²') },
+      { label: L('Nearby', 'المعالم القريبة'), value: L('Behind Al-Ahliyya Amman University; near Jabal Restaurant', 'خلف جامعة عمّان الأهلية؛ قرب مطعم جبل') },
+      { label: L('View', 'الإطلالة'), value: L('View stated in the listing', 'إطلالة بحسب الإعلان') },
+      { label: L('Verification', 'التحقق'), value: L('Marketplace listing; title, zoning, services and availability require independent verification', 'إعلان سوق؛ يجب التحقق بشكل مستقل من السند والتنظيم والخدمات والتوفر') }
+    ],
+    features: [L('Amman', 'عمّان'), L('600 m²', '600 م²'), L('View', 'إطلالة'), L('Near university', 'قرب الجامعة')],
+    imageUrls: ['https://yafaoffice.com/property/%D8%A7%D8%B1%D8%B6-%D9%85%D9%85%D9%8A%D8%B2%D8%A9-%D9%88%D9%85%D8%B7%D9%84%D8%A9-%D9%84%D9%84%D8%A8%D9%8A%D8%B9-%D9%81%D9%8A-%D9%85%D9%86%D8%B7%D9%82%D8%A9-%D8%A7%D9%85-%D8%A7%D9%84%D8%AF%D9%86%D8%A7'], imageAlt: L('Land in Umm Al-Dananeer, Amman', 'أرض في أم الدنانير، عمّان')
+  },
 ];
 
 const copy: Record<Locale, { heading: string; intro: string; contact: string; request: string; pricing: string; details: string; features: string; more: string; less: string; unavailable: string; footer: string }> = {
