@@ -4644,6 +4644,8 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
     "es": "Comprobado",
     "fr": "Vérifié"
   }
+,
+
 } ;
 
 export const STATUS_TRANSLATIONS = {
