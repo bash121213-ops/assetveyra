@@ -261,7 +261,6 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
           </section>
         )}
       </article>
-      </article>
     </main>
   );
 }
