@@ -17,7 +17,7 @@ export function I18nText({ id, as = 'span' }: { id: string; as?: ElementType }) 
 export function LanguageSelect() {
   const { locale, setLocale } = useLocaleContext();
   return <select data-language-menu value={locale} aria-label={translate('Language', locale)} onChange={(event) => setLocale(normalizeLocale(event.target.value))}>
-    <option value="en">English</option><option value="ar">العربية</option><option value="zh">中文</option><option value="es">Español</option><option value="fr">Français</option>
+    <option value="en">English</option><option value="ar">العربية</option><option value="fr">Français</option><option value="es">Español</option><option value="de">Deutsch</option><option value="pt">Português</option>
   </select>;
 }
 
