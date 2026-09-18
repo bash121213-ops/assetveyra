@@ -1,8 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { I18nText } from '@/components/LocaleShell';
-import '@/lib/i18nAssetImages';
-
 export default async function AssetsWorkspacePage({ searchParams }: { searchParams: Promise<{ images_failed?: string }> }) {
   const s = await createClient();
   const { data: { user } } = await s.auth.getUser();

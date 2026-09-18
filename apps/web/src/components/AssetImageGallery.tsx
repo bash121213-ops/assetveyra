@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useDraggable, useDroppable, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { I18nText } from '@/components/LocaleShell';
 import { normalizeLocale, translate } from '@/lib/i18n';
-import '@/lib/i18nAssetImages';
 import { deleteAssetImage, reorderAssetImages } from '@/app/workspace/assets/actions';
 
 type Image = { id: string; storage_path: string; signed_url: string; sort_order: number };

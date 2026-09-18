@@ -2,8 +2,6 @@
 
 import { ChangeEvent, useRef, useState } from 'react';
 import { I18nText } from '@/components/LocaleShell';
-import '@/lib/i18nAssetImages';
-
 const MAX_IMAGES = 20;
 const MAX_DIMENSION = 2000;
 const MAX_BYTES = 10 * 1024 * 1024;

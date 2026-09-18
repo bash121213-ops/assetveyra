@@ -1,10 +1,9 @@
-import { TRANSLATIONS, type Locale } from '@/lib/i18n';
+import type { Locale } from '@/lib/i18n';
 
 type Set = Record<Locale,string>;
-const add = (entries: Record<string, Set>) => { for (const [key, value] of Object.entries(entries)) TRANSLATIONS[key] = value; };
 const s = (en:string, ar:string, zh:string, es:string, fr:string):Set => ({en,ar,zh,es,fr});
 
-add({
+export const QUALIFIED_INVESTOR_TRANSLATIONS: Record<string, Set> = {
   'Qualified Investors':s('Qualified Investors','المستثمرون المؤهلون','合格投资者','Inversores cualificados','Investisseurs qualifiés'),
   'Exclusive Real Estate Opportunities for Qualified Investors':s('Exclusive Real Estate Opportunities for Qualified Investors','فرص عقارية حصرية للمستثمرين المؤهلين','面向合格投资者的专属房地产机会','Oportunidades inmobiliarias exclusivas para inversores cualificados','Opportunités immobilières exclusives pour investisseurs qualifiés'),
   'Off-market opportunities. Controlled access. Transaction-ready workflows.':s('Off-market opportunities. Controlled access. Transaction-ready workflows.','فرص خارج السوق. وصول منضبط. ومسارات معاملات جاهزة للتنفيذ.','非公开机会、受控访问和面向交易的工作流程。','Oportunidades fuera de mercado, acceso controlado y flujos de trabajo listos para transacciones.','Opportunités hors marché, accès contrôlé et workflows prêts pour la transaction.'),
@@ -106,4 +105,4 @@ add({
   'AssetVeyra is a marketplace and transaction platform, not an investment adviser.':s('AssetVeyra is a marketplace and transaction platform, not an investment adviser.','AssetVeyra منصة سوق ومعاملات وليست مستشارًا استثماريًا.','AssetVeyra 是市场和交易平台，而非投资顾问。','AssetVeyra es un mercado y una plataforma de transacciones, no un asesor de inversiones.','AssetVeyra est une place de marché et une plateforme de transactions, pas un conseiller en investissement.'),
   'Please consult qualified legal, tax and financial advisers for your circumstances.':s('Please consult qualified legal, tax and financial advisers for your circumstances.','يرجى استشارة مستشارين قانونيين وضريبيين وماليين مؤهلين بما يناسب ظروفك.','请根据您的具体情况咨询合格的法律、税务和财务顾问。','Consulte a asesores jurídicos, fiscales y financieros cualificados según sus circunstancias.','Consultez des conseillers juridiques, fiscaux et financiers qualifiés selon votre situation.'),
   'Return to marketplace':s('Return to marketplace','العودة إلى السوق','返回市场','Volver al mercado','Retour au marché')
-});
+};
