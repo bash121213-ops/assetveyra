@@ -164,7 +164,7 @@ export default function ExternalMarketClient() {
           return <article className="external-listing-card" key={listing.id}>
             <div className="external-listing-image-link" aria-label={title}>
               <div className="external-listing-image external-gallery">
-                {listing.imageUrls.length > 0 && !failed ? <>
+                {listing.imageUrls.length > 0 && failedCount < listing.imageUrls.length ? <>
                   <button type="button" className="external-gallery-image-button" onClick={() => setLightbox({ listingId: listing.id, index: imageIndexes[listing.id] ?? 0 })} aria-label={title}>
                     <img src={imageSrc(listing.imageUrls[imageIndexes[listing.id] ?? 0])} alt={textFor(listing.imageAlt)} loading="lazy" onError={() => setFailedImages((current) => ({ ...current, [`${listing.id}:${listing.imageUrls[imageIndexes[listing.id] ?? 0]}`]: true }))}/>
                   </button>
