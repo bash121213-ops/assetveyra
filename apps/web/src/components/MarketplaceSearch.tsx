@@ -15,7 +15,7 @@ export default function MarketplaceSearch({ countries, cities, assetTypes }: Pro
     const form=new FormData(event.currentTarget);
     const next=new URLSearchParams();
     ['q','country','city','type','min','max','areaMin','sort'].forEach((key)=>{const value=String(form.get(key)||'').trim();if(value)next.set(key,value);});
-    router.push(next.toString()?\`/opportunities?\${next.toString()}\`:'/opportunities');
+    router.push(next.toString()?'/opportunities?'+next.toString():'/opportunities');
   };
   return <form className="marketplace-search" onSubmit={submit} role="search">
     <div className="marketplace-search-main">
