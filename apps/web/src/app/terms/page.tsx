@@ -5,7 +5,6 @@ import { TERMS_COPY } from '@/lib/legalContent';
 export default function TermsPage() {
   const locale = useLocale();
   const copy = TERMS_COPY[locale];
-  const copy = COPY[locale];
   return (
     <main className="app-shell">
       <article className="form-page" style={{ maxWidth: 980, margin: '0 auto' }}>
