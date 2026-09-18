@@ -24,7 +24,8 @@ function extractOgImage(html: string, baseUrl: URL) {
   }
 }
 
-async function fetchAllowed(url: URL) {
+async function fetchAllowed(url: URL, redirects = 0) {
+  if (redirects > 3) return null;
   const response = await fetch(url, {
     headers: { 'User-Agent': 'AssetVeyra/1.0 (+https://assetveyra.com)' },
     cache: 'no-store',
@@ -37,7 +38,7 @@ async function fetchAllowed(url: URL) {
     try {
       const redirected = new URL(location, url);
       if (!isAllowed(redirected)) return null;
-      return fetchAllowed(redirected);
+      return fetchAllowed(redirected, redirects + 1);
     } catch {
       return null;
     }
@@ -64,7 +65,7 @@ export async function GET(request: NextRequest) {
     if (!response) return new Response('Image unavailable', { status: 404 });
 
     const contentType = response.headers.get('content-type') ?? '';
-    if (response.ok && contentType.startsWith('image/')) {
+    if (response.ok && ['image/jpeg', 'image/png', 'image/webp', 'image/avif'].includes(contentType.split(';', 1)[0].toLowerCase())) {
       return new Response(response.body, {
         status: 200,
         headers: {
@@ -80,7 +81,7 @@ export async function GET(request: NextRequest) {
       if (imageUrl) {
         const imageResponse = await fetchAllowed(imageUrl);
         const imageType = imageResponse?.headers.get('content-type') ?? '';
-        if (imageResponse?.ok && imageType.startsWith('image/')) {
+        if (imageResponse?.ok && ['image/jpeg', 'image/png', 'image/webp', 'image/avif'].includes(imageType.split(';', 1)[0].toLowerCase())) {
           return new Response(imageResponse.body, {
             status: 200,
             headers: {
