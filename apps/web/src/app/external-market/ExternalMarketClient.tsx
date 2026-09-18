@@ -11,6 +11,7 @@ type Localized = { en: string; ar: string };
 type Detail = { label: Localized; value: Localized };
 type Listing = {
   id: string;
+  sourceReference?: string;
   country: Localized;
   city: Localized;
   title: Localized;
@@ -27,6 +28,67 @@ type Listing = {
 const L = (en: string, ar: string = en): Localized => ({ en, ar });
 
 const listings: Listing[] = [
+  {
+    id: 'syria-tartous-6500-coastal',
+    sourceReference: 'Dalsyria listing 16543 — checked 2026-09-18',
+    country: L('Syria', 'سوريا'), city: L('Tartous · Coastal Syria', 'طرطوس · الساحل السوري'),
+    title: L('6,500 m² Strategic Coastal Road Land', 'أرض استراتيجية 6,500 م² على الطريق الساحلي'),
+    type: L('Commercial / Investment Land', 'أرض تجارية / استثمارية'), price: '$390,000',
+    summary: L('6,500 m² land on the international Tartous–Latakia road, described as close to the port and industrial city, with road access via Khreibat bridge. The listing states green title deed ownership and suitability for a service, industrial or fuel-station project, subject to approvals.', 'أرض بمساحة 6,500 م² على الطريق الدولي طرطوس–اللاذقية، يذكر الإعلان قربها من المرفأ والمدينة الصناعية ووصولها عبر طريق يصل إلى جسر الخريبات. يذكر الإعلان ملكية بطابو أخضر وإمكانية استخدامها لمشروع خدمي أو صناعي أو محطة وقود، وفق الموافقات المطلوبة.'),
+    facts: [L('6,500 m²', '6,500 م²'), L('Green title deed stated', 'طابو أخضر بحسب الإعلان'), L('International road frontage', 'على الطريق الدولي'), L('$390,000 asking price', 'السعر المعلن 390,000 دولار')],
+    details: [
+      { label: L('Location', 'الموقع'), value: L('Tartous, Eastern Ghamqa, coastal Syria', 'طرطوس، الغمقة الشرقية، الساحل السوري') },
+      { label: L('Asking price', 'السعر المطلوب'), value: L('$390,000', '390,000 دولار') },
+      { label: L('Land area', 'مساحة الأرض'), value: L('6,500 m²', '6,500 م²') },
+      { label: L('Ownership stated', 'الملكية بحسب الإعلان'), value: L('Green title deed', 'طابو أخضر') },
+      { label: L('Strategic position', 'الموقع الاستراتيجي'), value: L('International Tartous–Latakia road; close to port and industrial city', 'الطريق الدولي طرطوس–اللاذقية؛ قرب المرفأ والمدينة الصناعية') },
+      { label: L('Potential use', 'الاستخدام المحتمل'), value: L('Service, industrial or fuel-station project, subject to approvals', 'مشروع خدمي أو صناعي أو محطة وقود، وفق الموافقات') },
+      { label: L('Access', 'الوصول'), value: L('Road connection described via Khreibat bridge', 'يذكر الإعلان اتصالاً بالطريق عبر جسر الخريبات') },
+    ],
+    features: [L('Coastal Syria', 'الساحل السوري'), L('International road', 'طريق دولي'), L('Near port', 'قرب المرفأ'), L('Industrial potential', 'إمكانات صناعية'), L('Green title deed stated', 'طابو أخضر بحسب الإعلان')],
+    imageUrls: ['https://dalsyria.com/storage/listing-images/listing_01KE5QBB9PAFY4FHDEABGMNKND.webp'], imageAlt: L('Coastal Syria land listing', 'صورة أرض في الساحل السوري')
+  },
+  {
+    id: 'damascus-airport-road-1000',
+    sourceReference: 'Dalsyria listing 20818 — checked 2026-09-18',
+    country: L('Syria', 'سوريا'), city: L('Damascus · Hatita Al-Turkman', 'دمشق · حتيتة التركمان'),
+    title: L('1,000 m² Villa / Tourism Development Plot', 'أرض 1,000 م² للفلل أو التطوير السياحي'),
+    type: L('Residential / Tourism / Commercial Land', 'أرض سكنية / سياحية / تجارية'), price: '$80,000',
+    summary: L('A 1,000 m² vacant plot on Damascus International Airport Road near the exhibition-city area. The public listing states green title deed ownership, subdivision into separate title deeds, immediate handover, and suitability for villas, tourism or commercial development outside the airport boundary.', 'أرض خالية بمساحة 1,000 م² على طريق مطار دمشق الدولي قرب منطقة مدينة المعارض. يذكر الإعلان ملكية بطابو أخضر وتقسيماً إلى محاضر مستقلة وتسليماً فورياً وإمكانية الاستخدام للفلل أو التطوير السياحي أو التجاري خارج حرم المطار.'),
+    facts: [L('1,000 m²', '1,000 م²'), L('Green title deed stated', 'طابو أخضر بحسب الإعلان'), L('Airport road', 'طريق المطار'), L('$80,000 asking price', 'السعر المعلن 80,000 دولار')],
+    details: [
+      { label: L('Location', 'الموقع'), value: L('Hatita Al-Turkman, Rif Dimashq, Damascus', 'حتيتة التركمان، ريف دمشق، دمشق') },
+      { label: L('Asking price', 'السعر المطلوب'), value: L('$80,000 for 1,000 m²', '80,000 دولار لمساحة 1,000 م²') },
+      { label: L('Land area', 'مساحة الأرض'), value: L('1,000 m²', '1,000 م²') },
+      { label: L('Ownership stated', 'الملكية بحسب الإعلان'), value: L('Green title deed', 'طابو أخضر') },
+      { label: L('Position', 'الموقع'), value: L('Damascus International Airport Road, near the exhibition-city area', 'طريق مطار دمشق الدولي قرب مدينة المعارض') },
+      { label: L('Development', 'التطوير'), value: L('Villas, tourism or commercial project, subject to approvals', 'فلل أو مشروع سياحي أو تجاري، وفق الموافقات') },
+      { label: L('Handover', 'التسليم'), value: L('Immediate handover stated', 'التسليم الفوري بحسب الإعلان') },
+    ],
+    features: [L('Airport road', 'طريق المطار'), L('Villa potential', 'إمكانات فلل'), L('Tourism potential', 'إمكانات سياحية'), L('Green title deed stated', 'طابو أخضر بحسب الإعلان'), L('Immediate handover stated', 'تسليم فوري بحسب الإعلان')],
+    imageUrls: ['https://dalsyria.com/storage/listing-images/listing_01KJB3XQB4KKXR3SHPFP5VR7AV.webp'], imageAlt: L('Damascus land listing', 'صورة أرض في دمشق')
+  },
+  {
+    id: 'egypt-damietta-shatt-113',
+    sourceReference: 'Aqarmap listing EG-6203493 — checked 2026-09-18',
+    country: L('Egypt', 'مصر'), city: L('Damietta · Shatt Jiraybah', 'دمياط · شط جريبة'),
+    title: L('113.6 m² Corner Commercial / Residential Plot', 'قطعة أرض 113.6 م² ناصية تجارية / سكنية'),
+    type: L('Residential / Commercial Land', 'أرض سكنية / تجارية'), price: 'EGP 520,000',
+    summary: L('A 113.6 m² corner plot in Shatt Jiraybah, Damietta, described as fronting two 8-metre streets and suitable for commercial and residential uses. The listing states cash or installment payment and a negotiable price.', 'قطعة أرض ناصية بمساحة 113.6 م² في شط جريبة بدمياط، يذكر الإعلان أنها على شارعين بعرض 8 أمتار وصالحة للاستخدامات التجارية والسكنية. يذكر الإعلان إمكانية الدفع نقداً أو بالتقسيط وأن السعر قابل للتفاوض.'),
+    facts: [L('113.6 m²', '113.6 م²'), L('Corner plot', 'قطعة ناصية'), L('Two 8 m streets', 'شارعان بعرض 8 م'), L('EGP 520,000', '520,000 جنيه مصري')],
+    details: [
+      { label: L('Location', 'الموقع'), value: L('Shatt Jiraybah, Damietta, Egypt', 'شط جريبة، دمياط، مصر') },
+      { label: L('Asking price', 'السعر المطلوب'), value: L('EGP 520,000', '520,000 جنيه مصري') },
+      { label: L('Land area', 'مساحة الأرض'), value: L('113.6 m²', '113.6 م²') },
+      { label: L('Plot position', 'وضع القطعة'), value: L('Corner plot on two streets', 'قطعة ناصية على شارعين') },
+      { label: L('Street widths', 'عرض الشوارع'), value: L('8 m streets stated', 'شوارع بعرض 8 م بحسب الإعلان') },
+      { label: L('Potential use', 'الاستخدام المحتمل'), value: L('Commercial and residential uses stated', 'الاستخدامات التجارية والسكنية بحسب الإعلان') },
+      { label: L('Payment', 'الدفع'), value: L('Cash or installment; negotiable price stated', 'نقداً أو بالتقسيط؛ السعر قابل للتفاوض بحسب الإعلان') },
+    ],
+    features: [L('Damietta', 'دمياط'), L('Corner position', 'موقع ناصية'), L('Two streets', 'شارعان'), L('Commercial use', 'استخدام تجاري'), L('Residential use', 'استخدام سكني')],
+    imageUrls: ['https://img-2.aqarmap.com.eg/new-aqarmap-media/large/2508/6898a6df7d724868065128.jpg','https://img-4.aqarmap.com.eg/new-aqarmap-media/large/2508/6898a6e03bfdd065512939.jpg'],
+    imageAlt: L('Damietta land listing', 'صورة أرض في دمياط')
+  },
   {
     id: 'dubai-palm-250', country: L('United Arab Emirates', 'الإمارات العربية المتحدة'), city: L('Dubai · Palm Jumeirah', 'دبي · نخلة جميرا'),
     title: L('250-Room Luxury Beachfront & Wellness Resort', 'منتجع فاخر شاطئي وعافية – 250 غرفة'), type: L('5-Star Hospitality Asset', 'أصل فندقي 5 نجوم'), price: '€152,000,000',
@@ -117,8 +179,8 @@ const listings: Listing[] = [
 ];
 
 const copy: Record<Locale, { heading: string; intro: string; contact: string; request: string; pricing: string; details: string; features: string; more: string; less: string; unavailable: string; footer: string }> = {
-  en: { heading: 'External Market Opportunities', intro: 'Selected third-party market listings presented separately from AssetVeyra opportunities. Availability, pricing and transaction terms must be independently verified.', contact: 'Contact AssetVeyra', request: 'Request This Opportunity', pricing: 'Sign in to view pricing', details: 'Property details', features: 'Key features', more: 'Open full details', less: 'Hide details', unavailable: 'Original listing photo could not be retrieved', footer: 'External listings are third-party market references, not verified AssetVeyra opportunities.' },
-  ar: { heading: 'فرص السوق الخارجي', intro: 'قوائم عقارية مختارة من السوق الخارجي ومعروضة بشكل منفصل عن فرص AssetVeyra. يجب التحقق بشكل مستقل من التوفر والأسعار وشروط المعاملة.', contact: 'تواصل مع AssetVeyra', request: 'اطلب هذه الفرصة', pricing: 'سجّل الدخول لعرض السعر', details: 'تفاصيل العقار', features: 'أهم المزايا', more: 'فتح كامل التفاصيل', less: 'إخفاء التفاصيل', unavailable: 'تعذر جلب الصورة الأصلية للإعلان', footer: 'القوائم الخارجية هي مراجع من سوق الغير وليست فرصاً موثقة من AssetVeyra.' },
+  en: { heading: 'External Market Opportunities', intro: 'Selected market listings presented separately from AssetVeyra opportunities. This batch includes only listings whose original photos could be retrieved; availability, pricing, ownership and transaction terms must be independently verified.', contact: 'Contact AssetVeyra', request: 'Request This Opportunity', pricing: 'Sign in to view pricing', details: 'Property details', features: 'Key features', more: 'Open full details', less: 'Hide details', unavailable: 'Original listing photo could not be retrieved', footer: 'External listings are third-party market references, not verified AssetVeyra opportunities.' },
+  ar: { heading: 'فرص السوق الخارجي', intro: 'قوائم عقارية مختارة من السوق الخارجي ومعروضة بشكل منفصل عن فرص AssetVeyra. هذه الدفعة تشمل فقط القوائم التي أمكن استرجاع صورها الأصلية؛ يجب التحقق بشكل مستقل من التوفر والأسعار والملكية وشروط المعاملة.', contact: 'تواصل مع AssetVeyra', request: 'اطلب هذه الفرصة', pricing: 'سجّل الدخول لعرض السعر', details: 'تفاصيل العقار', features: 'أهم المزايا', more: 'فتح كامل التفاصيل', less: 'إخفاء التفاصيل', unavailable: 'تعذر جلب الصورة الأصلية للإعلان', footer: 'القوائم الخارجية هي مراجع من سوق الغير وليست فرصاً موثقة من AssetVeyra.' },
   zh: { heading: '外部市场机会', intro: '精选第三方市场挂牌，与 AssetVeyra 机会分开显示。可用性、价格和交易条款必须独立核实。', contact: '联系 AssetVeyra', request: '咨询此机会', pricing: '登录后查看价格', details: '物业详情', features: '主要特点', more: '打开完整详情', less: '隐藏详情', unavailable: '无法获取原始挂牌图片', footer: '外部挂牌是第三方市场参考，并非经 AssetVeyra 核实的机会。' },
   es: { heading: 'Oportunidades del mercado externo', intro: 'Listados seleccionados de terceros, separados de las oportunidades de AssetVeyra. La disponibilidad, el precio y las condiciones deben verificarse de forma independiente.', contact: 'Contactar con AssetVeyra', request: 'Solicitar esta oportunidad', pricing: 'Inicie sesión para ver el precio', details: 'Detalles del inmueble', features: 'Características', more: 'Abrir todos los detalles', less: 'Ocultar detalles', unavailable: 'No se pudo recuperar la foto original', footer: 'Los listados externos son referencias de terceros y no oportunidades verificadas por AssetVeyra.' },
   fr: { heading: 'Opportunités du marché externe', intro: 'Sélection de biens proposés par des tiers, séparés des opportunités AssetVeyra. La disponibilité, le prix et les conditions doivent être vérifiés indépendamment.', contact: 'Contacter AssetVeyra', request: 'Demander cette opportunité', pricing: 'Connectez-vous pour voir le prix', details: 'Détails du bien', features: 'Caractéristiques', more: 'Ouvrir tous les détails', less: 'Masquer les détails', unavailable: 'La photo originale n’a pas pu être récupérée', footer: 'Les annonces externes sont des références de marché de tiers et non des opportunités vérifiées par AssetVeyra.' },

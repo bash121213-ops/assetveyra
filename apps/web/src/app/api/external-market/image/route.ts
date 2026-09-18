@@ -6,6 +6,9 @@ const ALLOWED_HOSTS = new Set([
   'assets.simpleviewinc.com',
   'www.smergers.com',
   'cdn.thinkwebcontent.com',
+  'dalsyria.com',
+  'img-2.aqarmap.com.eg',
+  'img-4.aqarmap.com.eg',
 ]);
 
 function isAllowed(url: URL) {
