@@ -75,7 +75,8 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Opp
   });
 
   const countries=[...new Set(assets.map(a=>a.country_code).filter(Boolean) as string[])].sort();
-  const cities=[...new Set(assets.map(a=>a.city).filter(Boolean) as string[])].sort();
+  const selectedCountry = country.toLowerCase();
+  const cities=[...new Set(assets.filter(a=>!selectedCountry || (a.country_code||'').toLowerCase()===selectedCountry).map(a=>a.city).filter(Boolean) as string[])].sort();
   const assetTypes=[...new Set(assets.map(a=>a.asset_type).filter(Boolean))].sort();
 
   const externalResult=await s.from('external_market_listings').select('id,country_code,country_name,city,title,asset_type,price_amount,currency,area_sqm,rooms,summary,source_name,source_url,listed_at,checked_at').eq('active',true).order('country_code',{ascending:true}).order('price_amount',{ascending:false});
