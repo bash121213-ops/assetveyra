@@ -83,7 +83,7 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
   return <main className="app-shell">
     <header className="app-header"><a className="brand" href="/">ASSETVEYRA</a><nav><a href="/opportunities"><I18nText id="Marketplace"/></a><a href="/workspace"><I18nText id="Overview"/></a>{user?<form action="/logout" method="post"><button className="text-button"><I18nText id="Sign out"/></button></form>:<a href="/login"><I18nText id="Sign in"/></a>}</nav></header>
     <section className="page-head"><div className="eyebrow"><I18nText id="Market"/></div><h1><I18nText id="Marketplace"/></h1><p><I18nText id="Curated opportunities for qualified investors worldwide."/></p></section>
-    <MarketplaceSearch countries={countries} cities={cities} assetTypes={assetTypes}/>
+    <MarketplaceSearch countries={countries} cities={cities} assetTypes={assetTypes} initialParams={params}/>
     {error&&<div className="form-error" style={{maxWidth:1280,margin:'0 auto 30px',width:'88%'}}><I18nText id="The live marketplace could not be loaded. Please try again shortly."/></div>}
     <div className="marketplace-results-head"><strong>{rows.length} <I18nText id="results"/></strong><a href="/opportunities"><I18nText id="Clear filters"/></a></div>
     <section className="opportunity-grid">
