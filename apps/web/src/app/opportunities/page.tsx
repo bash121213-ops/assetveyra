@@ -1,3 +1,4 @@
+import { cookies } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
 import { I18nText } from '@/components/LocaleShell';
 import { ExternalMarketText } from '@/components/ExternalMarketText';
@@ -76,6 +77,9 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
   const normalizedParams=Object.fromEntries(Object.entries(params).map(([key,value])=>[key,firstParam(value)])) as Record<string,string|undefined>;
   const s=await createClient();
   const {data:{user}}=await s.auth.getUser();
+  const localeCookie=(await cookies()).get('assetveyra-locale')?.value;
+  const locale=['en','ar','zh','es','fr'].includes(localeCookie||'')?(localeCookie as 'en'|'ar'|'zh'|'es'|'fr'):'en';
+  const countryNames=new Intl.DisplayNames([locale],{type:'region'});
 
   const {data:opportunities,error:opportunityError}=await s.from('public_opportunities').select('id,slug,status,investment_thesis,structure,minimum_ticket,target_return,asset_id').order('published_at',{ascending:false});
   let assets:Asset[]=[];let assetError=null;
@@ -177,10 +181,10 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
 
     <section className="marketplace-results-bar"><strong>{filteredRows.length}</strong><span>matching opportunities</span>{(q||country||region||city||type||min!==null||max!==null||areaMin!==null)&&<a href="/opportunities">Clear filters</a>}</section>
 
-    <section className="opportunity-grid">{filteredRows.map(({opportunity,asset,imageUrl},index)=>asset?<a className="opportunity-card" href={user?`/opportunities/${opportunity.slug}`:'/login'} key={opportunity.id}>
+    <section className="opportunity-grid">{filteredRows.map(({opportunity,asset,imageUrl},index)=>asset?<a className="opportunity-card" href={user?`/opportunities/${opportunity.slug}`:`/login?returnTo=${encodeURIComponent(`/opportunities/${opportunity.slug}`)}`} key={opportunity.id}>
       <div className="opportunity-card-media">{imageUrl?<Image src={imageUrl} alt={asset.title} fill sizes="(max-width: 767px) 90vw, (max-width: 1024px) 45vw, 30vw" quality={75} priority={index < 3}/>:<div className="opportunity-card-placeholder"><I18nText id="No image available"/></div>}<span className="opportunity-card-status"><I18nText id="Published opportunity"/></span></div>
       <div className="opportunity-card-body">
-        <div className="card-meta"><span>{sectorKeys[asset.asset_type]?<I18nText id={sectorKeys[asset.asset_type]}/>:asset.asset_type}</span><span>{asset.country_code??'—'}</span></div>
+        <div className="card-meta"><span>{sectorKeys[asset.asset_type]?<I18nText id={sectorKeys[asset.asset_type]}/>:asset.asset_type}</span><span>{asset.country_code?countryNames.of(asset.country_code):'—'}</span></div>
         <h2>{asset.title}</h2>
         <p>{asset.public_summary||opportunity.investment_thesis||<I18nText id="Investment opportunity"/>}</p>
         <div className="card-location">{[asset.city,asset.region,asset.country_code].filter(Boolean).join(', ')||'—'}</div>
