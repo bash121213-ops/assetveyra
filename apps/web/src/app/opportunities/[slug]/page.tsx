@@ -22,6 +22,27 @@ function formatNumber(value: number | null) {
   return value === null ? '—' : Number(value).toLocaleString();
 }
 
+const verificationChecks = [
+  ['listing_information_submitted', 'Listing information submitted'],
+  ['documents_reviewed', 'Documents reviewed'],
+  ['ownership_information_reviewed', 'Ownership information reviewed'],
+  ['site_visit_completed', 'Site visit completed'],
+] as const;
+
+function verificationState(propertyDetails: unknown) {
+  const verification = (propertyDetails as { verification?: { status?: string; checks?: Record<string, string>; note?: string } } | null)?.verification;
+  const checks = verification?.checks ?? {};
+  return {
+    status: verification?.status || 'pending',
+    note: verification?.note || '',
+    checks: verificationChecks.map(([key, label]) => ({
+      key,
+      label,
+      status: checks[key] === 'completed' || checks[key] === 'not_applicable' ? checks[key] : 'pending',
+    })),
+  };
+}
+
 async function registerInterest(formData: FormData) {
   'use server';
   const s = await createClient();
@@ -79,7 +100,7 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
 
   const { data: asset } = await s
     .from('public_assets')
-    .select('id,title,asset_type,country_code,region,city,area_sqm,currency,asking_price,public_summary')
+    .select('id,title,asset_type,country_code,region,city,area_sqm,currency,asking_price,public_summary,property_details')
     .eq('id', opportunity.asset_id)
     .maybeSingle();
   if (!asset || asset.asking_price === null || Number(asset.asking_price) < 100000) redirect('/opportunities');
@@ -186,21 +207,32 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
               </div>
             )}
 
-            {verification && (
-              <div className="verification-panel">
-                <div>
-                  <div className="eyebrow"><I18nText id="Verification status" /></div>
-                  <strong>{verification.status === 'open' ? <I18nText id="Verification in progress" /> : <I18nText id="Verification record" />}</strong>
+            {verification && (() => {
+              const granular = verificationState(asset.property_details);
+              return (
+                <div className="verification-panel">
+                  <div>
+                    <div className="eyebrow"><I18nText id="Verification status" /></div>
+                    <strong>
+                      {granular.status === 'approved'
+                        ? <I18nText id="Verified within documented scope" />
+                        : granular.status === 'rejected'
+                          ? <I18nText id="Verification rejected" />
+                          : <I18nText id="Verification in progress" />}
+                    </strong>
+                  </div>
+                  <div className="verification-items">
+                    {granular.checks.map((check) => (
+                      <span key={check.key}>
+                        <I18nText id={check.label} /> · {check.status === 'completed' ? <I18nText id="Completed" /> : check.status === 'not_applicable' ? <I18nText id="Not applicable" /> : <I18nText id="Pending" />}
+                      </span>
+                    ))}
+                  </div>
+                  {granular.note && <p>{granular.note}</p>}
+                  {verification.decision_reason && verification.decision_reason !== granular.note && <p>{verification.decision_reason}</p>}
                 </div>
-                <div className="verification-items">
-                  <span><I18nText id="Listing information submitted" /></span>
-                  <span><I18nText id="Documents reviewed" /></span>
-                  <span><I18nText id="Ownership information reviewed" /></span>
-                  <span><I18nText id="Site visit completed" /></span>
-                </div>
-                {verification.decision_reason && <p>{verification.decision_reason}</p>}
-              </div>
-            )}
+              );
+            })()}
 
             <div className="detail-information">
               <div className="detail-information-block">
