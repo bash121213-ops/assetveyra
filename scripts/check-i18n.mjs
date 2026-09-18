@@ -54,7 +54,7 @@ function extractObject(source, marker) {
 }
 
 const registrySource = read(REGISTRY_FILE);
-const registryObject = Function(`return (${extractObject(registrySource, 'export const CENTRAL_TRANSLATION_REGISTRY')})`)();
+const registryObject = JSON.parse(extractObject(registrySource, 'export const CENTRAL_TRANSLATION_REGISTRY'));
 const registry = new Map(Object.entries(registryObject));
 
 function walk(dir) {
