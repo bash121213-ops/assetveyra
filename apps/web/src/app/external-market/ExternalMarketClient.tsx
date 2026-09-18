@@ -142,8 +142,47 @@ export default function ExternalMarketClient() {
 
   const textFor = (value: Localized) => value[locale === 'ar' ? 'ar' : 'en'];
   const imageSrc = (url: string) => `/api/external-market/image?url=${encodeURIComponent(url)}`;
+  const handleImageError = (listingId: string, index: number) => {
+    setFailedImages((current) => {
+      const url = listings.find((item) => item.id === listingId)?.imageUrls[index];
+      if (!url || current[`${listingId}:${url}`]) return current;
+      return { ...current, [`${listingId}:${url}`]: true };
+    });
+
+    setImageIndexes((current) => {
+      const listing = listings.find((item) => item.id === listingId);
+      if (!listing) return current;
+      const nextIndex = listing.imageUrls.findIndex((url, candidateIndex) =>
+        candidateIndex !== index && !failedImages[`${listingId}:${url}`]
+      );
+      return nextIndex >= 0 ? { ...current, [listingId]: nextIndex } : current;
+    });
+
+    setLightbox((current) => current?.listingId === listingId && current.index === index ? null : current);
+  };
   const moveImage = (listingId: string, count: number, direction: number) => {
-    setImageIndexes((current) => ({ ...current, [listingId]: ((current[listingId] ?? 0) + direction + count) % count }));
+    setImageIndexes((current) => {
+      const start = current[listingId] ?? 0;
+      for (let step = 1; step <= count; step += 1) {
+        const next = (start + direction * step + count) % count;
+        const url = listings.find((item) => item.id === listingId)?.imageUrls[next];
+        if (url && !failedImages[`${listingId}:${url}`]) return { ...current, [listingId]: next };
+      }
+      return current;
+    });
+  };
+  const moveLightbox = (listingId: string, startIndex: number, direction: number) => {
+    const listing = listings.find((item) => item.id === listingId);
+    if (!listing) return;
+    for (let step = 1; step <= listing.imageUrls.length; step += 1) {
+      const next = (startIndex + direction * step + listing.imageUrls.length) % listing.imageUrls.length;
+      const url = listing.imageUrls[next];
+      if (!failedImages[`${listingId}:${url}`]) {
+        setLightbox({ listingId, index: next });
+        return;
+      }
+    }
+    setLightbox(null);
   };
 
   return <main className="av-final-home external-market-page">
@@ -166,7 +205,7 @@ export default function ExternalMarketClient() {
               <div className="external-listing-image external-gallery">
                 {listing.imageUrls.length > 0 && failedCount < listing.imageUrls.length ? <>
                   <button type="button" className="external-gallery-image-button" onClick={() => setLightbox({ listingId: listing.id, index: imageIndexes[listing.id] ?? 0 })} aria-label={title}>
-                    <img src={imageSrc(listing.imageUrls[imageIndexes[listing.id] ?? 0])} alt={textFor(listing.imageAlt)} loading="lazy" onError={() => setFailedImages((current) => ({ ...current, [`${listing.id}:${listing.imageUrls[imageIndexes[listing.id] ?? 0]}`]: true }))}/>
+                    <img src={imageSrc(listing.imageUrls[imageIndexes[listing.id] ?? 0])} alt={textFor(listing.imageAlt)} loading="lazy" onError={() => handleImageError(listing.id, imageIndexes[listing.id] ?? 0)}/>
                   </button>
                   {listing.imageUrls.length > 1 && <>
                     <button type="button" className="external-gallery-prev" onClick={() => moveImage(listing.id, listing.imageUrls.length, -1)} aria-label="Previous image">‹</button>
@@ -189,10 +228,10 @@ export default function ExternalMarketClient() {
       if (!listing) return null;
       return <div className="external-lightbox" role="dialog" aria-modal="true" aria-label={textFor(listing.title)} onClick={() => setLightbox(null)}>
         <button type="button" className="external-lightbox-close" onClick={() => setLightbox(null)} aria-label="Close">×</button>
-        <img src={imageSrc(listing.imageUrls[lightbox.index])} alt={textFor(listing.imageAlt)} onClick={(event) => event.stopPropagation()}/>
+        <img src={imageSrc(listing.imageUrls[lightbox.index])} alt={textFor(listing.imageAlt)} onClick={(event) => event.stopPropagation()} onError={() => handleImageError(listing.id, lightbox.index)}/>
         {listing.imageUrls.length > 1 && <>
-          <button type="button" className="external-lightbox-prev" onClick={(event) => { event.stopPropagation(); setLightbox({ listingId: listing.id, index: (lightbox.index - 1 + listing.imageUrls.length) % listing.imageUrls.length }); }} aria-label="Previous image">‹</button>
-          <button type="button" className="external-lightbox-next" onClick={(event) => { event.stopPropagation(); setLightbox({ listingId: listing.id, index: (lightbox.index + 1) % listing.imageUrls.length }); }} aria-label="Next image">›</button>
+          <button type="button" className="external-lightbox-prev" onClick={(event) => { event.stopPropagation(); moveLightbox(listing.id, lightbox.index, -1); }} aria-label="Previous image">‹</button>
+          <button type="button" className="external-lightbox-next" onClick={(event) => { event.stopPropagation(); moveLightbox(listing.id, lightbox.index, 1); }} aria-label="Next image">›</button>
         </>}
       </div>;
     })()}
