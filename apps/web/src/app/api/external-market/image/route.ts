@@ -9,10 +9,19 @@ const ALLOWED_HOSTS = new Set([
   'dalsyria.com',
   'img-2.aqarmap.com.eg',
   'img-4.aqarmap.com.eg',
+  'yafaoffice.com',
 ]);
 
 function isAllowed(url: URL) {
   return url.protocol === 'https:' && ALLOWED_HOSTS.has(url.hostname);
+}
+
+function isAllowedImage(url: URL, source: URL) {
+  if (url.protocol !== 'https:') return false;
+  if (isAllowed(url)) return true;
+  const sourceRoot = source.hostname.split('.').slice(-2).join('.');
+  const imageRoot = url.hostname.split('.').slice(-2).join('.');
+  return sourceRoot === imageRoot;
 }
 
 function extractOgImage(html: string, baseUrl: URL) {
@@ -21,7 +30,7 @@ function extractOgImage(html: string, baseUrl: URL) {
   if (!match?.[1]) return null;
   try {
     const imageUrl = new URL(match[1], baseUrl);
-    return isAllowed(imageUrl) ? imageUrl : null;
+    return isAllowedImage(imageUrl, baseUrl) ? imageUrl : null;
   } catch {
     return null;
   }
@@ -78,7 +87,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    if (target.hostname === 'www.luxuryestate.com' && response.ok && contentType.includes('text/html')) {
+    if (response.ok && contentType.includes('text/html')) {
       const html = await response.text();
       const imageUrl = extractOgImage(html, target);
       if (imageUrl) {
