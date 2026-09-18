@@ -19,5 +19,12 @@ export default async function ExternalMarketPage() {
     return <main className="app-shell"><section className="external-market-section"><div className="form-error">The external market is temporarily unavailable. Please try again shortly.</div></section></main>;
   }
 
-  return <ExternalMarketClient listings={(data ?? []) as ExternalListing[]} authenticated={Boolean(user)} />;
+  const listings = (data ?? []).map((item) => ({
+    ...item,
+    price_amount: item.price_amount === null ? null : Number(item.price_amount),
+    area_sqm: item.area_sqm === null ? null : Number(item.area_sqm),
+    rooms: item.rooms === null ? null : Number(item.rooms),
+  })) as ExternalListing[];
+
+  return <ExternalMarketClient listings={listings} authenticated={Boolean(user)} />;
 }
