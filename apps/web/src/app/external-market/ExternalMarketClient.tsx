@@ -22,7 +22,6 @@ type Listing = {
   features: Localized[];
   imageUrls: string[];
   imageAlt: Localized;
-  sourceUrl: string;
 };
 
 const L = (en: string, ar: string = en): Localized => ({ en, ar });
@@ -48,7 +47,7 @@ const listings: Listing[] = [
       { label: L('Listing reference', 'مرجع الإعلان'), value: L('3405', '3405') },
     ],
     features: [L('Beachfront', 'واجهة بحرية'), L('Wellness', 'عافية'), L('Restaurants & bars', 'مطاعم وبارات'), L('Retail', 'تجزئة'), L('Spa', 'سبا'), L('Conference facilities', 'مؤتمرات'), L('Private beach', 'شاطئ خاص')],
-    imageUrls: ['https://www.luxuryestate.com/p132160711-hotel-for-sale-dubai'], imageAlt: L('Property image', 'صورة العقار'), sourceUrl: 'https://www.luxuryestate.com/p132160711-hotel-for-sale-dubai'
+    imageUrls: ['https://www.luxuryestate.com/p132160711-hotel-for-sale-dubai'], imageAlt: L('Property image', 'صورة العقار')
   },
   {
     id: 'dubai-jumeirah-garden-city', country: L('United Arab Emirates', 'الإمارات العربية المتحدة'), city: L('Dubai · Jumeirah Garden City', 'دبي · جميرا جاردن سيتي'),
@@ -64,7 +63,7 @@ const listings: Listing[] = [
       { label: L('Operator', 'المشغّل'), value: L('Flexible operator selection stated', 'مرونة اختيار المشغّل بحسب الإعلان') }, { label: L('Additional material', 'مواد إضافية'), value: L('Presentation, ROI analysis, floor plans and payment schedule available by request', 'العرض وتحليل ROI والمخططات وجدول الدفعات متاحة عند الطلب') }
     ],
     features: [L('Central Dubai', 'موقع مركزي في دبي'), L('Retail component', 'مكوّن تجاري'), L('Skyline views', 'إطلالات على الأفق'), L('Off-plan', 'قيد التطوير'), L('Flexible operator', 'مرونة اختيار المشغّل')],
-    imageUrls: ['https://d1ov4zfz2t2vta.cloudfront.net/storage/project_files/135r325.jpg'], imageAlt: L('Property image', 'صورة العقار'), sourceUrl: 'https://dxboffplan.com/properties/hotel-for-sale-in-jumeirah-garden-city/'
+    imageUrls: ['https://d1ov4zfz2t2vta.cloudfront.net/storage/project_files/135r325.jpg'], imageAlt: L('Property image', 'صورة العقار')
   },
   {
     id: 'st-simons-ocean-lodge', country: L('United States', 'الولايات المتحدة'), city: L('St. Simons Island, Georgia', 'جزيرة سانت سايمونز، جورجيا'),
@@ -80,7 +79,7 @@ const listings: Listing[] = [
       { label: L('Operations', 'التشغيل'), value: L('Operated by a lender for continuity and asset preservation, according to the listing', 'يذكر الإعلان أنه يُدار من قبل جهة ممولة للحفاظ على استمرارية التشغيل والأصل') }, { label: L('Value-add', 'إمكانات التطوير'), value: L('Operations, marketing, events and capital improvements are identified as potential value-add areas', 'التشغيل والتسويق والفعاليات والتحسينات الرأسمالية مذكورة كمجالات محتملة لزيادة القيمة') }
     ],
     features: [L('Rooftop restaurant', 'مطعم على السطح'), L('Private balconies', 'شرفات خاصة'), L('Full kitchens', 'مطابخ كاملة'), L('Ocean proximity', 'قرب المحيط'), L('Event potential', 'إمكانات الفعاليات')],
-    imageUrls: ['https://assets.simpleviewinc.com/simpleview/image/upload/c_fill%2Ch_798%2Cq_75%2Cw_1200/v1/clients/goldenislesga/ocean_lodge_day_34dbd79b-4eff-42c5-9978-7b1014bae2b7.jpg'], imageAlt: L('Property image', 'صورة العقار'), sourceUrl: 'https://www.commercialsearch.com/commercial-property/us/ga/st-simons-island/boutique-resort-in-the-heart-of-st-simons-island/'
+    imageUrls: ['https://assets.simpleviewinc.com/simpleview/image/upload/c_fill%2Ch_798%2Cq_75%2Cw_1200/v1/clients/goldenislesga/ocean_lodge_day_34dbd79b-4eff-42c5-9978-7b1014bae2b7.jpg'], imageAlt: L('Property image', 'صورة العقار')
   },
   {
     id: 'marbella-golf-resort', country: L('Spain', 'إسبانيا'), city: L('San Pedro de Alcántara · Marbella, Málaga', 'سان بيدرو دي ألكانتارا · ماربيا، مالقة'), title: L('5-Star Golf Resort Hotel', 'منتجع فندقي 5 نجوم مع ملعب غولف'), type: L('Luxury Hospitality / Golf', 'ضيافة فاخرة / غولف'), price: '€125,000,000',
@@ -96,7 +95,7 @@ const listings: Listing[] = [
       { label: L('Golf', 'الغولف'), value: L('27 holes across three 9-hole courses', '27 حفرة موزعة على ثلاثة ملاعب من 9 حفر') }, { label: L('Nearby', 'المعالم القريبة'), value: L('Puerto Banús approx. 10 minutes; Marbella centre approx. 15 minutes', 'بورتو بانوس نحو 10 دقائق؛ مركز ماربيا نحو 15 دقيقة') }
     ],
     features: [L('27-hole golf', 'غولف 27 حفرة'), L('1,500 sq m spa', 'سبا 1,500 م²'), L('Outdoor pool', 'مسبح خارجي'), L('Kids club', 'نادي أطفال'), L('Year-round operation stated', 'تشغيل سنوي بحسب الإعلان')],
-    imageUrls: ['https://cdn.thinkwebcontent.com/property/40791/9782021/20260417114351/w800h600/s1600x1200/x-279027633.jpg'], imageAlt: L('Property image', 'صورة العقار'), sourceUrl: 'https://www.thinkspain.com/property-for-sale/9782021'
+    imageUrls: ['https://cdn.thinkwebcontent.com/property/40791/9782021/20260417114351/w800h600/s1600x1200/x-279027633.jpg'], imageAlt: L('Property image', 'صورة العقار')
   },
   {
     id: 'ibiza-seafront-hotel', country: L('Spain', 'إسبانيا'), city: L('Sant Antoni de Portmany, Ibiza', 'سانت أنتوني دي بورتماني، إيبيزا'), title: L('Seafront 3-Star Hotel Asset', 'أصل فندقي 3 نجوم على الواجهة البحرية'), type: L('Hospitality / Repositioning', 'ضيافة / إعادة تموضع'), price: '€22,000,000',
@@ -113,16 +112,16 @@ const listings: Listing[] = [
       { label: L('Repositioning', 'إعادة التموضع'), value: L('Full renovation, modernization, upgraded dining and premium positioning are identified opportunities', 'التجديد والتحديث ورفع مستوى المطاعم واستهداف شريحة أعلى هي فرص مذكورة لإعادة التموضع') }
     ],
     features: [L('Seafront', 'واجهة بحرية'), L('Sea views', 'إطلالات بحرية'), L('Pool', 'مسبح'), L('Restaurant', 'مطعم'), L('Parking / garage', 'مواقف / مرآب'), L('Lift', 'مصعد'), L('Repositioning potential', 'إمكانات إعادة التموضع')],
-    imageUrls: ['https://cdn.thinkwebcontent.com/property/32695/9519372/20260117152701/w800h533/s1600x1200/x-270873193.jpg'], imageAlt: L('Property image', 'صورة العقار'), sourceUrl: 'https://www.thinkspain.com/property-for-sale/9519372'
+    imageUrls: ['https://cdn.thinkwebcontent.com/property/32695/9519372/20260117152701/w800h533/s1600x1200/x-270873193.jpg'], imageAlt: L('Property image', 'صورة العقار')
   },
 ];
 
-const copy: Record<Locale, { heading: string; intro: string; contact: string; request: string; pricing: string; source: string; details: string; features: string; more: string; less: string; unavailable: string; footer: string }> = {
-  en: { heading: 'External Market Opportunities', intro: 'Selected third-party market listings presented separately from AssetVeyra opportunities. Availability, pricing and transaction terms must be independently verified.', contact: 'Contact AssetVeyra', request: 'Request This Opportunity', pricing: 'Sign in to view pricing', source: 'View original listing', details: 'Property details', features: 'Key features', more: 'Open full details', less: 'Hide details', unavailable: 'Original listing photo could not be retrieved', footer: 'External listings are third-party market references, not verified AssetVeyra opportunities.' },
-  ar: { heading: 'فرص السوق الخارجي', intro: 'قوائم عقارية مختارة من السوق الخارجي ومعروضة بشكل منفصل عن فرص AssetVeyra. يجب التحقق بشكل مستقل من التوفر والأسعار وشروط المعاملة.', contact: 'تواصل مع AssetVeyra', request: 'اطلب هذه الفرصة', pricing: 'سجّل الدخول لعرض السعر', source: 'عرض الإعلان الأصلي', details: 'تفاصيل العقار', features: 'أهم المزايا', more: 'فتح كامل التفاصيل', less: 'إخفاء التفاصيل', unavailable: 'تعذر جلب الصورة الأصلية للإعلان', footer: 'القوائم الخارجية هي مراجع من سوق الغير وليست فرصاً موثقة من AssetVeyra.' },
-  zh: { heading: '外部市场机会', intro: '精选第三方市场挂牌，与 AssetVeyra 机会分开显示。可用性、价格和交易条款必须独立核实。', contact: '联系 AssetVeyra', request: '咨询此机会', pricing: '登录后查看价格', source: '查看原始挂牌', details: '物业详情', features: '主要特点', more: '打开完整详情', less: '隐藏详情', unavailable: '无法获取原始挂牌图片', footer: '外部挂牌是第三方市场参考，并非经 AssetVeyra 核实的机会。' },
-  es: { heading: 'Oportunidades del mercado externo', intro: 'Listados seleccionados de terceros, separados de las oportunidades de AssetVeyra. La disponibilidad, el precio y las condiciones deben verificarse de forma independiente.', contact: 'Contactar con AssetVeyra', request: 'Solicitar esta oportunidad', pricing: 'Inicie sesión para ver el precio', source: 'Ver anuncio original', details: 'Detalles del inmueble', features: 'Características', more: 'Abrir todos los detalles', less: 'Ocultar detalles', unavailable: 'No se pudo recuperar la foto original', footer: 'Los listados externos son referencias de terceros y no oportunidades verificadas por AssetVeyra.' },
-  fr: { heading: 'Opportunités du marché externe', intro: 'Sélection de biens proposés par des tiers, séparés des opportunités AssetVeyra. La disponibilité, le prix et les conditions doivent être vérifiés indépendamment.', contact: 'Contacter AssetVeyra', request: 'Demander cette opportunité', pricing: 'Connectez-vous pour voir le prix', source: 'Voir l’annonce originale', details: 'Détails du bien', features: 'Caractéristiques', more: 'Ouvrir tous les détails', less: 'Masquer les détails', unavailable: 'La photo originale n’a pas pu être récupérée', footer: 'Les annonces externes sont des références de marché de tiers et non des opportunités vérifiées par AssetVeyra.' },
+const copy: Record<Locale, { heading: string; intro: string; contact: string; request: string; pricing: string; details: string; features: string; more: string; less: string; unavailable: string; footer: string }> = {
+  en: { heading: 'External Market Opportunities', intro: 'Selected third-party market listings presented separately from AssetVeyra opportunities. Availability, pricing and transaction terms must be independently verified.', contact: 'Contact AssetVeyra', request: 'Request This Opportunity', pricing: 'Sign in to view pricing', details: 'Property details', features: 'Key features', more: 'Open full details', less: 'Hide details', unavailable: 'Original listing photo could not be retrieved', footer: 'External listings are third-party market references, not verified AssetVeyra opportunities.' },
+  ar: { heading: 'فرص السوق الخارجي', intro: 'قوائم عقارية مختارة من السوق الخارجي ومعروضة بشكل منفصل عن فرص AssetVeyra. يجب التحقق بشكل مستقل من التوفر والأسعار وشروط المعاملة.', contact: 'تواصل مع AssetVeyra', request: 'اطلب هذه الفرصة', pricing: 'سجّل الدخول لعرض السعر', details: 'تفاصيل العقار', features: 'أهم المزايا', more: 'فتح كامل التفاصيل', less: 'إخفاء التفاصيل', unavailable: 'تعذر جلب الصورة الأصلية للإعلان', footer: 'القوائم الخارجية هي مراجع من سوق الغير وليست فرصاً موثقة من AssetVeyra.' },
+  zh: { heading: '外部市场机会', intro: '精选第三方市场挂牌，与 AssetVeyra 机会分开显示。可用性、价格和交易条款必须独立核实。', contact: '联系 AssetVeyra', request: '咨询此机会', pricing: '登录后查看价格', details: '物业详情', features: '主要特点', more: '打开完整详情', less: '隐藏详情', unavailable: '无法获取原始挂牌图片', footer: '外部挂牌是第三方市场参考，并非经 AssetVeyra 核实的机会。' },
+  es: { heading: 'Oportunidades del mercado externo', intro: 'Listados seleccionados de terceros, separados de las oportunidades de AssetVeyra. La disponibilidad, el precio y las condiciones deben verificarse de forma independiente.', contact: 'Contactar con AssetVeyra', request: 'Solicitar esta oportunidad', pricing: 'Inicie sesión para ver el precio', details: 'Detalles del inmueble', features: 'Características', more: 'Abrir todos los detalles', less: 'Ocultar detalles', unavailable: 'No se pudo recuperar la foto original', footer: 'Los listados externos son referencias de terceros y no oportunidades verificadas por AssetVeyra.' },
+  fr: { heading: 'Opportunités du marché externe', intro: 'Sélection de biens proposés par des tiers, séparés des opportunités AssetVeyra. La disponibilité, le prix et les conditions doivent être vérifiés indépendamment.', contact: 'Contacter AssetVeyra', request: 'Demander cette opportunité', pricing: 'Connectez-vous pour voir le prix', details: 'Détails du bien', features: 'Caractéristiques', more: 'Ouvrir tous les détails', less: 'Masquer les détails', unavailable: 'La photo originale n’a pas pu être récupérée', footer: 'Les annonces externes sont des références de marché de tiers et non des opportunités vérifiées par AssetVeyra.' },
 };
 
 export default function ExternalMarketClient() {
@@ -161,6 +160,7 @@ export default function ExternalMarketClient() {
         {listings.map((listing) => {
           const title = textFor(listing.title);
           const failed = failedImages[listing.id];
+          if (failed || listing.imageUrls.length === 0) return null;
           return <article className="external-listing-card" key={listing.id}>
             <div className="external-listing-image-link" aria-label={title}>
               <div className="external-listing-image external-gallery">
