@@ -159,14 +159,14 @@ export default function ExternalMarketClient() {
       <div className="external-listing-grid">
         {listings.map((listing) => {
           const title = textFor(listing.title);
-          const failed = failedImages[listing.id];
-          if (failed || listing.imageUrls.length === 0) return null;
+          const failedCount = listing.imageUrls.filter((url) => failedImages[`${listing.id}:${url}`]).length;
+          if (listing.imageUrls.length === 0 || failedCount === listing.imageUrls.length) return null;
           return <article className="external-listing-card" key={listing.id}>
             <div className="external-listing-image-link" aria-label={title}>
               <div className="external-listing-image external-gallery">
                 {listing.imageUrls.length > 0 && !failed ? <>
                   <button type="button" className="external-gallery-image-button" onClick={() => setLightbox({ listingId: listing.id, index: imageIndexes[listing.id] ?? 0 })} aria-label={title}>
-                    <img src={imageSrc(listing.imageUrls[imageIndexes[listing.id] ?? 0])} alt={textFor(listing.imageAlt)} loading="lazy" onError={() => setFailedImages((current) => ({ ...current, [listing.id]: true }))}/>
+                    <img src={imageSrc(listing.imageUrls[imageIndexes[listing.id] ?? 0])} alt={textFor(listing.imageAlt)} loading="lazy" onError={() => setFailedImages((current) => ({ ...current, [`${listing.id}:${listing.imageUrls[imageIndexes[listing.id] ?? 0]}`]: true }))}/>
                   </button>
                   {listing.imageUrls.length > 1 && <>
                     <button type="button" className="external-gallery-prev" onClick={() => moveImage(listing.id, listing.imageUrls.length, -1)} aria-label="Previous image">‹</button>
