@@ -50,10 +50,6 @@ export default function PublicAssetGallery({ images }: { images: Image[] }) {
     };
   }, [lightbox, validImages.length]);
 
-  useEffect(() => {
-    if (active >= validImages.length && validImages.length) setActive(validImages.length - 1);
-  }, [active, validImages.length]);
-
   if (!validImages.length) {
     return (
       <section className="public-gallery empty-state" aria-label={label('Property gallery')}>
@@ -63,7 +59,8 @@ export default function PublicAssetGallery({ images }: { images: Image[] }) {
     );
   }
 
-  const current = validImages[active];
+  const activeIndex = validImages.length ? Math.min(active, validImages.length - 1) : 0;
+  const current = validImages[activeIndex];
 
   const openLightbox = (button?: HTMLButtonElement | null) => {
     triggerRef.current = button ?? null;
@@ -125,7 +122,7 @@ export default function PublicAssetGallery({ images }: { images: Image[] }) {
             <span aria-hidden="true">↗</span>
             <span><I18nText id="View all property images" /></span>
           </button>
-          <div className="public-gallery-count" aria-live="polite">{active + 1} / {validImages.length}</div>
+          <div className="public-gallery-count" aria-live="polite">{activeIndex + 1} / {validImages.length}</div>
         </div>
 
         {validImages.length > 1 && (
@@ -134,9 +131,9 @@ export default function PublicAssetGallery({ images }: { images: Image[] }) {
               <button
                 key={image.id}
                 type="button"
-                className={`public-gallery-thumb${index === active ? ' is-active' : ''}`}
+                className={`public-gallery-thumb${index === activeIndex ? ' is-active' : ''}`}
                 aria-label={`${label('Image')} ${index + 1} ${label('of')} ${validImages.length}`}
-                aria-current={index === active ? 'true' : undefined}
+                aria-current={index === activeIndex ? 'true' : undefined}
                 onClick={() => { setZoomed(false); setActive(index); }}
               >
                 <img src={image.signed_url} alt="" loading="lazy" decoding="async" />
@@ -158,7 +155,7 @@ export default function PublicAssetGallery({ images }: { images: Image[] }) {
           onMouseDown={(event) => { if (event.target === event.currentTarget) setLightbox(false); }}
         >
           <button type="button" className="public-lightbox-close" onClick={() => setLightbox(false)} aria-label={label('Close image gallery')}>×</button>
-          <div className="public-lightbox-counter" aria-live="polite">{active + 1} / {validImages.length}</div>
+          <div className="public-lightbox-counter" aria-live="polite">{activeIndex + 1} / {validImages.length}</div>
           {validImages.length > 1 && <button type="button" className="public-lightbox-arrow prev" onClick={() => move(-1)} aria-label={label('Previous image')}>‹</button>}
           <button
             type="button"
