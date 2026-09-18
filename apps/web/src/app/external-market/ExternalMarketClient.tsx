@@ -2,395 +2,182 @@
 
 import '../av-final.css';
 import '../external-market.css';
-import { I18nText, LanguageSelect, useLocale } from '@/components/LocaleShell';
-import { createClient } from '@/lib/supabase/client';
-import type { Locale } from '@/lib/i18n';
-import { useEffect, useState } from 'react';
+import { ExternalMarketText } from '@/components/ExternalMarketText';
+import { useLocale } from '@/components/LocaleShell';
+import { useEffect, useMemo, useState } from 'react';
 
-type Localized = { en: string; ar: string };
-type Detail = { label: Localized; value: Localized };
-type Listing = {
+export type ExternalListing = {
   id: string;
-  sourceReference?: string;
-  country: Localized;
-  city: Localized;
-  title: Localized;
-  type: Localized;
-  price: string;
-  summary: Localized;
-  facts: Localized[];
-  details: Detail[];
-  features: Localized[];
-  imageUrls: string[];
-  imageAlt: Localized;
+  country_code: string;
+  country_name: string;
+  city: string | null;
+  title: string;
+  asset_type: string;
+  price_amount: number | null;
+  currency: string | null;
+  area_sqm: number | null;
+  rooms: number | null;
+  summary: string | null;
+  source_name: string;
+  source_url: string;
+  listed_at: string | null;
+  checked_at: string;
 };
 
-const L = (en: string, ar: string = en): Localized => ({ en, ar });
-
-const listings: Listing[] = [
-  {
-    id: 'dubai-palm-jumeirah-frond-n-27158',
-    sourceReference: 'Property Finder listing 141441663 — checked 2026-09-18',
-    country: L('United Arab Emirates', 'الإمارات العربية المتحدة'),
-    city: L('Dubai · Palm Jumeirah · Frond N', 'دبي · نخلة جميرا · فروند N'),
-    title: L('27,158 sq ft Private Beachfront Land Plot', 'أرض بواجهة بحرية خاصة بمساحة 27,158 قدم²'),
-    type: L('Residential Land', 'أرض سكنية'),
-    price: 'AED 200,000,000',
-    summary: L('Land for sale on Palm Jumeirah Frond N. The listing states 27,158 sq ft, approximately 200 metres of private beachfront, Arabian Gulf and Dubai skyline views, and availability from 7 September 2026. The listing describes the plot for a bespoke ultra-luxury villa.', 'أرض للبيع في نخلة جميرا فروند N. يذكر الإعلان مساحة 27,158 قدم² وواجهة بحرية خاصة تقارب 200 متر وإطلالات على الخليج العربي وأفق دبي، مع إتاحة من 7 سبتمبر 2026. ويصف القطعة بأنها مناسبة لفيلا فاخرة مخصصة.'),
-    facts: [L('27,158 sq ft', '27,158 قدم²'), L('AED 200,000,000', '200,000,000 درهم'), L('AED 7,364/sq ft', '7,364 درهم/قدم²'), L('Approx. 200 m beachfront', 'واجهة بحرية تقارب 200 م')],
-    details: [
-      { label: L('Location', 'الموقع'), value: L('Palm Jumeirah Frond N, Dubai, UAE', 'نخلة جميرا فروند N، دبي، الإمارات') },
-      { label: L('Property type', 'نوع العقار'), value: L('Land', 'أرض') },
-      { label: L('Asking price', 'السعر المطلوب'), value: L('AED 200,000,000', '200,000,000 درهم إماراتي') },
-      { label: L('Area', 'المساحة'), value: L('27,158 sq ft', '27,158 قدم²') },
-      { label: L('Price per area', 'السعر حسب المساحة'), value: L('AED 7,364/ft²', '7,364 درهم/قدم²') },
-      { label: L('Beachfront', 'الواجهة البحرية'), value: L('Approximately 200 metres of private beachfront stated', 'واجهة بحرية خاصة تقارب 200 متر بحسب الإعلان') },
-      { label: L('Views', 'الإطلالات'), value: L('Arabian Gulf and Dubai skyline views stated', 'إطلالات على الخليج العربي وأفق دبي بحسب الإعلان') },
-      { label: L('Use', 'الاستخدام'), value: L('Bespoke ultra-luxury villa described', 'فيلا فاخرة مخصصة بحسب الإعلان') },
-      { label: L('Availability', 'الإتاحة'), value: L('Available from 7 September 2026', 'متاحة من 7 سبتمبر 2026') },
-      { label: L('Listing date', 'تاريخ الإدراج'), value: L('Listed 10 days before the 18 September 2026 check', 'مدرجة قبل 10 أيام من فحص 18 سبتمبر 2026') }
-    ],
-    features: [L('Palm Jumeirah', 'نخلة جميرا'), L('Private beachfront', 'واجهة بحرية خاصة'), L('Sea views', 'إطلالات بحرية'), L('Dubai skyline', 'أفق دبي'), L('Residential plot', 'قطعة سكنية')],
-    imageUrls: ['https://www.propertyfinder.ae/en/plp/buy/land-for-sale-dubai-palm-jumeirah-palm-jumeirah-frond-n-141441663.html'],
-    imageAlt: L('Palm Jumeirah Frond N land', 'أرض نخلة جميرا فروند N')
-  },
-  {
-    id: 'egypt-abu-ghaleb-21000',
-    sourceReference: 'Property Finder Egypt listing E6P2035YKCP74FA61QCA12C9T8 — checked 2026-09-18',
-    country: L('Egypt', 'مصر'),
-    city: L('Alexandria · King Mariout · Abu Ghaleb', 'الإسكندرية · كينج مريوط · أبو غالب'),
-    title: L('21,000 m² Registered Agricultural Land', 'أرض زراعية مسجلة بمساحة 21,000 م²'),
-    type: L('Agricultural Land', 'أرض زراعية'),
-    price: 'EGP 6,250,000',
-    summary: L('Agricultural land at Kilometer 64 on the Cairo–Alexandria Desert Road within Rowad El Bohouth Land. The listing states 5 feddans, available electricity and water, official registration at the Real Estate Registration Office with a documented chain of ownership, and cash payment.', 'أرض زراعية عند الكيلو 64 على طريق القاهرة–الإسكندرية الصحراوي ضمن أراضي رواد البحوث. يذكر الإعلان 5 أفدنة، وتوفر الكهرباء والمياه، والتسجيل الرسمي لدى مصلحة الشهر العقاري مع سلسلة ملكية موثقة، والدفع نقداً.'),
-    facts: [L('21,000 m² / 5 feddans', '21,000 م² / 5 أفدنة'), L('EGP 6,250,000', '6,250,000 جنيه'), L('EGP 297/m²', '297 جنيه/م²'), L('EGP 1,250,000/feddan', '1,250,000 جنيه/فدان')],
-    details: [
-      { label: L('Location', 'الموقع'), value: L('Km 64, Cairo–Alexandria Desert Road, King Mariout, Alexandria', 'الكيلو 64، طريق القاهرة–الإسكندرية الصحراوي، كينج مريوط، الإسكندرية') },
-      { label: L('Property type', 'نوع العقار'), value: L('Land', 'أرض') },
-      { label: L('Land use', 'استخدام الأرض'), value: L('Agricultural', 'زراعي') },
-      { label: L('Area', 'المساحة'), value: L('21,000 m² / 5 feddans', '21,000 م² / 5 أفدنة') },
-      { label: L('Asking price', 'السعر المطلوب'), value: L('EGP 6,250,000', '6,250,000 جنيه مصري') },
-      { label: L('Price per area', 'السعر حسب المساحة'), value: L('EGP 297/m²; EGP 1,250,000/feddan', '297 جنيه/م²؛ 1,250,000 جنيه/فدان') },
-      { label: L('Registration', 'التسجيل'), value: L('Registered with the Real Estate Registration Office; documented ownership chain stated', 'مسجلة لدى مصلحة الشهر العقاري؛ سلسلة ملكية موثقة بحسب الإعلان') },
-      { label: L('Utilities', 'الخدمات'), value: L('Electricity and water available', 'الكهرباء والمياه متوفرتان') },
-      { label: L('Surroundings', 'المحيط'), value: L('Villas and other agricultural plots', 'فلل وأراضٍ زراعية أخرى') },
-      { label: L('Payment', 'الدفع'), value: L('Cash', 'نقداً') },
-      { label: L('Availability', 'الإتاحة'), value: L('Available from 17 September 2026', 'متاحة من 17 سبتمبر 2026') }
-    ],
-    features: [L('Registered', 'مسجلة'), L('Agricultural', 'زراعية'), L('Water', 'مياه'), L('Electricity', 'كهرباء'), L('Cairo–Alexandria Desert Road', 'طريق القاهرة–الإسكندرية الصحراوي')],
-    imageUrls: ['https://www.propertyfinder.eg/en/plp/buy/land-for-sale-alexandria-hay-al-amereyah-king-mariout-alexandria-desert-road-109915388.html'],
-    imageAlt: L('Abu Ghaleb agricultural land', 'أرض أبو غالب الزراعية')
-  },
-  {
-    id: 'jordan-qweira-376000',
-    sourceReference: 'OpenSooq Jordan Qweira land listing — checked 2026-09-18',
-    country: L('Jordan', 'الأردن'),
-    city: L('Aqaba · Qweira', 'العقبة · القويرة'),
-    title: L('376,000 m² Agricultural Land Near Amman–Aqaba Road', 'أرض زراعية 376,000 م² قرب طريق عمّان–العقبة'),
-    type: L('Agricultural Land', 'أرض زراعية'),
-    price: 'JOD 215,000',
-    summary: L('A 376,000 m² agricultural land listing in Qweira, Aqaba. The listing states the land is approximately 400 metres from the Amman–Aqaba road and presents it as an investment opportunity.', 'إعلان أرض زراعية بمساحة 376,000 م² في القويرة بالعقبة. يذكر الإعلان أن الأرض تبعد نحو 400 متر عن شارع عمّان–العقبة ويعرضها كفرصة استثمارية.'),
-    facts: [L('376,000 m²', '376,000 م²'), L('JOD 215,000', '215,000 دينار'), L('Agricultural', 'زراعية'), L('Approx. 400 m from Amman–Aqaba road', 'نحو 400 م عن طريق عمّان–العقبة')],
-    details: [
-      { label: L('Location', 'الموقع'), value: L('Qweira, Aqaba, Jordan', 'القويرة، العقبة، الأردن') },
-      { label: L('Property type', 'نوع العقار'), value: L('Agricultural land', 'أرض زراعية') },
-      { label: L('Area', 'المساحة'), value: L('376,000 m² / 376 dunums', '376,000 م² / 376 دونماً') },
-      { label: L('Asking price', 'السعر المطلوب'), value: L('JOD 215,000', '215,000 دينار أردني') },
-      { label: L('Approx. price per m²', 'السعر التقريبي للمتر'), value: L('JOD 0.572/m²', 'نحو 0.572 دينار/م²') },
-      { label: L('Road distance', 'المسافة عن الطريق'), value: L('Approximately 400 m from the Amman–Aqaba road, according to the listing', 'نحو 400 متر عن طريق عمّان–العقبة بحسب الإعلان') },
-      { label: L('Availability', 'الإتاحة'), value: L('Listing dated 12 September 2026 in current search results', 'الإعلان مؤرخ 12 سبتمبر 2026 في نتائج البحث الحالية') }
-    ],
-    features: [L('Qweira', 'القويرة'), L('Aqaba', 'العقبة'), L('Agricultural', 'زراعية'), L('Large parcel', 'مساحة كبيرة'), L('Road proximity', 'قرب الطريق')],
-    imageUrls: ['https://jo.opensooq.com/en/aqaba/property/lands-for-sale'],
-    imageAlt: L('Qweira agricultural land listing', 'أرض زراعية في القويرة')
-  },
-  {
-    id: 'syria-tartous-6500-coastal',
-    sourceReference: 'Dalsyria listing 16543 — checked 2026-09-18',
-    country: L('Syria', 'سوريا'), city: L('Tartous · Coastal Syria', 'طرطوس · الساحل السوري'),
-    title: L('6,500 m² Strategic Coastal Road Land', 'أرض استراتيجية 6,500 م² على الطريق الساحلي'),
-    type: L('Commercial / Investment Land', 'أرض تجارية / استثمارية'), price: '$390,000',
-    summary: L('6,500 m² land on the international Tartous–Latakia road, described as close to the port and industrial city, with road access via Khreibat bridge. The listing states green title deed ownership and suitability for a service, industrial or fuel-station project, subject to approvals.', 'أرض بمساحة 6,500 م² على الطريق الدولي طرطوس–اللاذقية، يذكر الإعلان قربها من المرفأ والمدينة الصناعية ووصولها عبر طريق يصل إلى جسر الخريبات. يذكر الإعلان ملكية بطابو أخضر وإمكانية استخدامها لمشروع خدمي أو صناعي أو محطة وقود، وفق الموافقات المطلوبة.'),
-    facts: [L('6,500 m²', '6,500 م²'), L('Green title deed stated', 'طابو أخضر بحسب الإعلان'), L('International road frontage', 'على الطريق الدولي'), L('$390,000 asking price', 'السعر المعلن 390,000 دولار')],
-    details: [
-      { label: L('Location', 'الموقع'), value: L('Tartous, Eastern Ghamqa, coastal Syria', 'طرطوس، الغمقة الشرقية، الساحل السوري') },
-      { label: L('Asking price', 'السعر المطلوب'), value: L('$390,000', '390,000 دولار') },
-      { label: L('Land area', 'مساحة الأرض'), value: L('6,500 m²', '6,500 م²') },
-      { label: L('Ownership stated', 'الملكية بحسب الإعلان'), value: L('Green title deed', 'طابو أخضر') },
-      { label: L('Strategic position', 'الموقع الاستراتيجي'), value: L('International Tartous–Latakia road; close to port and industrial city', 'الطريق الدولي طرطوس–اللاذقية؛ قرب المرفأ والمدينة الصناعية') },
-      { label: L('Potential use', 'الاستخدام المحتمل'), value: L('Service, industrial or fuel-station project, subject to approvals', 'مشروع خدمي أو صناعي أو محطة وقود، وفق الموافقات') },
-      { label: L('Access', 'الوصول'), value: L('Road connection described via Khreibat bridge', 'يذكر الإعلان اتصالاً بالطريق عبر جسر الخريبات') },
-    ],
-    features: [L('Coastal Syria', 'الساحل السوري'), L('International road', 'طريق دولي'), L('Near port', 'قرب المرفأ'), L('Industrial potential', 'إمكانات صناعية'), L('Green title deed stated', 'طابو أخضر بحسب الإعلان')],
-    imageUrls: ['https://dalsyria.com/storage/listing-images/listing_01KE5QBB9PAFY4FHDEABGMNKND.webp'], imageAlt: L('Coastal Syria land listing', 'صورة أرض في الساحل السوري')
-  },
-  {
-    id: 'damascus-airport-road-1000',
-    sourceReference: 'Dalsyria listing 20818 — checked 2026-09-18',
-    country: L('Syria', 'سوريا'), city: L('Damascus · Hatita Al-Turkman', 'دمشق · حتيتة التركمان'),
-    title: L('1,000 m² Villa / Tourism Development Plot', 'أرض 1,000 م² للفلل أو التطوير السياحي'),
-    type: L('Residential / Tourism / Commercial Land', 'أرض سكنية / سياحية / تجارية'), price: '$80,000',
-    summary: L('A 1,000 m² vacant plot on Damascus International Airport Road near the exhibition-city area. The public listing states green title deed ownership, subdivision into separate title deeds, immediate handover, and suitability for villas, tourism or commercial development outside the airport boundary.', 'أرض خالية بمساحة 1,000 م² على طريق مطار دمشق الدولي قرب منطقة مدينة المعارض. يذكر الإعلان ملكية بطابو أخضر وتقسيماً إلى محاضر مستقلة وتسليماً فورياً وإمكانية الاستخدام للفلل أو التطوير السياحي أو التجاري خارج حرم المطار.'),
-    facts: [L('1,000 m²', '1,000 م²'), L('Green title deed stated', 'طابو أخضر بحسب الإعلان'), L('Airport road', 'طريق المطار'), L('$80,000 asking price', 'السعر المعلن 80,000 دولار')],
-    details: [
-      { label: L('Location', 'الموقع'), value: L('Hatita Al-Turkman, Rif Dimashq, Damascus', 'حتيتة التركمان، ريف دمشق، دمشق') },
-      { label: L('Asking price', 'السعر المطلوب'), value: L('$80,000 for 1,000 m²', '80,000 دولار لمساحة 1,000 م²') },
-      { label: L('Land area', 'مساحة الأرض'), value: L('1,000 m²', '1,000 م²') },
-      { label: L('Ownership stated', 'الملكية بحسب الإعلان'), value: L('Green title deed', 'طابو أخضر') },
-      { label: L('Position', 'الموقع'), value: L('Damascus International Airport Road, near the exhibition-city area', 'طريق مطار دمشق الدولي قرب مدينة المعارض') },
-      { label: L('Development', 'التطوير'), value: L('Villas, tourism or commercial project, subject to approvals', 'فلل أو مشروع سياحي أو تجاري، وفق الموافقات') },
-      { label: L('Handover', 'التسليم'), value: L('Immediate handover stated', 'التسليم الفوري بحسب الإعلان') },
-    ],
-    features: [L('Airport road', 'طريق المطار'), L('Villa potential', 'إمكانات فلل'), L('Tourism potential', 'إمكانات سياحية'), L('Green title deed stated', 'طابو أخضر بحسب الإعلان'), L('Immediate handover stated', 'تسليم فوري بحسب الإعلان')],
-    imageUrls: ['https://dalsyria.com/storage/listing-images/listing_01KJB3XQB4KKXR3SHPFP5VR7AV.webp'], imageAlt: L('Damascus land listing', 'صورة أرض في دمشق')
-  },
-  {
-    id: 'egypt-damietta-shatt-113',
-    sourceReference: 'Aqarmap listing EG-6203493 — checked 2026-09-18',
-    country: L('Egypt', 'مصر'), city: L('Damietta · Shatt Jiraybah', 'دمياط · شط جريبة'),
-    title: L('113.6 m² Corner Commercial / Residential Plot', 'قطعة أرض 113.6 م² ناصية تجارية / سكنية'),
-    type: L('Residential / Commercial Land', 'أرض سكنية / تجارية'), price: 'EGP 520,000',
-    summary: L('A 113.6 m² corner plot in Shatt Jiraybah, Damietta, described as fronting two 8-metre streets and suitable for commercial and residential uses. The listing states cash or installment payment and a negotiable price.', 'قطعة أرض ناصية بمساحة 113.6 م² في شط جريبة بدمياط، يذكر الإعلان أنها على شارعين بعرض 8 أمتار وصالحة للاستخدامات التجارية والسكنية. يذكر الإعلان إمكانية الدفع نقداً أو بالتقسيط وأن السعر قابل للتفاوض.'),
-    facts: [L('113.6 m²', '113.6 م²'), L('Corner plot', 'قطعة ناصية'), L('Two 8 m streets', 'شارعان بعرض 8 م'), L('EGP 520,000', '520,000 جنيه مصري')],
-    details: [
-      { label: L('Location', 'الموقع'), value: L('Shatt Jiraybah, Damietta, Egypt', 'شط جريبة، دمياط، مصر') },
-      { label: L('Asking price', 'السعر المطلوب'), value: L('EGP 520,000', '520,000 جنيه مصري') },
-      { label: L('Land area', 'مساحة الأرض'), value: L('113.6 m²', '113.6 م²') },
-      { label: L('Plot position', 'وضع القطعة'), value: L('Corner plot on two streets', 'قطعة ناصية على شارعين') },
-      { label: L('Street widths', 'عرض الشوارع'), value: L('8 m streets stated', 'شوارع بعرض 8 م بحسب الإعلان') },
-      { label: L('Potential use', 'الاستخدام المحتمل'), value: L('Commercial and residential uses stated', 'الاستخدامات التجارية والسكنية بحسب الإعلان') },
-      { label: L('Payment', 'الدفع'), value: L('Cash or installment; negotiable price stated', 'نقداً أو بالتقسيط؛ السعر قابل للتفاوض بحسب الإعلان') },
-    ],
-    features: [L('Damietta', 'دمياط'), L('Corner position', 'موقع ناصية'), L('Two streets', 'شارعان'), L('Commercial use', 'استخدام تجاري'), L('Residential use', 'استخدام سكني')],
-    imageUrls: ['https://img-2.aqarmap.com.eg/new-aqarmap-media/large/2508/6898a6df7d724868065128.jpg','https://img-4.aqarmap.com.eg/new-aqarmap-media/large/2508/6898a6e03bfdd065512939.jpg'],
-    imageAlt: L('Damietta land listing', 'صورة أرض في دمياط')
-  },
-  {
-    id: 'dubai-palm-250', country: L('United Arab Emirates', 'الإمارات العربية المتحدة'), city: L('Dubai · Palm Jumeirah', 'دبي · نخلة جميرا'),
-    title: L('250-Room Luxury Beachfront & Wellness Resort', 'منتجع فاخر شاطئي وعافية – 250 غرفة'), type: L('5-Star Hospitality Asset', 'أصل فندقي 5 نجوم'), price: '€152,000,000',
-    summary: L('Five-star beachfront and wellness resort with more than 250 keys, multiple restaurants and bars, four retail spaces, extensive wellness and spa facilities, conference and event facilities, and direct private beach access. The public listing states an established hospitality operator and further disclosure after NDA and proof of funds.', 'منتجع شاطئي وعافية من فئة 5 نجوم، يضم أكثر من 250 غرفة، ومطاعم وبارات متعددة، وأربع مساحات تجارية، ومرافق عافية وسبا واسعة، ومرافق للمؤتمرات والفعاليات، ووصولاً مباشراً إلى شاطئ خاص. يذكر الإعلان مشغلاً قائماً وأن المعلومات الإضافية متاحة بعد NDA وإثبات القدرة المالية.'),
-    facts: [L('250+ rooms', 'أكثر من 250 غرفة'), L('Private beachfront', 'شاطئ خاص'), L('5-star resort', 'منتجع 5 نجوم'), L('Approx. 8% stated yield', 'عائد معلن يقارب 8%')],
-    details: [
-      { label: L('Location', 'الموقع'), value: L('Palm Jumeirah, Dubai, UAE', 'نخلة جميرا، دبي، الإمارات') },
-      { label: L('Asking price', 'السعر المطلوب'), value: L('€152 million; subject to AED/EUR exchange-rate adjustment at transaction', '152 مليون يورو؛ خاضع لتعديل سعر صرف الدرهم/اليورو وقت المعاملة') },
-      { label: L('Rooms / keys', 'الغرف'), value: L('More than 250', 'أكثر من 250') },
-      { label: L('Classification', 'التصنيف'), value: L('Five-star beachfront and wellness resort', 'منتجع شاطئي وعافية من فئة خمس نجوم') },
-      { label: L('Food & beverage', 'الأغذية والمشروبات'), value: L('Multiple restaurants and bars; health-focused dining concepts', 'مطاعم وبارات متعددة؛ مفاهيم طعام موجهة للصحة والعافية') },
-      { label: L('Retail', 'التجزئة'), value: L('4 retail spaces', '4 مساحات تجارية') },
-      { label: L('Wellness', 'العافية'), value: L('Extensive wellness and spa facilities', 'مرافق عافية وسبا واسعة') },
-      { label: L('Events', 'الفعاليات'), value: L('Conference and event facilities', 'مرافق مؤتمرات وفعاليات') },
-      { label: L('Beach access', 'الوصول إلى الشاطئ'), value: L('Direct private beach access', 'وصول مباشر إلى شاطئ خاص') },
-      { label: L('Operator', 'المشغّل'), value: L('Established hospitality operator, according to listing', 'مشغّل ضيافة قائم بحسب الإعلان') },
-      { label: L('Information access', 'الوصول للمعلومات'), value: L('Further information after NDA and proof of funds', 'المعلومات الإضافية بعد NDA وإثبات القدرة المالية') },
-      { label: L('Listing reference', 'مرجع الإعلان'), value: L('3405', '3405') },
-    ],
-    features: [L('Beachfront', 'واجهة بحرية'), L('Wellness', 'عافية'), L('Restaurants & bars', 'مطاعم وبارات'), L('Retail', 'تجزئة'), L('Spa', 'سبا'), L('Conference facilities', 'مؤتمرات'), L('Private beach', 'شاطئ خاص')],
-    imageUrls: ['https://www.luxuryestate.com/p132160711-hotel-for-sale-dubai'], imageAlt: L('Property image', 'صورة العقار')
-  },
-  {
-    id: 'dubai-jumeirah-garden-city', country: L('United Arab Emirates', 'الإمارات العربية المتحدة'), city: L('Dubai · Jumeirah Garden City', 'دبي · جميرا جاردن سيتي'),
-    title: L('4-Star Off-Plan Hotel Development', 'فندق 4 نجوم قيد التطوير'), type: L('Hospitality / Development', 'ضيافة / تطوير'), price: 'AED 170,000,000',
-    summary: L('A 4-star off-plan hotel development with 96 rooms, four commercial shops, a 13,000 sq ft plot, 49,566 sq ft gross floor area, G+2 podiums+9 floors, skyline views and stated completion in June 2027.', 'مشروع فندق 4 نجوم قيد التطوير يضم 96 غرفة، وأربع وحدات تجارية، وأرضاً بمساحة 13,000 قدم²، ومساحة بناء إجمالية 49,566 قدم²، وتكوين أرضي + طابقين بوديوم + 9 طوابق، وإطلالات على أفق دبي وتسليم متوقع في يونيو 2027.'),
-    facts: [L('96 hotel rooms', '96 غرفة فندقية'), L('4 retail shops', '4 محلات تجارية'), L('49,566 sq ft GFA', '49,566 قدم² مساحة بناء'), L('Completion June 2027', 'التسليم يونيو 2027')],
-    details: [
-      { label: L('Location', 'الموقع'), value: L('Jumeirah Garden City, Dubai, UAE', 'جميرا جاردن سيتي، دبي، الإمارات') }, { label: L('Asking price', 'السعر المطلوب'), value: L('AED 170,000,000', '170,000,000 درهم إماراتي') },
-      { label: L('Hotel rooms', 'الغرف'), value: L('96 rooms', '96 غرفة') }, { label: L('Retail', 'الوحدات التجارية'), value: L('4 commercial shops', '4 محلات تجارية') },
-      { label: L('Plot size', 'مساحة الأرض'), value: L('13,000 sq ft', '13,000 قدم²') }, { label: L('Gross floor area', 'المساحة الإجمالية'), value: L('49,566 sq ft', '49,566 قدم²') },
-      { label: L('Configuration', 'التكوين'), value: L('G + 2 podiums + 9 floors', 'أرضي + طابقان بوديوم + 9 طوابق') }, { label: L('Views', 'الإطلالات'), value: L('Panoramic Dubai skyline views', 'إطلالات بانورامية على أفق دبي') },
-      { label: L('Construction status', 'حالة الإنشاء'), value: L('Under construction; ground-floor stage stated', 'قيد الإنشاء؛ الإعلان يذكر مرحلة الطابق الأرضي') }, { label: L('Expected completion', 'التسليم المتوقع'), value: L('June 2027 / Q2 2027', 'يونيو 2027 / الربع الثاني 2027') },
-      { label: L('Operator', 'المشغّل'), value: L('Flexible operator selection stated', 'مرونة اختيار المشغّل بحسب الإعلان') }, { label: L('Additional material', 'مواد إضافية'), value: L('Presentation, ROI analysis, floor plans and payment schedule available by request', 'العرض وتحليل ROI والمخططات وجدول الدفعات متاحة عند الطلب') }
-    ],
-    features: [L('Central Dubai', 'موقع مركزي في دبي'), L('Retail component', 'مكوّن تجاري'), L('Skyline views', 'إطلالات على الأفق'), L('Off-plan', 'قيد التطوير'), L('Flexible operator', 'مرونة اختيار المشغّل')],
-    imageUrls: ['https://d1ov4zfz2t2vta.cloudfront.net/storage/project_files/135r325.jpg'], imageAlt: L('Property image', 'صورة العقار')
-  },
-  {
-    id: 'st-simons-ocean-lodge', country: L('United States', 'الولايات المتحدة'), city: L('St. Simons Island, Georgia', 'جزيرة سانت سايمونز، جورجيا'),
-    title: L('Ocean Lodge Boutique Resort', 'منتجع Ocean Lodge البوتيكي'), type: L('Boutique Hospitality Asset', 'أصل ضيافة بوتيكي'), price: '$9,000,000',
-    summary: L('A 15-suite boutique resort at 935 Beach View Drive, described as 20,000 sq ft on 0.6 acre, built in 2008, with Spanish-Mediterranean architecture, full kitchens, private balconies, rooftop restaurant and lounge, and lodging, food-and-beverage and event potential.', 'منتجع بوتيكي يضم 15 جناحاً في 935 Beach View Drive، بمساحة 20,000 قدم² على أرض 0.6 فدان، وبناء 2008، وطابع إسباني-متوسطي، ومطابخ كاملة، وشرفات خاصة، ومطعم وصالة على السطح، مع إمكانات للإقامة والطعام والشراب والفعاليات.'),
-    facts: [L('15 luxury suites', '15 جناحاً فاخراً'), L('20,000 sq ft', '20,000 قدم²'), L('0.6 acre lot', 'أرض 0.6 فدان'), L('Built 2008', 'بناء 2008')],
-    details: [
-      { label: L('Address', 'العنوان'), value: L('935 Beach View Drive, St. Simons Island, GA 31522', '935 Beach View Drive، St. Simons Island، جورجيا 31522') }, { label: L('Asking price', 'السعر المطلوب'), value: L('$9,000,000', '9,000,000 دولار') },
-      { label: L('Property size', 'مساحة العقار'), value: L('20,000 sq ft', '20,000 قدم²') }, { label: L('Lot size', 'مساحة الأرض'), value: L('0.6 acre', '0.6 فدان') },
-      { label: L('Units', 'الوحدات'), value: L('15 luxury guest suites', '15 جناح ضيافة فاخر') }, { label: L('Year built', 'سنة البناء'), value: L('2008', '2008') },
-      { label: L('Architecture', 'الطابع المعماري'), value: L('Spanish-Mediterranean', 'إسباني-متوسطي') }, { label: L('Suites', 'الأجنحة'), value: L('Full kitchens, spacious living areas, private balconies; some with two bathrooms', 'مطابخ كاملة ومساحات معيشة واسعة وشرفات خاصة؛ بعض الأجنحة تضم حمامين') },
-      { label: L('Restaurant', 'المطعم'), value: L('Rooftop restaurant and lounge', 'مطعم وصالة على السطح') }, { label: L('Location', 'الموقع'), value: L('Approx. 75 steps from the Atlantic Ocean; walking distance to Pier Village', 'على بعد نحو 75 خطوة من المحيط الأطلسي وعلى مسافة مشي من Pier Village') },
-      { label: L('Operations', 'التشغيل'), value: L('Operated by a lender for continuity and asset preservation, according to the listing', 'يذكر الإعلان أنه يُدار من قبل جهة ممولة للحفاظ على استمرارية التشغيل والأصل') }, { label: L('Value-add', 'إمكانات التطوير'), value: L('Operations, marketing, events and capital improvements are identified as potential value-add areas', 'التشغيل والتسويق والفعاليات والتحسينات الرأسمالية مذكورة كمجالات محتملة لزيادة القيمة') }
-    ],
-    features: [L('Rooftop restaurant', 'مطعم على السطح'), L('Private balconies', 'شرفات خاصة'), L('Full kitchens', 'مطابخ كاملة'), L('Ocean proximity', 'قرب المحيط'), L('Event potential', 'إمكانات الفعاليات')],
-    imageUrls: ['https://assets.simpleviewinc.com/simpleview/image/upload/c_fill%2Ch_798%2Cq_75%2Cw_1200/v1/clients/goldenislesga/ocean_lodge_day_34dbd79b-4eff-42c5-9978-7b1014bae2b7.jpg'], imageAlt: L('Property image', 'صورة العقار')
-  },
-  {
-    id: 'marbella-golf-resort', country: L('Spain', 'إسبانيا'), city: L('San Pedro de Alcántara · Marbella, Málaga', 'سان بيدرو دي ألكانتارا · ماربيا، مالقة'), title: L('5-Star Golf Resort Hotel', 'منتجع فندقي 5 نجوم مع ملعب غولف'), type: L('Luxury Hospitality / Golf', 'ضيافة فاخرة / غولف'), price: '€125,000,000',
-    summary: L('Five-star resort in Marbella with a 27-hole golf course, 172 rooms and suites, 12,369 sq m built area on an 11,245 sq m plot, major renovation completed in July 2016, multiple dining venues, a 1,500 sq m spa and wellness facility, outdoor pool, gym, kids club and landscaped gardens.', 'منتجع 5 نجوم في ماربيا يضم ملعب غولف من 27 حفرة، و172 غرفة وجناحاً، ومساحة مبنية 12,369 م² على أرض 11,245 م²، مع تجديد رئيسي اكتمل في يوليو 2016، ومطاعم متعددة، وسبا وعافية 1,500 م²، ومسبح خارجي وجيم ونادي أطفال وحدائق.'),
-    facts: [L('172 rooms & suites', '172 غرفة وجناح'), L('12,369 sq m built', '12,369 م² مبني'), L('11,245 sq m plot', '11,245 م² أرض'), L('27-hole golf course', 'ملعب غولف 27 حفرة')],
-    details: [
-      { label: L('Location', 'الموقع'), value: L('San Pedro de Alcántara, Marbella, Málaga, Spain', 'سان بيدرو دي ألكانتارا، ماربيا، مالقة، إسبانيا') }, { label: L('Advertised price', 'السعر المعلن'), value: L('€125,000,000', '125,000,000 يورو') },
-      { label: L('Rooms & suites', 'الغرف والأجنحة'), value: L('172: 114 standard double rooms, 52 suites, 3 junior suites, 2 executive suites, 1 presidential suite', '172: 114 غرفة مزدوجة، 52 جناحاً، 3 أجنحة جونيور، جناحان تنفيذيان، جناح رئاسي') },
-      { label: L('Plot', 'الأرض'), value: L('11,245 sq m', '11,245 م²') }, { label: L('Built area', 'المساحة المبنية'), value: L('12,369 sq m', '12,369 م²') }, { label: L('Construction', 'البناء'), value: L('Built in 2000', 'بُني عام 2000') },
-      { label: L('Renovation', 'التجديد'), value: L('Extensive renovation and repositioning completed July 2016', 'تجديد وإعادة تموضع واسعة اكتملت في يوليو 2016') }, { label: L('Operations', 'التشغيل'), value: L('Listing states year-round full-capacity operation', 'الإعلان يذكر تشغيل العقار بكامل طاقته على مدار العام') },
-      { label: L('Lease', 'الإيجار'), value: L('Long-term lease to a prestigious hotel chain, according to listing', 'عقد إيجار طويل الأجل مع سلسلة فندقية مرموقة بحسب الإعلان') }, { label: L('Dining', 'المطاعم'), value: L('Mediterranean/international restaurant, bar, snack/café venue, pool bar and golf-course restaurant', 'مطعم متوسطي/دولي، بار، مطعم خفيف/مقهى، بار مسبح، ومطعم في ملعب الغولف') },
-      { label: L('Spa & wellness', 'السبا والعافية'), value: L('1,500 sq m spa and wellness facility with outdoor terrace', 'مرفق سبا وعافية بمساحة 1,500 م² مع تراس خارجي') }, { label: L('Recreation', 'الترفيه'), value: L('Outdoor pool, gym, kids club, landscaped gardens and outdoor areas', 'مسبح خارجي وجيم ونادي أطفال وحدائق ومساحات خارجية') },
-      { label: L('Golf', 'الغولف'), value: L('27 holes across three 9-hole courses', '27 حفرة موزعة على ثلاثة ملاعب من 9 حفر') }, { label: L('Nearby', 'المعالم القريبة'), value: L('Puerto Banús approx. 10 minutes; Marbella centre approx. 15 minutes', 'بورتو بانوس نحو 10 دقائق؛ مركز ماربيا نحو 15 دقيقة') }
-    ],
-    features: [L('27-hole golf', 'غولف 27 حفرة'), L('1,500 sq m spa', 'سبا 1,500 م²'), L('Outdoor pool', 'مسبح خارجي'), L('Kids club', 'نادي أطفال'), L('Year-round operation stated', 'تشغيل سنوي بحسب الإعلان')],
-    imageUrls: ['https://cdn.thinkwebcontent.com/property/40791/9782021/20260417114351/w800h600/s1600x1200/x-279027633.jpg'], imageAlt: L('Property image', 'صورة العقار')
-  },
-  {
-    id: 'ibiza-seafront-hotel', country: L('Spain', 'إسبانيا'), city: L('Sant Antoni de Portmany, Ibiza', 'سانت أنتوني دي بورتماني، إيبيزا'), title: L('Seafront 3-Star Hotel Asset', 'أصل فندقي 3 نجوم على الواجهة البحرية'), type: L('Hospitality / Repositioning', 'ضيافة / إعادة تموضع'), price: '€22,000,000',
-    summary: L('A 3-star hotel with 92 rooms, 4,500 sq m built area on a 2,000 sq m plot, six storeys and sea views. The listing also describes a restaurant and terrace, pool area, laundry, office, equipped kitchen, parking/garage, communal garden, air conditioning, lift and terrace/balcony, and states the hotel is currently non-operational and needs updating.', 'فندق 3 نجوم يضم 92 غرفة، بمساحة مبنية 4,500 م² على أرض 2,000 م²، ويتكون من 6 طوابق مع إطلالات بحرية. يذكر الإعلان أيضاً مطعماً وتراساً ومنطقة مسبح ومغسلة ومكتباً ومطبخاً مجهزاً ومواقف/مرآباً وحديقة وتكييفاً ومصعداً وتراساً/شرفات، ويذكر أن الفندق غير عامل حالياً ويحتاج إلى تحديث.'),
-    facts: [L('92 rooms', '92 غرفة'), L('4,500 sq m built', '4,500 م² مبني'), L('2,000 sq m plot', '2,000 م² أرض'), L('Seafront / sea views', 'واجهة بحرية / إطلالات بحرية')],
-    details: [
-      { label: L('Location', 'الموقع'), value: L('Sant Antoni de Portmany, Ibiza, Spain', 'سانت أنتوني دي بورتماني، إيبيزا، إسبانيا') }, { label: L('Asking price', 'السعر المطلوب'), value: L('€22,000,000', '22,000,000 يورو') },
-      { label: L('Classification', 'التصنيف'), value: L('3-star hotel', 'فندق 3 نجوم') }, { label: L('Rooms', 'الغرف'), value: L('92 rooms, including 6 staff rooms', '92 غرفة، منها 6 غرف للموظفين') },
-      { label: L('Bathrooms', 'الحمامات'), value: L('92', '92') }, { label: L('Built area', 'المساحة المبنية'), value: L('4,500 sq m', '4,500 م²') }, { label: L('Plot', 'الأرض'), value: L('2,000 sq m', '2,000 م²') },
-      { label: L('Storeys', 'الطوابق'), value: L('6', '6') }, { label: L('Year built', 'سنة البناء'), value: L('1970', '1970') }, { label: L('Sea views', 'إطلالة البحر'), value: L('Guest rooms described as having sea views', 'الإعلان يذكر إطلالات بحرية لغرف الضيوف') },
-      { label: L('Food & beverage', 'الأغذية والمشروبات'), value: L('Restaurant with terrace; pool area with potential pool bar', 'مطعم مع تراس؛ منطقة مسبح مع إمكانية إضافة بار') }, { label: L('Operations', 'التشغيل'), value: L('Currently not operating and requires updating, according to listing', 'غير عامل حالياً ويحتاج إلى تحديث بحسب الإعلان') },
-      { label: L('Laundry / back of house', 'المغسلة والخدمات'), value: L('Dedicated laundry, office and two professional washing machines', 'مغسلة مخصصة ومكتب وغسالتان مهنيتان') }, { label: L('Kitchen', 'المطبخ'), value: L('Equipped kitchen for food and beverage operations', 'مطبخ مجهز لتشغيل الأغذية والمشروبات') },
-      { label: L('Parking / access', 'المواقف والوصول'), value: L('Parking/garage, lift and wheelchair-friendly features stated', 'مواقف/مرآب ومصعد وخصائص مناسبة للكراسي المتحركة بحسب الإعلان') }, { label: L('Energy rating', 'التصنيف الطاقي'), value: L('Energy consumption E; emissions E', 'استهلاك الطاقة E؛ الانبعاثات E') },
-      { label: L('Repositioning', 'إعادة التموضع'), value: L('Full renovation, modernization, upgraded dining and premium positioning are identified opportunities', 'التجديد والتحديث ورفع مستوى المطاعم واستهداف شريحة أعلى هي فرص مذكورة لإعادة التموضع') }
-    ],
-    features: [L('Seafront', 'واجهة بحرية'), L('Sea views', 'إطلالات بحرية'), L('Pool', 'مسبح'), L('Restaurant', 'مطعم'), L('Parking / garage', 'مواقف / مرآب'), L('Lift', 'مصعد'), L('Repositioning potential', 'إمكانات إعادة التموضع')],
-    imageUrls: ['https://cdn.thinkwebcontent.com/property/32695/9519372/20260117152701/w800h533/s1600x1200/x-270873193.jpg'], imageAlt: L('Property image', 'صورة العقار')
-  },
-
-  {
-    id: 'jordan-umm-al-dananeer-600', sourceReference: 'Yafa Office listing YA-YA-23102 — checked 2026-09-18',
-    country: L('Jordan', 'الأردن'), city: L('Amman · Umm Al-Dananeer', 'عمّان · أم الدنانير'),
-    title: L('600 m² View Land Near Al-Ahliyya Amman University', 'أرض 600 م² مطلة قرب جامعة عمّان الأهلية'), type: L('Residential Land', 'أرض سكنية'), price: 'JOD 45,000',
-    summary: L('A 600 m² land plot in Umm Al-Dananeer, Al-Qusayr district, behind Al-Ahliyya Amman University and near Jabal Restaurant. The listing describes it as a distinctive plot with a view and an asking price of JOD 45,000.', 'قطعة أرض بمساحة 600 م² في أم الدنانير، حي القصير، خلف جامعة عمّان الأهلية وقرب مطعم جبل. يصفها الإعلان بأنها أرض مميزة ومطلة بسعر طلب 45,000 دينار أردني.'),
-    facts: [L('600 m²', '600 م²'), L('JOD 45,000 asking', 'السعر المطلوب 45,000 دينار'), L('View stated', 'إطلالة بحسب الإعلان'), L('Near university', 'قرب الجامعة')],
-    details: [
-      { label: L('Location', 'الموقع'), value: L('Umm Al-Dananeer · Al-Qusayr, Amman, Jordan', 'أم الدنانير · حي القصير، عمّان، الأردن') },
-      { label: L('Asking price', 'السعر المطلوب'), value: L('JOD 45,000', '45,000 دينار أردني') },
-      { label: L('Area', 'المساحة'), value: L('600 m²', '600 م²') },
-      { label: L('Nearby', 'المعالم القريبة'), value: L('Behind Al-Ahliyya Amman University; near Jabal Restaurant', 'خلف جامعة عمّان الأهلية؛ قرب مطعم جبل') },
-      { label: L('View', 'الإطلالة'), value: L('View stated in the listing', 'إطلالة بحسب الإعلان') },
-      { label: L('Verification', 'التحقق'), value: L('Marketplace listing; title, zoning, services and availability require independent verification', 'إعلان سوق؛ يجب التحقق بشكل مستقل من السند والتنظيم والخدمات والتوفر') }
-    ],
-    features: [L('Amman', 'عمّان'), L('600 m²', '600 م²'), L('View', 'إطلالة'), L('Near university', 'قرب الجامعة')],
-    imageUrls: ['https://yafaoffice.com/property/%D8%A7%D8%B1%D8%B6-%D9%85%D9%85%D9%8A%D8%B2%D8%A9-%D9%88%D9%85%D8%B7%D9%84%D8%A9-%D9%84%D9%84%D8%A8%D9%8A%D8%B9-%D9%81%D9%8A-%D9%85%D9%86%D8%B7%D9%82%D8%A9-%D8%A7%D9%85-%D8%A7%D9%84%D8%AF%D9%86%D8%A7'], imageAlt: L('Land in Umm Al-Dananeer, Amman', 'أرض في أم الدنانير، عمّان')
-  },
-];
-
-const copy: Record<Locale, { heading: string; intro: string; contact: string; request: string; pricing: string; details: string; features: string; more: string; less: string; unavailable: string; footer: string }> = {
-  en: { heading: 'External Market Opportunities', intro: 'Selected market listings presented separately from AssetVeyra opportunities. This batch includes only listings whose original photos could be retrieved; availability, pricing, ownership and transaction terms must be independently verified.', contact: 'Contact AssetVeyra', request: 'Request This Opportunity', pricing: 'Sign in to view pricing', details: 'Property details', features: 'Key features', more: 'Open full details', less: 'Hide details', unavailable: 'Original listing photo could not be retrieved', footer: 'External listings are third-party market references, not verified AssetVeyra opportunities.' },
-  ar: { heading: 'فرص السوق الخارجي', intro: 'قوائم عقارية مختارة من السوق الخارجي ومعروضة بشكل منفصل عن فرص AssetVeyra. هذه الدفعة تشمل فقط القوائم التي أمكن استرجاع صورها الأصلية؛ يجب التحقق بشكل مستقل من التوفر والأسعار والملكية وشروط المعاملة.', contact: 'تواصل مع AssetVeyra', request: 'اطلب هذه الفرصة', pricing: 'سجّل الدخول لعرض السعر', details: 'تفاصيل العقار', features: 'أهم المزايا', more: 'فتح كامل التفاصيل', less: 'إخفاء التفاصيل', unavailable: 'تعذر جلب الصورة الأصلية للإعلان', footer: 'القوائم الخارجية هي مراجع من سوق الغير وليست فرصاً موثقة من AssetVeyra.' },
-  zh: { heading: '外部市场机会', intro: '精选第三方市场挂牌，与 AssetVeyra 机会分开显示。可用性、价格和交易条款必须独立核实。', contact: '联系 AssetVeyra', request: '咨询此机会', pricing: '登录后查看价格', details: '物业详情', features: '主要特点', more: '打开完整详情', less: '隐藏详情', unavailable: '无法获取原始挂牌图片', footer: '外部挂牌是第三方市场参考，并非经 AssetVeyra 核实的机会。' },
-  es: { heading: 'Oportunidades del mercado externo', intro: 'Listados seleccionados de terceros, separados de las oportunidades de AssetVeyra. La disponibilidad, el precio y las condiciones deben verificarse de forma independiente.', contact: 'Contactar con AssetVeyra', request: 'Solicitar esta oportunidad', pricing: 'Inicie sesión para ver el precio', details: 'Detalles del inmueble', features: 'Características', more: 'Abrir todos los detalles', less: 'Ocultar detalles', unavailable: 'No se pudo recuperar la foto original', footer: 'Los listados externos son referencias de terceros y no oportunidades verificadas por AssetVeyra.' },
-  fr: { heading: 'Opportunités du marché externe', intro: 'Sélection de biens proposés par des tiers, séparés des opportunités AssetVeyra. La disponibilité, le prix et les conditions doivent être vérifiés indépendamment.', contact: 'Contacter AssetVeyra', request: 'Demander cette opportunité', pricing: 'Connectez-vous pour voir le prix', details: 'Détails du bien', features: 'Caractéristiques', more: 'Ouvrir tous les détails', less: 'Masquer les détails', unavailable: 'La photo originale n’a pas pu être récupérée', footer: 'Les annonces externes sont des références de marché de tiers et non des opportunités vérifiées par AssetVeyra.' },
+const typeLabel = (value: string) => {
+  if (value === 'land') return <ExternalMarketText id="Land" />;
+  if (value === 'hotel') return <ExternalMarketText id="Hotel" />;
+  if (value === 'hospitality') return <ExternalMarketText id="Hospitality" />;
+  return value.replaceAll('_', ' ');
 };
 
-export default function ExternalMarketClient() {
+const amount = (value: number | null, currency: string | null) =>
+  value === null ? '—' : `${currency ?? 'USD'} ${new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(value)}`;
+
+const area = (value: number | null) =>
+  value === null ? '—' : `${new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(value)} m²`;
+
+export default function ExternalMarketClient({ listings, authenticated }: { listings: ExternalListing[]; authenticated: boolean }) {
   const locale = useLocale();
-  const t = copy[locale];
-  const [authenticated, setAuthenticated] = useState(false);
-  const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
-  const [imageIndexes, setImageIndexes] = useState<Record<string, number>>({});
-  const [lightbox, setLightbox] = useState<{ listingId: string; index: number } | null>(null);
+  const [query, setQuery] = useState('');
+  const [country, setCountry] = useState('');
+  const [city, setCity] = useState('');
+  const [assetType, setAssetType] = useState('');
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+  const [selected, setSelected] = useState<ExternalListing | null>(null);
 
   useEffect(() => {
-    const supabase = createClient();
-    let active = true;
-    supabase.auth.getUser().then(({ data }) => { if (active) setAuthenticated(Boolean(data.user)); });
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => { if (active) setAuthenticated(Boolean(session?.user)); });
-    return () => { active = false; listener.subscription.unsubscribe(); };
+    const close = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setSelected(null);
+    };
+    window.addEventListener('keydown', close);
+    return () => window.removeEventListener('keydown', close);
   }, []);
 
-  const textFor = (value: Localized) => value[locale === 'ar' ? 'ar' : 'en'];
-  const imageSrc = (url: string) => `/api/external-market/image?url=${encodeURIComponent(url)}`;
-  const handleImageError = (listingId: string, index: number) => {
-    setFailedImages((current) => {
-      const url = listings.find((item) => item.id === listingId)?.imageUrls[index];
-      if (!url || current[`${listingId}:${url}`]) return current;
-      return { ...current, [`${listingId}:${url}`]: true };
-    });
+  const countries = useMemo(() => [...new Set(listings.map((item) => item.country_name))].sort(), [listings]);
+  const cities = useMemo(() => [...new Set(listings.map((item) => item.city).filter(Boolean) as string[])].sort(), [listings]);
+  const types = useMemo(() => [...new Set(listings.map((item) => item.asset_type))].sort(), [listings]);
 
-    setImageIndexes((current) => {
-      const listing = listings.find((item) => item.id === listingId);
-      if (!listing) return current;
-      const nextIndex = listing.imageUrls.findIndex((url, candidateIndex) =>
-        candidateIndex !== index && !failedImages[`${listingId}:${url}`]
-      );
-      return nextIndex >= 0 ? { ...current, [listingId]: nextIndex } : current;
+  const filtered = useMemo(() => {
+    const q = query.trim().toLocaleLowerCase(locale);
+    const min = Number(minPrice);
+    const max = Number(maxPrice);
+    return listings.filter((item) => {
+      const haystack = [item.title, item.city, item.country_name, item.asset_type, item.summary, item.source_name].filter(Boolean).join(' ').toLocaleLowerCase(locale);
+      if (q && !haystack.includes(q)) return false;
+      if (country && item.country_name !== country) return false;
+      if (city && item.city !== city) return false;
+      if (assetType && item.asset_type !== assetType) return false;
+      if (minPrice && (!Number.isFinite(min) || item.price_amount === null || item.price_amount < min)) return false;
+      if (maxPrice && (!Number.isFinite(max) || item.price_amount === null || item.price_amount > max)) return false;
+      return true;
     });
+  }, [assetType, city, country, listings, locale, maxPrice, minPrice, query]);
 
-    setLightbox((current) => current?.listingId === listingId && current.index === index ? null : current);
-  };
-  const moveImage = (listingId: string, count: number, direction: number) => {
-    setImageIndexes((current) => {
-      const start = current[listingId] ?? 0;
-      for (let step = 1; step <= count; step += 1) {
-        const next = (start + direction * step + count) % count;
-        const url = listings.find((item) => item.id === listingId)?.imageUrls[next];
-        if (url && !failedImages[`${listingId}:${url}`]) return { ...current, [listingId]: next };
-      }
-      return current;
-    });
-  };
-  const moveLightbox = (listingId: string, startIndex: number, direction: number) => {
-    const listing = listings.find((item) => item.id === listingId);
-    if (!listing) return;
-    for (let step = 1; step <= listing.imageUrls.length; step += 1) {
-      const next = (startIndex + direction * step + listing.imageUrls.length) % listing.imageUrls.length;
-      const url = listing.imageUrls[next];
-      if (!failedImages[`${listingId}:${url}`]) {
-        setLightbox({ listingId, index: next });
-        return;
-      }
-    }
-    setLightbox(null);
+  const grouped = useMemo(() => {
+    const map = new Map<string, ExternalListing[]>();
+    filtered.forEach((item) => map.set(item.country_code, [...(map.get(item.country_code) ?? []), item]));
+    return [...map.entries()].map(([code, rows]) => ({ code, country: rows[0].country_name, rows }));
+  }, [filtered]);
+
+  const clear = () => {
+    setQuery('');
+    setCountry('');
+    setCity('');
+    setAssetType('');
+    setMinPrice('');
+    setMaxPrice('');
   };
 
-  return <main className="av-final-home external-market-page">
-    <header className="av-final-header">
-      <a className="av-final-brand" href="/">ASSETVEYRA</a>
-      <details className="av-menu"><summary className="av-menu-trigger"><span className="av-menu-icon" aria-hidden="true"><i></i><i></i><i></i></span><I18nText id="Menu"/></summary>
-        <nav className="av-menu-panel" aria-label="Primary navigation"><a href="/"><I18nText id="Home"/></a><a href="/external-market"><I18nText id="Marketplace"/></a><a href="/contact"><I18nText id="Contact"/></a><a href="/dashboard"><I18nText id="Dashboard"/></a><div className="av-menu-divider"/><div className="av-language-group"><I18nText id="Language"/><LanguageSelect/></div><div className="av-menu-account"><a className="av-menu-login" href="/login"><I18nText id="Login"/></a><a className="av-menu-signup" href="/signup"><I18nText id="Sign Up"/></a></div></nav>
-      </details>
-    </header>
+  return (
+    <main className="app-shell">
+      <header className="app-header">
+        <a className="brand" href="/">ASSETVEYRA</a>
+        <nav><a href="/opportunities">Marketplace</a>{authenticated ? <a href="/workspace">Workspace</a> : <a href="/login">Sign in</a>}</nav>
+      </header>
 
-    <section className="external-market-section">
-      <div className="external-market-heading"><div><div className="eyebrow"><I18nText id="Marketplace"/></div><h2>{t.heading}</h2><p>{t.intro}</p></div><a className="external-market-contact" href={authenticated ? '/contact' : '/login'}>{t.contact}</a></div>
-      <div className="external-listing-grid">
-        {listings.map((listing) => {
-          const title = textFor(listing.title);
-          const failedCount = listing.imageUrls.filter((url) => failedImages[`${listing.id}:${url}`]).length;
-          if (listing.imageUrls.length === 0 || failedCount === listing.imageUrls.length) return null;
-          return <article className="external-listing-card" key={listing.id}>
-            <div className="external-listing-image-link" aria-label={title}>
-              <div className="external-listing-image external-gallery">
-                {listing.imageUrls.length > 0 && failedCount < listing.imageUrls.length ? <>
-                  <button type="button" className="external-gallery-image-button" onClick={() => setLightbox({ listingId: listing.id, index: imageIndexes[listing.id] ?? 0 })} aria-label={title}>
-                    <img src={imageSrc(listing.imageUrls[imageIndexes[listing.id] ?? 0])} alt={textFor(listing.imageAlt)} loading="lazy" onError={() => handleImageError(listing.id, imageIndexes[listing.id] ?? 0)}/>
-                  </button>
-                  {listing.imageUrls.length > 1 && <>
-                    <button type="button" className="external-gallery-prev" onClick={() => moveImage(listing.id, listing.imageUrls.length, -1)} aria-label="Previous image">‹</button>
-                    <button type="button" className="external-gallery-next" onClick={() => moveImage(listing.id, listing.imageUrls.length, 1)} aria-label="Next image">›</button>
-                    <span className="external-gallery-counter">{(imageIndexes[listing.id] ?? 0) + 1} / {listing.imageUrls.length}</span>
-                  </>}
-                </> : <div className="external-image-missing"><strong>{t.unavailable}</strong></div>}
+      <section className="external-market-section">
+        <div className="external-market-heading">
+          <div>
+            <div className="eyebrow"><ExternalMarketText id="Global market watch" /></div>
+            <h1><ExternalMarketText id="Real external listings, organized by country" /></h1>
+            <p><ExternalMarketText id="These are live third-party market listings discovered from public sources. They are not yet represented as verified AssetVeyra opportunities." /></p>
+          </div>
+          <div className="external-market-note"><ExternalMarketText id="External source · independently verify before transaction" /></div>
+        </div>
+
+        <div className="external-market-filters" role="search">
+          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search title, city, country, type or source" aria-label="Search external listings" />
+          <select value={country} onChange={(e) => setCountry(e.target.value)} aria-label="Country"><option value="">All countries</option>{countries.map((item) => <option key={item}>{item}</option>)}</select>
+          <select value={city} onChange={(e) => setCity(e.target.value)} aria-label="City"><option value="">All cities</option>{cities.map((item) => <option key={item}>{item}</option>)}</select>
+          <select value={assetType} onChange={(e) => setAssetType(e.target.value)} aria-label="Asset type"><option value="">All asset types</option>{types.map((item) => <option key={item}>{item.replaceAll('_', ' ')}</option>)}</select>
+          <input inputMode="decimal" value={minPrice} onChange={(e) => setMinPrice(e.target.value)} placeholder="Min price" aria-label="Minimum price" />
+          <input inputMode="decimal" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} placeholder="Max price" aria-label="Maximum price" />
+          <button type="button" className="external-details-button" onClick={clear}>Clear filters</button>
+        </div>
+
+        <div className="marketplace-results-bar"><strong>{filtered.length}</strong><span><ExternalMarketText id="listings" /></span></div>
+
+        {grouped.map((group) => (
+          <section className="country-market" key={group.code}>
+            <div className="country-market-head"><h2>{group.country}</h2><span>{group.rows.length} <ExternalMarketText id="listings" /></span></div>
+            <div className="external-listing-grid">
+              {group.rows.map((item) => (
+                <article className="external-listing-card" key={item.id}>
+                  <div className="card-meta"><span>{typeLabel(item.asset_type)}</span><span>{item.city ?? '—'}</span></div>
+                  <h3>{item.title}</h3>
+                  <p>{item.summary ?? '—'}</p>
+                  <div className="external-facts">
+                    {item.area_sqm !== null && <span><b><ExternalMarketText id="Area" /></b>{area(item.area_sqm)}</span>}
+                    {item.rooms !== null && <span><b><ExternalMarketText id="Rooms" /></b>{item.rooms}</span>}
+                  </div>
+                  <div className="external-card-footer">
+                    <strong>{authenticated ? amount(item.price_amount, item.currency) : 'Sign in to view pricing'}</strong>
+                    <div className="external-card-actions">
+                      <button type="button" className="external-details-button" onClick={() => setSelected(item)}>Details</button>
+                      <a className="external-source-link" href={item.source_url} target="_blank" rel="noreferrer"><ExternalMarketText id="View source listing" /></a>
+                    </div>
+                  </div>
+                  <small><ExternalMarketText id="Source" />: {item.source_name} · <ExternalMarketText id="Checked" />: {item.checked_at}</small>
+                </article>
+              ))}
+            </div>
+          </section>
+        ))}
+
+        {!filtered.length && <div className="empty-state wide"><strong>No external listings match these filters.</strong><span>Clear the filters or broaden the search.</span></div>}
+      </section>
+
+      {selected && (
+        <div className="external-detail-backdrop" role="presentation" onMouseDown={(e) => { if (e.target === e.currentTarget) setSelected(null); }}>
+          <section className="external-detail-panel" role="dialog" aria-modal="true" aria-labelledby="external-detail-title" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+            <button type="button" className="external-detail-close" onClick={() => setSelected(null)} aria-label="Close">×</button>
+            <div className="external-detail-content">
+              <div className="eyebrow">{selected.country_name}</div>
+              <h2 id="external-detail-title">{selected.title}</h2>
+              <div className="external-detail-location">{selected.city ?? '—'} · {typeLabel(selected.asset_type)}</div>
+              <div className="external-detail-price">{authenticated ? amount(selected.price_amount, selected.currency) : 'Sign in to view pricing'}</div>
+              <p className="external-detail-summary">{selected.summary ?? '—'}</p>
+              <div className="external-detail-section">
+                <h3>Listing facts</h3>
+                <div className="external-detail-table">
+                  <div className="external-detail-row"><strong>Area</strong><span>{area(selected.area_sqm)}</span></div>
+                  <div className="external-detail-row"><strong>Rooms</strong><span>{selected.rooms ?? '—'}</span></div>
+                  <div className="external-detail-row"><strong>Listed</strong><span>{selected.listed_at ?? '—'}</span></div>
+                  <div className="external-detail-row"><strong>Checked</strong><span>{selected.checked_at}</span></div>
+                  <div className="external-detail-row"><strong>Source</strong><span>{selected.source_name}</span></div>
+                </div>
               </div>
-            </div><div className="card-meta"><span>{textFor(listing.country)}</span><span>{textFor(listing.city)}</span></div>
-            <h4>{title}</h4>
-            <p>{textFor(listing.type)} · {textFor(listing.summary)}</p>
-            <div className="external-facts">{listing.facts.map((fact, index) => <span key={index}><b>•</b>{textFor(fact)}</span>)}</div>
-            <div className="external-card-footer"><strong>{authenticated ? listing.price : t.pricing}</strong><div className="external-card-actions"><details className="external-inline-details" open><summary>{t.details}</summary><div className="external-inline-details-body"><div className="external-detail-table">{listing.details.map((detail, index) => <div className="external-detail-row" key={index}><strong>{textFor(detail.label)}</strong><span>{textFor(detail.value)}</span></div>)}</div><h5>{t.features}</h5><div className="external-feature-list">{listing.features.map((feature, index) => <span key={index}>{textFor(feature)}</span>)}</div></div></details><a className="external-market-contact-link" href={authenticated ? `/contact?opportunity=${encodeURIComponent(title)}` : '/login'}>{t.request}</a></div></div>
-          </article>;
-        })}
-      </div>
-    </section>
-    {lightbox && (() => {
-      const listing = listings.find((item) => item.id === lightbox.listingId);
-      if (!listing) return null;
-      return <div className="external-lightbox" role="dialog" aria-modal="true" aria-label={textFor(listing.title)} onClick={() => setLightbox(null)}>
-        <button type="button" className="external-lightbox-close" onClick={() => setLightbox(null)} aria-label="Close">×</button>
-        <img src={imageSrc(listing.imageUrls[lightbox.index])} alt={textFor(listing.imageAlt)} onClick={(event) => event.stopPropagation()} onError={() => handleImageError(listing.id, lightbox.index)}/>
-        {listing.imageUrls.length > 1 && <>
-          <button type="button" className="external-lightbox-prev" onClick={(event) => { event.stopPropagation(); moveLightbox(listing.id, lightbox.index, -1); }} aria-label="Previous image">‹</button>
-          <button type="button" className="external-lightbox-next" onClick={(event) => { event.stopPropagation(); moveLightbox(listing.id, lightbox.index, 1); }} aria-label="Next image">›</button>
-        </>}
-      </div>;
-    })()}
-    <footer className="av-footer">{t.footer}</footer>
-  </main>;
+              <div className="external-detail-actions">
+                <a className="external-market-contact-link" href={selected.source_url} target="_blank" rel="noreferrer"><ExternalMarketText id="View source listing" /></a>
+                {authenticated && <a className="external-details-button" href={`/contact?opportunity=${encodeURIComponent(selected.title)}`}>Request this opportunity</a>}
+              </div>
+              <p className="external-detail-disclaimer"><ExternalMarketText id="External source · independently verify before transaction" /></p>
+            </div>
+          </section>
+        </div>
+      )}
+    </main>
+  );
 }
