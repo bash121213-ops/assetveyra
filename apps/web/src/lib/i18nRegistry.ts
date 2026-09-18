@@ -4643,7 +4643,7 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
     "zh": "核查日期",
     "es": "Comprobado",
     "fr": "Vérifié"
-  }
+  },
 
   "Search": {"en":"Search","ar":"بحث","zh":"搜索","es":"Buscar","fr":"Rechercher"},
   "Country": {"en":"Country","ar":"الدولة","zh":"国家","es":"País","fr":"Pays"},
