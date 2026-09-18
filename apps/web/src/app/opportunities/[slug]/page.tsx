@@ -46,8 +46,6 @@ function verificationState(propertyDetails: unknown) {
 async function registerInterest(formData: FormData) {
   'use server';
   const s = await createClient();
-  const { data: { user } } = await s.auth.getUser();
-  if (!user) redirect('/login');
 
   const slug = String(formData.get('slug') || '');
   const { data: opportunity } = await s
