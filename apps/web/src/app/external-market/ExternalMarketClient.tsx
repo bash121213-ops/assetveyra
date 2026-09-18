@@ -83,7 +83,6 @@ const listings: Listing[] = [
     imageUrls: ['https://assets.simpleviewinc.com/simpleview/image/upload/c_fill%2Ch_798%2Cq_75%2Cw_1200/v1/clients/goldenislesga/ocean_lodge_day_34dbd79b-4eff-42c5-9978-7b1014bae2b7.jpg'], imageAlt: L('Property image', 'صورة العقار'), sourceUrl: 'https://www.commercialsearch.com/commercial-property/us/ga/st-simons-island/boutique-resort-in-the-heart-of-st-simons-island/'
   },
   {
-  {
     id: 'marbella-golf-resort', country: L('Spain', 'إسبانيا'), city: L('San Pedro de Alcántara · Marbella, Málaga', 'سان بيدرو دي ألكانتارا · ماربيا، مالقة'), title: L('5-Star Golf Resort Hotel', 'منتجع فندقي 5 نجوم مع ملعب غولف'), type: L('Luxury Hospitality / Golf', 'ضيافة فاخرة / غولف'), price: '€125,000,000',
     summary: L('Five-star resort in Marbella with a 27-hole golf course, 172 rooms and suites, 12,369 sq m built area on an 11,245 sq m plot, major renovation completed in July 2016, multiple dining venues, a 1,500 sq m spa and wellness facility, outdoor pool, gym, kids club and landscaped gardens.', 'منتجع 5 نجوم في ماربيا يضم ملعب غولف من 27 حفرة، و172 غرفة وجناحاً، ومساحة مبنية 12,369 م² على أرض 11,245 م²، مع تجديد رئيسي اكتمل في يوليو 2016، ومطاعم متعددة، وسبا وعافية 1,500 م²، ومسبح خارجي وجيم ونادي أطفال وحدائق.'),
     facts: [L('172 rooms & suites', '172 غرفة وجناح'), L('12,369 sq m built', '12,369 م² مبني'), L('11,245 sq m plot', '11,245 م² أرض'), L('27-hole golf course', 'ملعب غولف 27 حفرة')],
