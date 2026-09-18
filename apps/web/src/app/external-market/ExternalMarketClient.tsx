@@ -20,9 +20,8 @@ type Listing = {
   facts: Localized[];
   details: Detail[];
   features: Localized[];
-  imageUrl: string | null;
+  imageUrls: string[];
   imageAlt: Localized;
-  sourceUrl: string;
 };
 
 const L = (en: string, ar: string = en): Localized => ({ en, ar });
@@ -48,7 +47,7 @@ const listings: Listing[] = [
       { label: L('Listing reference', 'مرجع الإعلان'), value: L('3405', '3405') },
     ],
     features: [L('Beachfront', 'واجهة بحرية'), L('Wellness', 'عافية'), L('Restaurants & bars', 'مطاعم وبارات'), L('Retail', 'تجزئة'), L('Spa', 'سبا'), L('Conference facilities', 'مؤتمرات'), L('Private beach', 'شاطئ خاص')],
-    imageUrl: 'https://www.luxuryestate.com/p132160711-hotel-for-sale-dubai', imageAlt: L('Original public listing image, if available from the source', 'الصورة الأصلية للإعلان العام إذا كانت متاحة من المصدر'), sourceUrl: 'https://www.luxuryestate.com/p132160711-hotel-for-sale-dubai'
+    imageUrls: ['https://www.luxuryestate.com/p132160711-hotel-for-sale-dubai'], imageAlt: L('Property image', 'صورة العقار')
   },
   {
     id: 'dubai-jumeirah-garden-city', country: L('United Arab Emirates', 'الإمارات العربية المتحدة'), city: L('Dubai · Jumeirah Garden City', 'دبي · جميرا جاردن سيتي'),
@@ -64,7 +63,7 @@ const listings: Listing[] = [
       { label: L('Operator', 'المشغّل'), value: L('Flexible operator selection stated', 'مرونة اختيار المشغّل بحسب الإعلان') }, { label: L('Additional material', 'مواد إضافية'), value: L('Presentation, ROI analysis, floor plans and payment schedule available by request', 'العرض وتحليل ROI والمخططات وجدول الدفعات متاحة عند الطلب') }
     ],
     features: [L('Central Dubai', 'موقع مركزي في دبي'), L('Retail component', 'مكوّن تجاري'), L('Skyline views', 'إطلالات على الأفق'), L('Off-plan', 'قيد التطوير'), L('Flexible operator', 'مرونة اختيار المشغّل')],
-    imageUrl: 'https://d1ov4zfz2t2vta.cloudfront.net/storage/project_files/135r325.jpg', imageAlt: L('Published project image for the Jumeirah Garden City hotel development', 'الصورة المنشورة لمشروع الفندق في جميرا جاردن سيتي'), sourceUrl: 'https://dxboffplan.com/properties/hotel-for-sale-in-jumeirah-garden-city/'
+    imageUrls: ['https://d1ov4zfz2t2vta.cloudfront.net/storage/project_files/135r325.jpg'], imageAlt: L('Property image', 'صورة العقار')
   },
   {
     id: 'st-simons-ocean-lodge', country: L('United States', 'الولايات المتحدة'), city: L('St. Simons Island, Georgia', 'جزيرة سانت سايمونز، جورجيا'),
@@ -80,23 +79,7 @@ const listings: Listing[] = [
       { label: L('Operations', 'التشغيل'), value: L('Operated by a lender for continuity and asset preservation, according to the listing', 'يذكر الإعلان أنه يُدار من قبل جهة ممولة للحفاظ على استمرارية التشغيل والأصل') }, { label: L('Value-add', 'إمكانات التطوير'), value: L('Operations, marketing, events and capital improvements are identified as potential value-add areas', 'التشغيل والتسويق والفعاليات والتحسينات الرأسمالية مذكورة كمجالات محتملة لزيادة القيمة') }
     ],
     features: [L('Rooftop restaurant', 'مطعم على السطح'), L('Private balconies', 'شرفات خاصة'), L('Full kitchens', 'مطابخ كاملة'), L('Ocean proximity', 'قرب المحيط'), L('Event potential', 'إمكانات الفعاليات')],
-    imageUrl: 'https://assets.simpleviewinc.com/simpleview/image/upload/c_fill%2Ch_798%2Cq_75%2Cw_1200/v1/clients/goldenislesga/ocean_lodge_day_34dbd79b-4eff-42c5-9978-7b1014bae2b7.jpg', imageAlt: L('Published Ocean Lodge exterior image', 'الصورة المنشورة لواجهة منتجع Ocean Lodge'), sourceUrl: 'https://www.commercialsearch.com/commercial-property/us/ga/st-simons-island/boutique-resort-in-the-heart-of-st-simons-island/'
-  },
-  {
-    id: 'amman-apart-hotel', country: L('Jordan', 'الأردن'), city: L('Amman', 'عمّان'), title: L('Newly Established Apart-Hotel', 'شقق فندقية حديثة التأسيس'), type: L('Apart-Hotel / Hospitality', 'شقق فندقية / ضيافة'), price: 'JOD 930,000',
-    summary: L('A newly developed apart-hotel in a commercial and tourist area of Amman. The listing describes a LEED-certified green building with panoramic views, 12 open-concept apartment suites, rooftop space, a seven-car garage, five ground-floor commercial shops and a building permit license.', 'شقق فندقية حديثة التطوير في منطقة تجارية وسياحية في عمّان. يصف الإعلان المبنى بأنه حاصل على LEED للمباني الخضراء، مع إطلالات بانورامية، و12 جناحاً بنظام مفتوح، وسطح، ومرآب لسبع سيارات، وخمسة محلات تجارية في الطابق الأرضي، ورخصة بناء.'),
-    facts: [L('12 apartment suites', '12 جناحاً'), L('1,200 sq m built', '1,200 م² مبني'), L('350 sq m commercial land', '350 م² أرض تجارية'), L('7-car garage', 'مرآب 7 سيارات')],
-    details: [
-      { label: L('Location', 'الموقع'), value: L('Amman, Jordan · commercial/tourist district', 'عمّان، الأردن · منطقة تجارية وسياحية') }, { label: L('Asking price', 'السعر المطلوب'), value: L('JOD 930,000; listing also states approx. USD 1.3 million', '930,000 دينار أردني؛ ويذكر الإعلان أيضاً ما يقارب 1.3 مليون دولار') },
-      { label: L('Built-up area', 'المساحة المبنية'), value: L('1,200 sq m', '1,200 م²') }, { label: L('Land', 'الأرض'), value: L('350 sq m commercial land', '350 م² أرض تجارية') },
-      { label: L('Grand total area', 'المساحة الإجمالية'), value: L('1,350 sq m', '1,350 م²') }, { label: L('Apartment suites', 'الأجنحة'), value: L('12 open-concept suites; approximately 29–64 sq m each', '12 جناحاً بنظام مفتوح؛ مساحة الجناح تقريباً 29–64 م²') },
-      { label: L('Capacity', 'السعة'), value: L('Each apartment can accommodate up to four people', 'كل شقة يمكن أن تستوعب حتى أربعة أشخاص') }, { label: L('Kitchen', 'المطبخ'), value: L('One apartment includes a fully equipped kitchen and bathroom appliances', 'إحدى الشقق تضم مطبخاً مجهزاً بالكامل وتجهيزات حمام') },
-      { label: L('Rooftop', 'السطح'), value: L('Potential shared room, café, gym, yoga studio or rented space', 'يمكن استخدامه كغرفة مشتركة أو مقهى أو جيم أو استوديو يوغا أو تأجيره') }, { label: L('Parking', 'المواقف'), value: L('Garage for 7 cars', 'مرآب لـ7 سيارات') },
-      { label: L('Ground-floor retail', 'التجاري الأرضي'), value: L('5 open commercial shops; approx. 6 m ceiling height', '5 محلات تجارية مفتوحة؛ ارتفاع سقف يقارب 6 أمتار') }, { label: L('Sustainability', 'الاستدامة'), value: L('LEED-certified green building; renewable water source and thermal blocks stated', 'مبنى أخضر حاصل على LEED؛ مصدر مياه متجدد وبلوكات حرارية بحسب الإعلان') },
-      { label: L('Ownership', 'الملكية'), value: L('Single owner; no loans, debts or shareholders stated', 'مالك واحد؛ دون قروض أو ديون أو مساهمين بحسب الإعلان') }, { label: L('Included intangible asset', 'الأصل غير الملموس'), value: L('Building permit license', 'رخصة بناء') }
-    ],
-    features: [L('LEED-certified', 'حاصل على LEED'), L('Panoramic views', 'إطلالات بانورامية'), L('Rooftop', 'سطح قابل للتشغيل'), L('5 retail shops', '5 محلات تجارية'), L('7-car garage', 'مرآب 7 سيارات')],
-    imageUrl: 'https://www.smergers.com/media/businessphoto/113009-1741767127-b2b1be01-41f0-43f9-8a52-6326da40a62e.png', imageAlt: L('Published image from the Amman apart-hotel listing', 'الصورة المنشورة لإعلان الشقق الفندقية في عمّان'), sourceUrl: 'https://www.smergers.com/business/newly-established-hotel-for-sale-in-amman-jordan/1y5n5/'
+    imageUrls: ['https://assets.simpleviewinc.com/simpleview/image/upload/c_fill%2Ch_798%2Cq_75%2Cw_1200/v1/clients/goldenislesga/ocean_lodge_day_34dbd79b-4eff-42c5-9978-7b1014bae2b7.jpg'], imageAlt: L('Property image', 'صورة العقار')
   },
   {
     id: 'marbella-golf-resort', country: L('Spain', 'إسبانيا'), city: L('San Pedro de Alcántara · Marbella, Málaga', 'سان بيدرو دي ألكانتارا · ماربيا، مالقة'), title: L('5-Star Golf Resort Hotel', 'منتجع فندقي 5 نجوم مع ملعب غولف'), type: L('Luxury Hospitality / Golf', 'ضيافة فاخرة / غولف'), price: '€125,000,000',
@@ -112,7 +95,7 @@ const listings: Listing[] = [
       { label: L('Golf', 'الغولف'), value: L('27 holes across three 9-hole courses', '27 حفرة موزعة على ثلاثة ملاعب من 9 حفر') }, { label: L('Nearby', 'المعالم القريبة'), value: L('Puerto Banús approx. 10 minutes; Marbella centre approx. 15 minutes', 'بورتو بانوس نحو 10 دقائق؛ مركز ماربيا نحو 15 دقيقة') }
     ],
     features: [L('27-hole golf', 'غولف 27 حفرة'), L('1,500 sq m spa', 'سبا 1,500 م²'), L('Outdoor pool', 'مسبح خارجي'), L('Kids club', 'نادي أطفال'), L('Year-round operation stated', 'تشغيل سنوي بحسب الإعلان')],
-    imageUrl: 'https://cdn.thinkwebcontent.com/property/40791/9782021/20260417114351/w800h600/s1600x1200/x-279027633.jpg', imageAlt: L('Published listing image for the Marbella golf resort', 'الصورة المنشورة لإعلان منتجع الغولف في ماربيا'), sourceUrl: 'https://www.thinkspain.com/property-for-sale/9782021'
+    imageUrls: ['https://cdn.thinkwebcontent.com/property/40791/9782021/20260417114351/w800h600/s1600x1200/x-279027633.jpg'], imageAlt: L('Property image', 'صورة العقار')
   },
   {
     id: 'ibiza-seafront-hotel', country: L('Spain', 'إسبانيا'), city: L('Sant Antoni de Portmany, Ibiza', 'سانت أنتوني دي بورتماني، إيبيزا'), title: L('Seafront 3-Star Hotel Asset', 'أصل فندقي 3 نجوم على الواجهة البحرية'), type: L('Hospitality / Repositioning', 'ضيافة / إعادة تموضع'), price: '€22,000,000',
@@ -129,16 +112,16 @@ const listings: Listing[] = [
       { label: L('Repositioning', 'إعادة التموضع'), value: L('Full renovation, modernization, upgraded dining and premium positioning are identified opportunities', 'التجديد والتحديث ورفع مستوى المطاعم واستهداف شريحة أعلى هي فرص مذكورة لإعادة التموضع') }
     ],
     features: [L('Seafront', 'واجهة بحرية'), L('Sea views', 'إطلالات بحرية'), L('Pool', 'مسبح'), L('Restaurant', 'مطعم'), L('Parking / garage', 'مواقف / مرآب'), L('Lift', 'مصعد'), L('Repositioning potential', 'إمكانات إعادة التموضع')],
-    imageUrl: 'https://cdn.thinkwebcontent.com/property/32695/9519372/20260117152701/w800h533/s1600x1200/x-270873193.jpg', imageAlt: L('Published listing image for the Sant Antoni hotel', 'الصورة المنشورة لإعلان فندق سانت أنتوني'), sourceUrl: 'https://www.thinkspain.com/property-for-sale/9519372'
+    imageUrls: ['https://cdn.thinkwebcontent.com/property/32695/9519372/20260117152701/w800h533/s1600x1200/x-270873193.jpg'], imageAlt: L('Property image', 'صورة العقار')
   },
 ];
 
-const copy: Record<Locale, { heading: string; intro: string; contact: string; request: string; pricing: string; source: string; details: string; features: string; more: string; less: string; unavailable: string; footer: string }> = {
-  en: { heading: 'External Market Opportunities', intro: 'Selected third-party market listings presented separately from AssetVeyra opportunities. Availability, pricing and transaction terms must be independently verified.', contact: 'Contact AssetVeyra', request: 'Request This Opportunity', pricing: 'Sign in to view pricing', source: 'View original listing', details: 'Property details', features: 'Key features', more: 'Open full details', less: 'Hide details', unavailable: 'Original listing photo could not be retrieved', footer: 'External listings are third-party market references, not verified AssetVeyra opportunities.' },
-  ar: { heading: 'فرص السوق الخارجي', intro: 'قوائم عقارية مختارة من السوق الخارجي ومعروضة بشكل منفصل عن فرص AssetVeyra. يجب التحقق بشكل مستقل من التوفر والأسعار وشروط المعاملة.', contact: 'تواصل مع AssetVeyra', request: 'اطلب هذه الفرصة', pricing: 'سجّل الدخول لعرض السعر', source: 'عرض الإعلان الأصلي', details: 'تفاصيل العقار', features: 'أهم المزايا', more: 'فتح كامل التفاصيل', less: 'إخفاء التفاصيل', unavailable: 'تعذر جلب الصورة الأصلية للإعلان', footer: 'القوائم الخارجية هي مراجع من سوق الغير وليست فرصاً موثقة من AssetVeyra.' },
-  zh: { heading: '外部市场机会', intro: '精选第三方市场挂牌，与 AssetVeyra 机会分开显示。可用性、价格和交易条款必须独立核实。', contact: '联系 AssetVeyra', request: '咨询此机会', pricing: '登录后查看价格', source: '查看原始挂牌', details: '物业详情', features: '主要特点', more: '打开完整详情', less: '隐藏详情', unavailable: '无法获取原始挂牌图片', footer: '外部挂牌是第三方市场参考，并非经 AssetVeyra 核实的机会。' },
-  es: { heading: 'Oportunidades del mercado externo', intro: 'Listados seleccionados de terceros, separados de las oportunidades de AssetVeyra. La disponibilidad, el precio y las condiciones deben verificarse de forma independiente.', contact: 'Contactar con AssetVeyra', request: 'Solicitar esta oportunidad', pricing: 'Inicie sesión para ver el precio', source: 'Ver anuncio original', details: 'Detalles del inmueble', features: 'Características', more: 'Abrir todos los detalles', less: 'Ocultar detalles', unavailable: 'No se pudo recuperar la foto original', footer: 'Los listados externos son referencias de terceros y no oportunidades verificadas por AssetVeyra.' },
-  fr: { heading: 'Opportunités du marché externe', intro: 'Sélection de biens proposés par des tiers, séparés des opportunités AssetVeyra. La disponibilité, le prix et les conditions doivent être vérifiés indépendamment.', contact: 'Contacter AssetVeyra', request: 'Demander cette opportunité', pricing: 'Connectez-vous pour voir le prix', source: 'Voir l’annonce originale', details: 'Détails du bien', features: 'Caractéristiques', more: 'Ouvrir tous les détails', less: 'Masquer les détails', unavailable: 'La photo originale n’a pas pu être récupérée', footer: 'Les annonces externes sont des références de marché de tiers et non des opportunités vérifiées par AssetVeyra.' },
+const copy: Record<Locale, { heading: string; intro: string; contact: string; request: string; pricing: string; details: string; features: string; more: string; less: string; unavailable: string; footer: string }> = {
+  en: { heading: 'External Market Opportunities', intro: 'Selected third-party market listings presented separately from AssetVeyra opportunities. Availability, pricing and transaction terms must be independently verified.', contact: 'Contact AssetVeyra', request: 'Request This Opportunity', pricing: 'Sign in to view pricing', details: 'Property details', features: 'Key features', more: 'Open full details', less: 'Hide details', unavailable: 'Original listing photo could not be retrieved', footer: 'External listings are third-party market references, not verified AssetVeyra opportunities.' },
+  ar: { heading: 'فرص السوق الخارجي', intro: 'قوائم عقارية مختارة من السوق الخارجي ومعروضة بشكل منفصل عن فرص AssetVeyra. يجب التحقق بشكل مستقل من التوفر والأسعار وشروط المعاملة.', contact: 'تواصل مع AssetVeyra', request: 'اطلب هذه الفرصة', pricing: 'سجّل الدخول لعرض السعر', details: 'تفاصيل العقار', features: 'أهم المزايا', more: 'فتح كامل التفاصيل', less: 'إخفاء التفاصيل', unavailable: 'تعذر جلب الصورة الأصلية للإعلان', footer: 'القوائم الخارجية هي مراجع من سوق الغير وليست فرصاً موثقة من AssetVeyra.' },
+  zh: { heading: '外部市场机会', intro: '精选第三方市场挂牌，与 AssetVeyra 机会分开显示。可用性、价格和交易条款必须独立核实。', contact: '联系 AssetVeyra', request: '咨询此机会', pricing: '登录后查看价格', details: '物业详情', features: '主要特点', more: '打开完整详情', less: '隐藏详情', unavailable: '无法获取原始挂牌图片', footer: '外部挂牌是第三方市场参考，并非经 AssetVeyra 核实的机会。' },
+  es: { heading: 'Oportunidades del mercado externo', intro: 'Listados seleccionados de terceros, separados de las oportunidades de AssetVeyra. La disponibilidad, el precio y las condiciones deben verificarse de forma independiente.', contact: 'Contactar con AssetVeyra', request: 'Solicitar esta oportunidad', pricing: 'Inicie sesión para ver el precio', details: 'Detalles del inmueble', features: 'Características', more: 'Abrir todos los detalles', less: 'Ocultar detalles', unavailable: 'No se pudo recuperar la foto original', footer: 'Los listados externos son referencias de terceros y no oportunidades verificadas por AssetVeyra.' },
+  fr: { heading: 'Opportunités du marché externe', intro: 'Sélection de biens proposés par des tiers, séparés des opportunités AssetVeyra. La disponibilité, le prix et les conditions doivent être vérifiés indépendamment.', contact: 'Contacter AssetVeyra', request: 'Demander cette opportunité', pricing: 'Connectez-vous pour voir le prix', details: 'Détails du bien', features: 'Caractéristiques', more: 'Ouvrir tous les détails', less: 'Masquer les détails', unavailable: 'La photo originale n’a pas pu être récupérée', footer: 'Les annonces externes sont des références de marché de tiers et non des opportunités vérifiées par AssetVeyra.' },
 };
 
 export default function ExternalMarketClient() {
@@ -146,6 +129,8 @@ export default function ExternalMarketClient() {
   const t = copy[locale];
   const [authenticated, setAuthenticated] = useState(false);
   const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
+  const [imageIndexes, setImageIndexes] = useState<Record<string, number>>({});
+  const [lightbox, setLightbox] = useState<{ listingId: string; index: number } | null>(null);
 
   useEffect(() => {
     const supabase = createClient();
@@ -156,7 +141,49 @@ export default function ExternalMarketClient() {
   }, []);
 
   const textFor = (value: Localized) => value[locale === 'ar' ? 'ar' : 'en'];
-  const imageSrc = (listing: Listing) => listing.imageUrl ? `/api/external-market/image?url=${encodeURIComponent(listing.imageUrl)}` : '';
+  const imageSrc = (url: string) => `/api/external-market/image?url=${encodeURIComponent(url)}`;
+  const handleImageError = (listingId: string, index: number) => {
+    setFailedImages((current) => {
+      const url = listings.find((item) => item.id === listingId)?.imageUrls[index];
+      if (!url || current[`${listingId}:${url}`]) return current;
+      return { ...current, [`${listingId}:${url}`]: true };
+    });
+
+    setImageIndexes((current) => {
+      const listing = listings.find((item) => item.id === listingId);
+      if (!listing) return current;
+      const nextIndex = listing.imageUrls.findIndex((url, candidateIndex) =>
+        candidateIndex !== index && !failedImages[`${listingId}:${url}`]
+      );
+      return nextIndex >= 0 ? { ...current, [listingId]: nextIndex } : current;
+    });
+
+    setLightbox((current) => current?.listingId === listingId && current.index === index ? null : current);
+  };
+  const moveImage = (listingId: string, count: number, direction: number) => {
+    setImageIndexes((current) => {
+      const start = current[listingId] ?? 0;
+      for (let step = 1; step <= count; step += 1) {
+        const next = (start + direction * step + count) % count;
+        const url = listings.find((item) => item.id === listingId)?.imageUrls[next];
+        if (url && !failedImages[`${listingId}:${url}`]) return { ...current, [listingId]: next };
+      }
+      return current;
+    });
+  };
+  const moveLightbox = (listingId: string, startIndex: number, direction: number) => {
+    const listing = listings.find((item) => item.id === listingId);
+    if (!listing) return;
+    for (let step = 1; step <= listing.imageUrls.length; step += 1) {
+      const next = (startIndex + direction * step + listing.imageUrls.length) % listing.imageUrls.length;
+      const url = listing.imageUrls[next];
+      if (!failedImages[`${listingId}:${url}`]) {
+        setLightbox({ listingId, index: next });
+        return;
+      }
+    }
+    setLightbox(null);
+  };
 
   return <main className="av-final-home external-market-page">
     <header className="av-final-header">
@@ -171,23 +198,43 @@ export default function ExternalMarketClient() {
       <div className="external-listing-grid">
         {listings.map((listing) => {
           const title = textFor(listing.title);
-          const failed = failedImages[listing.id];
+          const failedCount = listing.imageUrls.filter((url) => failedImages[`${listing.id}:${url}`]).length;
+          if (listing.imageUrls.length === 0 || failedCount === listing.imageUrls.length) return null;
           return <article className="external-listing-card" key={listing.id}>
-            <a className="external-listing-image-link" href={listing.sourceUrl} target="_blank" rel="noreferrer noopener" aria-label={`${title} — ${t.source}`}>
-              <div className="external-listing-image">
-                {listing.imageUrl && !failed ? <img src={imageSrc(listing)} alt={textFor(listing.imageAlt)} loading="lazy" onError={() => setFailedImages((current) => ({ ...current, [listing.id]: true }))}/> : <div className="external-image-missing"><strong>{t.unavailable}</strong><span>{t.source}</span></div>}
-                <div className="external-image-watermark" aria-hidden="true">MARKET REFERENCE</div>
+            <div className="external-listing-image-link" aria-label={title}>
+              <div className="external-listing-image external-gallery">
+                {listing.imageUrls.length > 0 && failedCount < listing.imageUrls.length ? <>
+                  <button type="button" className="external-gallery-image-button" onClick={() => setLightbox({ listingId: listing.id, index: imageIndexes[listing.id] ?? 0 })} aria-label={title}>
+                    <img src={imageSrc(listing.imageUrls[imageIndexes[listing.id] ?? 0])} alt={textFor(listing.imageAlt)} loading="lazy" onError={() => handleImageError(listing.id, imageIndexes[listing.id] ?? 0)}/>
+                  </button>
+                  {listing.imageUrls.length > 1 && <>
+                    <button type="button" className="external-gallery-prev" onClick={() => moveImage(listing.id, listing.imageUrls.length, -1)} aria-label="Previous image">‹</button>
+                    <button type="button" className="external-gallery-next" onClick={() => moveImage(listing.id, listing.imageUrls.length, 1)} aria-label="Next image">›</button>
+                    <span className="external-gallery-counter">{(imageIndexes[listing.id] ?? 0) + 1} / {listing.imageUrls.length}</span>
+                  </>}
+                </> : <div className="external-image-missing"><strong>{t.unavailable}</strong></div>}
               </div>
-            </a>
-            <div className="card-meta"><span>{textFor(listing.country)}</span><span>{textFor(listing.city)}</span></div>
+            </div><div className="card-meta"><span>{textFor(listing.country)}</span><span>{textFor(listing.city)}</span></div>
             <h4>{title}</h4>
             <p>{textFor(listing.type)} · {textFor(listing.summary)}</p>
             <div className="external-facts">{listing.facts.map((fact, index) => <span key={index}><b>•</b>{textFor(fact)}</span>)}</div>
-            <div className="external-card-footer"><strong>{authenticated ? listing.price : t.pricing}</strong><div className="external-card-actions"><details className="external-inline-details"><summary>{t.details}</summary><div className="external-inline-details-body"><div className="external-detail-table">{listing.details.map((detail, index) => <div className="external-detail-row" key={index}><strong>{textFor(detail.label)}</strong><span>{textFor(detail.value)}</span></div>)}</div><h5>{t.features}</h5><div className="external-feature-list">{listing.features.map((feature, index) => <span key={index}>{textFor(feature)}</span>)}</div></div></details><a className="external-source-link" href={listing.sourceUrl} target="_blank" rel="noreferrer noopener">{t.source}</a><a className="external-market-contact-link" href={authenticated ? `/contact?opportunity=${encodeURIComponent(title)}` : '/login'}>{t.request}</a></div></div>
+            <div className="external-card-footer"><strong>{authenticated ? listing.price : t.pricing}</strong><div className="external-card-actions"><details className="external-inline-details" open><summary>{t.details}</summary><div className="external-inline-details-body"><div className="external-detail-table">{listing.details.map((detail, index) => <div className="external-detail-row" key={index}><strong>{textFor(detail.label)}</strong><span>{textFor(detail.value)}</span></div>)}</div><h5>{t.features}</h5><div className="external-feature-list">{listing.features.map((feature, index) => <span key={index}>{textFor(feature)}</span>)}</div></div></details><a className="external-market-contact-link" href={authenticated ? `/contact?opportunity=${encodeURIComponent(title)}` : '/login'}>{t.request}</a></div></div>
           </article>;
         })}
       </div>
     </section>
+    {lightbox && (() => {
+      const listing = listings.find((item) => item.id === lightbox.listingId);
+      if (!listing) return null;
+      return <div className="external-lightbox" role="dialog" aria-modal="true" aria-label={textFor(listing.title)} onClick={() => setLightbox(null)}>
+        <button type="button" className="external-lightbox-close" onClick={() => setLightbox(null)} aria-label="Close">×</button>
+        <img src={imageSrc(listing.imageUrls[lightbox.index])} alt={textFor(listing.imageAlt)} onClick={(event) => event.stopPropagation()} onError={() => handleImageError(listing.id, lightbox.index)}/>
+        {listing.imageUrls.length > 1 && <>
+          <button type="button" className="external-lightbox-prev" onClick={(event) => { event.stopPropagation(); moveLightbox(listing.id, lightbox.index, -1); }} aria-label="Previous image">‹</button>
+          <button type="button" className="external-lightbox-next" onClick={(event) => { event.stopPropagation(); moveLightbox(listing.id, lightbox.index, 1); }} aria-label="Next image">›</button>
+        </>}
+      </div>;
+    })()}
     <footer className="av-footer">{t.footer}</footer>
   </main>;
 }
