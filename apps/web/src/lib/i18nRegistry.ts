@@ -4657,7 +4657,7 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
     "zh": "参考编号",
     "es": "Referencia",
     "fr": "Référence"
-  }
+  },
   "Verification status": {"en":"Verification status","ar":"حالة التحقق","zh":"验证状态","es":"Estado de verificación","fr":"Statut de vérification"},
   "Verification in progress": {"en":"Verification in progress","ar":"التحقق قيد التنفيذ","zh":"验证进行中","es":"Verificación en curso","fr":"Vérification en cours"},
   "Verification record": {"en":"Verification record","ar":"سجل التحقق","zh":"验证记录","es":"Registro de verificación","fr":"Dossier de vérification"},
