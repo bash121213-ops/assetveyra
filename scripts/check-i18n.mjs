@@ -146,6 +146,7 @@ const result = {
   missingCount: missing.length,
   missing: missing.map((item) => item.locale ? `${item.key} [${item.locale}]` : item.key),
   untranslatedCount: untranslated.length,
+  untranslated: untranslated.map((item) => `${item.key} [${item.locale}]`),
   duplicateKeyCount: 0,
   dynamicStatusOrAssetTypeExpressions: dynamic.length,
   sideEffectI18nImports,
