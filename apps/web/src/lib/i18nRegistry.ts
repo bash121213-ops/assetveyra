@@ -4685,7 +4685,13 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   "Minimum area m²": {"en":"Minimum area m²","ar":"الحد الأدنى للمساحة م²","zh":"最小面积 m²","es":"Área mínima m²","fr":"Surface minimale m²"},
   "Sort": {"en":"Sort","ar":"ترتيب","zh":"排序","es":"Ordenar","fr":"Trier"},
   "Clear all": {"en":"Clear all","ar":"مسح الكل","zh":"清除全部","es":"Borrar todo","fr":"Tout effacer"},
-  "Apply filters": {"en":"Apply filters","ar":"تطبيق الفلاتر","zh":"应用筛选","es":"Aplicar filtros","fr":"Appliquer les filtres"}
+  "Apply filters": {"en":"Apply filters","ar":"تطبيق الفلاتر","zh":"应用筛选","es":"Aplicar filtros","fr":"Appliquer les filtres",
+  "Contact method": {"en":"Contact method","ar":"طريقة التواصل","zh":"联系方式","es":"Método de contacto","fr":"Mode de contact"},
+  "Choose the contact route that matches your request.": {"en":"Choose the contact route that matches your request.","ar":"اختر طريقة التواصل المناسبة لطلبك.","zh":"请选择符合您需求的联系方式。","es":"Elige la vía de contacto que corresponda a tu solicitud.","fr":"Choisissez le mode de contact adapté à votre demande."},
+  "Request information": {"en":"Request information","ar":"طلب معلومات","zh":"请求信息","es":"Solicitar información","fr":"Demander des informations"},
+  "Contact AssetVeyra": {"en":"Contact AssetVeyra","ar":"تواصل مع AssetVeyra","zh":"联系 AssetVeyra","es":"Contactar con AssetVeyra","fr":"Contacter AssetVeyra"},
+  "Not independently verified": {"en":"Not independently verified","ar":"لم يتم التحقق منه بشكل مستقل","zh":"未经独立验证","es":"No verificado de forma independiente","fr":"Non vérifié de manière indépendante"},
+  "Verification status · not independently verified": {"en":"Verification status · not independently verified","ar":"حالة التحقق · لم يتم التحقق منه بشكل مستقل","zh":"验证状态 · 未经独立验证","es":"Estado de verificación · no verificado de forma independiente","fr":"Statut de vérification · non vérifié de manière indépendante"}
 };
 
 export const STATUS_TRANSLATIONS = {
