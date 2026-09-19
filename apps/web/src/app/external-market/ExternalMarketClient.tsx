@@ -102,9 +102,9 @@ export default function ExternalMarketClient({ listings, authenticated }: { list
           <div>
             <div className="eyebrow"><ExternalMarketText id="Global market watch" /></div>
             <h1><ExternalMarketText id="Real external listings, organized by country" /></h1>
-            <p><ExternalMarketText id="Market listings presented by AssetVeyra for investor review. Verification status is shown clearly on each listing." /></p>
+            <p><ExternalMarketText id="These are live third-party market listings discovered from public sources. They are not yet represented as verified AssetVeyra opportunities." /></p>
           </div>
-          <div className="external-market-note"><ExternalMarketText id="Verification status · not independently verified" /></div>
+          <div className="external-market-note"><ExternalMarketText id="External source · independently verify before transaction" /></div>
         </div>
 
         <div className="external-market-filters" role="search">
@@ -139,7 +139,7 @@ export default function ExternalMarketClient({ listings, authenticated }: { list
                       <a className="external-source-link" href={item.source_url} target="_blank" rel="noreferrer"><ExternalMarketText id="View source listing" /></a>
                     </div>
                   </div>
-                  <small><ExternalMarketText id="Verification status" />: <ExternalMarketText id="Not independently verified" /> · <ExternalMarketText id="Checked" />: {item.checked_at}</small>
+                  <small><ExternalMarketText id="Source" />: {item.source_name} · <ExternalMarketText id="Checked" />: {item.checked_at}</small>
                 </article>
               ))}
             </div>
@@ -170,10 +170,10 @@ export default function ExternalMarketClient({ listings, authenticated }: { list
                 </div>
               </div>
               <div className="external-detail-actions">
-                {authenticated && <a className="external-details-button" href={`/contact?opportunity=${encodeURIComponent(selected.title)}&type=information`}>Contact AssetVeyra</a>}
-                {authenticated && <a className="external-details-button" href={`/contact?opportunity=${encodeURIComponent(selected.title)}&type=interest`}>Register interest</a>}
+                <a className="external-market-contact-link" href={selected.source_url} target="_blank" rel="noreferrer"><ExternalMarketText id="View source listing" /></a>
+                {authenticated && <a className="external-details-button" href={`/contact?opportunity=${encodeURIComponent(selected.title)}`}>Request this opportunity</a>}
               </div>
-              <p className="external-detail-disclaimer"><ExternalMarketText id="Verification status · not independently verified" /></p>
+              <p className="external-detail-disclaimer"><ExternalMarketText id="External source · independently verify before transaction" /></p>
             </div>
           </section>
         </div>
