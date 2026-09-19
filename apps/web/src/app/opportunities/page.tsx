@@ -103,7 +103,7 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
     : {data:[]};
   const firstImageByAsset=new Map<string,string>();
   for(const image of (assetImages??[]) as {id:string;asset_id:string;storage_path:string;sort_order:number|null}[]){
-    if(firstImageByAsset.has(image.asset_id))return;
+    if(firstImageByAsset.has(image.asset_id))continue;
     firstImageByAsset.set(image.asset_id,getPublicAssetImageUrl(image.storage_path));
   }
   const rows=(opportunities??[]).map(opportunity=>({opportunity:opportunity as Opportunity,asset:assetById.get((opportunity as Opportunity).asset_id)})).filter(({asset})=>Boolean(asset?.asking_price&&Number(asset.asking_price)>=MIN_PUBLIC_VALUE));
