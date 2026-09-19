@@ -30,16 +30,18 @@ const verificationChecks = [
   ['site_visit_completed', 'Site visit completed'],
 ] as const;
 
-function verificationState(propertyDetails: unknown) {
-  const verification = (propertyDetails as { verification?: { status?: string; checks?: Record<string, string>; note?: string } } | null)?.verification;
-  const checks = verification?.checks ?? {};
+function verificationState(verification: { status?: string | null; decision_reason?: string | null } | null) {
+  const status = verification?.status || 'pending';
+  const checks = status === 'approved'
+    ? Object.fromEntries(verificationChecks.map(([key]) => [key, 'completed']))
+    : {};
   return {
-    status: verification?.status || 'pending',
-    note: verification?.note || '',
+    status,
+    note: verification?.decision_reason || '',
     checks: verificationChecks.map(([key, label]) => ({
       key,
       label,
-      status: checks[key] === 'completed' || checks[key] === 'not_applicable' ? checks[key] : 'pending',
+      status: checks[key] === 'completed' ? 'completed' : 'pending',
     })),
   };
 }
@@ -48,7 +50,7 @@ async function registerInterest(formData: FormData) {
   'use server';
   const s = await createClient();
   const { data: { user } } = await s.auth.getUser();
-  if (!user) redirect('/login');
+  if (!user) redirect('/login?returnTo=' + encodeURIComponent('/opportunities/' + slug));
 
   const slug = String(formData.get('slug') || '');
   const { data: opportunity } = await s
@@ -214,7 +216,7 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
             )}
 
             {verification && (() => {
-              const granular = verificationState(null);
+              const granular = verificationState(verification);
               return (
                 <div className="verification-panel">
                   <div>
