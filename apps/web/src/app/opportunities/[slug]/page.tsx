@@ -119,7 +119,7 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
     .limit(12);
 
   const imagesPromise = s
-    .from('asset_images')
+    .from('published_asset_images')
     .select('id,storage_path,sort_order')
     .eq('asset_id', asset.id)
     .order('sort_order', { ascending: true });
