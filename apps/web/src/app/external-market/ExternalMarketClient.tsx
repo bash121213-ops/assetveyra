@@ -102,9 +102,9 @@ export default function ExternalMarketClient({ listings, authenticated }: { list
           <div>
             <div className="eyebrow"><ExternalMarketText id="Global market watch" /></div>
             <h1><ExternalMarketText id="Real external listings, organized by country" /></h1>
-            
+            <p><ExternalMarketText id="These are live third-party market listings discovered from public sources. They are not yet represented as verified AssetVeyra opportunities." /></p>
           </div>
-          
+          <div className="external-market-note"><ExternalMarketText id="External source · independently verify before transaction" /></div>
         </div>
 
         <div className="external-market-filters" role="search">
@@ -136,10 +136,10 @@ export default function ExternalMarketClient({ listings, authenticated }: { list
                     <strong>{authenticated ? amount(item.price_amount, item.currency) : 'Sign in to view pricing'}</strong>
                     <div className="external-card-actions">
                       <button type="button" className="external-details-button" onClick={() => setSelected(item)}>Details</button>
-                      
+                      <a className="external-source-link" href={item.source_url} target="_blank" rel="noreferrer"><ExternalMarketText id="View source listing" /></a>
                     </div>
                   </div>
-                  <small><I18nText id="Verification status" />: <I18nText id="Pending" /></small>
+                  <small><ExternalMarketText id="Source" />: {item.source_name} · <ExternalMarketText id="Checked" />: {item.checked_at}</small>
                 </article>
               ))}
             </div>
@@ -170,10 +170,10 @@ export default function ExternalMarketClient({ listings, authenticated }: { list
                 </div>
               </div>
               <div className="external-detail-actions">
-                
+                <a className="external-market-contact-link" href={selected.source_url} target="_blank" rel="noreferrer"><ExternalMarketText id="View source listing" /></a>
                 {authenticated && <a className="external-details-button" href={`/contact?opportunity=${encodeURIComponent(selected.title)}`}>Request this opportunity</a>}
               </div>
-              <p className="external-detail-disclaimer"><I18nText id="Verification status" />: <I18nText id="Pending" /></p>
+              <p className="external-detail-disclaimer"><ExternalMarketText id="External source · independently verify before transaction" /></p>
             </div>
           </section>
         </div>
