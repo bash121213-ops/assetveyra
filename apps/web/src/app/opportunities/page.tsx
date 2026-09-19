@@ -181,7 +181,7 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
 
     <section className="marketplace-results-bar"><strong>{filteredRows.length}</strong><span>matching opportunities</span>{(q||country||region||city||type||min!==null||max!==null||areaMin!==null)&&<a href="/opportunities">Clear filters</a>}</section>
 
-    <section className="opportunity-grid">{filteredRows.map(({opportunity,asset,imageUrl},index)=>asset?<a className="opportunity-card" href={user?`/opportunities/${opportunity.slug}`:`/login?returnTo=${encodeURIComponent(`/opportunities/${opportunity.slug}`)}`} key={opportunity.id}>
+    <section className="opportunity-grid">{filteredRows.map(({opportunity,asset,imageUrl},index)=>asset?<a className="opportunity-card" href={`/opportunities/${opportunity.slug}`} key={opportunity.id}>
       <div className="opportunity-card-media">{imageUrl?<Image src={imageUrl} alt={asset.title} fill sizes="(max-width: 767px) 90vw, (max-width: 1024px) 45vw, 30vw" quality={75} priority={index < 3}/>:<div className="opportunity-card-placeholder"><I18nText id="No image available"/></div>}<span className="opportunity-card-status"><I18nText id="Published opportunity"/></span></div>
       <div className="opportunity-card-body">
         <div className="card-meta"><span>{sectorKeys[asset.asset_type]?<I18nText id={sectorKeys[asset.asset_type]}/>:asset.asset_type}</span><span>{asset.country_code?countryNames.of(asset.country_code):'—'}</span></div>
