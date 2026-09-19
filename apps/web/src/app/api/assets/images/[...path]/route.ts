@@ -5,9 +5,9 @@ const CACHE_CONTROL = 'public, max-age=3600, s-maxage=86400, stale-while-revalid
 
 export async function GET(
   _request: Request,
-  { params }: { params: { path: string[] } },
+  { params }: { params: Promise<{ path: string[] }> },
 ) {
-  const { path } = params;
+  const { path } = await params;
   const storagePath = path.map((segment) => decodeURIComponent(segment)).join('/');
 
   if (!storagePath || storagePath.includes('..')) return new Response('Not found', { status: 404 });
