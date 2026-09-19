@@ -48,11 +48,10 @@ function verificationState(verification: { status?: string | null; decision_reas
 
 async function registerInterest(formData: FormData) {
   'use server';
+  const slug = String(formData.get('slug') || '');
   const s = await createClient();
   const { data: { user } } = await s.auth.getUser();
   if (!user) redirect('/login?returnTo=' + encodeURIComponent('/opportunities/' + slug));
-
-  const slug = String(formData.get('slug') || '');
   const { data: opportunity } = await s
     .from('opportunities')
     .select('id')
