@@ -88,8 +88,6 @@ async function registerInterest(formData: FormData) {
 export default async function OpportunityPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const s = await createClient();
-  const { data: { user } } = await s.auth.getUser();
-  if (!user) redirect('/login');
 
   const { data: opportunity } = await s
     .from('public_opportunities')
