@@ -5,7 +5,7 @@ import { I18nText, useLocale } from '@/components/LocaleShell';
 import { translate } from '@/lib/i18n';
 import Image from 'next/image';
 
-type Image = { id: string; signed_url: string; sort_order: number; alt?: string | null };
+type Image = { id: string; src: string; sort_order: number; alt?: string | null };
 
 export default function PublicAssetGallery({ images }: { images: Image[] }) {
   const locale = useLocale();
@@ -16,7 +16,7 @@ export default function PublicAssetGallery({ images }: { images: Image[] }) {
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const touchStartX = useRef<number | null>(null);
   const lastTapAt = useRef(0);
-  const validImages = images.filter((image) => image.signed_url);
+  const validImages = images.filter((image) => image.src);
 
   const label = (key: string) => translate(key, locale);
 
@@ -106,7 +106,7 @@ export default function PublicAssetGallery({ images }: { images: Image[] }) {
             }
           }}
         >
-          <Image src={current.signed_url} alt={current.alt || label('Property image')} width={1600} height={1000} sizes="(max-width: 767px) 100vw, 72vw" quality={78} priority decoding="async" />
+          <Image src={current.src} alt={current.alt || label('Property image')} width={1600} height={1000} sizes="(max-width: 767px) 100vw, 72vw" quality={78} priority decoding="async" />
           {validImages.length > 1 && (
             <>
               <button type="button" className="public-gallery-arrow prev" onClick={(event) => { event.stopPropagation(); move(-1); }} aria-label={label('Previous image')}>‹</button>
@@ -137,7 +137,7 @@ export default function PublicAssetGallery({ images }: { images: Image[] }) {
                 aria-current={index === activeIndex ? 'true' : undefined}
                 onClick={() => { setZoomed(false); setActive(index); }}
               >
-                <Image src={image.signed_url} alt="" width={240} height={150} sizes="120px" quality={65} loading="lazy" decoding="async" />
+                <Image src={image.src} alt="" width={240} height={150} sizes="120px" quality={65} loading="lazy" decoding="async" />
               </button>
             ))}
           </div>
@@ -165,7 +165,7 @@ export default function PublicAssetGallery({ images }: { images: Image[] }) {
             onDoubleClick={() => setZoomed((value) => !value)}
             aria-label={label(zoomed ? 'Zoom out' : 'Zoom image')}
           >
-            <Image src={current.signed_url} alt={current.alt || label('Property image')} width={1800} height={1200} sizes="90vw" quality={82} loading="eager" decoding="async" />
+            <Image src={current.src} alt={current.alt || label('Property image')} width={1800} height={1200} sizes="90vw" quality={82} loading="eager" decoding="async" />
           </button>
           {validImages.length > 1 && <button type="button" className="public-lightbox-arrow next" onClick={() => move(1)} aria-label={label('Next image')}>›</button>}
         </div>
