@@ -4589,13 +4589,13 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
     "fr": "Veille du marché mondial"
   },
   "Real external listings, organized by country": {
-  "Market listings presented by AssetVeyra for investor review. Verification status is shown clearly on each listing.": {"en":"Market listings presented by AssetVeyra for investor review. Verification status is shown clearly on each listing.","ar":"عروض سوقية يقدمها AssetVeyra لمراجعة المستثمرين. تظهر حالة التحقق بوضوح في كل عرض.","zh":"AssetVeyra 提供的市场挂牌信息供投资者审阅。每项挂牌都会明确显示验证状态。","es":"Listados de mercado presentados por AssetVeyra para revisión de inversores. El estado de verificación se muestra claramente en cada anuncio.","fr":"Annonces de marché présentées par AssetVeyra pour examen par les investisseurs. Le statut de vérification est clairement indiqué pour chaque annonce."},
     "en": "Real external listings, organized by country",
     "ar": "عروض عقارية حقيقية من مصادر خارجية، مرتبة حسب الدولة",
     "zh": "真实外部挂牌信息，按国家整理",
     "es": "Listados inmobiliarios reales de fuentes externas, organizados por país",
     "fr": "Annonces immobilières réelles de sources externes, classées par pays"
   },
+  "Market listings presented by AssetVeyra for investor review. Verification status is shown clearly on each listing.": {"en":"Market listings presented by AssetVeyra for investor review. Verification status is shown clearly on each listing.","ar":"عروض سوقية يقدمها AssetVeyra لمراجعة المستثمرين. تظهر حالة التحقق بوضوح في كل عرض.","zh":"AssetVeyra 提供的市场挂牌信息供投资者审阅。每项挂牌都会明确显示验证状态。","es":"Listados de mercado presentados por AssetVeyra para revisión de inversores. El estado de verificación se muestra claramente en cada anuncio.","fr":"Annonces de marché présentées par AssetVeyra pour examen par les investisseurs. Le statut de vérification est clairement indiqué pour chaque annonce."},
   "These are live third-party market listings discovered from public sources. They are not yet represented as verified AssetVeyra opportunities.": {
     "en": "These are live third-party market listings discovered from public sources. They are not yet represented as verified AssetVeyra opportunities.",
     "ar": "هذه عروض منشورة حاليًا من مصادر عقارية خارجية عامة. لم يتم اعتمادها بعد كفرص موثقة من AssetVeyra.",
