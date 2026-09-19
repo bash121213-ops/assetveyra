@@ -102,10 +102,10 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
     ? await s.from('published_asset_images').select('id,asset_id,storage_path,sort_order').in('asset_id',assetIds).order('sort_order',{ascending:true})
     : {data:[]};
   const firstImageByAsset=new Map<string,string>();
-  await Promise.all((assetImages??[]).map(async (image:{id:string;asset_id:string;storage_path:string;sort_order:number|null})=>{
+  for(const image of (assetImages??[]) as {id:string;asset_id:string;storage_path:string;sort_order:number|null}[]){
     if(firstImageByAsset.has(image.asset_id))return;
     firstImageByAsset.set(image.asset_id,getPublicAssetImageUrl(image.storage_path));
-  }));
+  }
   const rows=(opportunities??[]).map(opportunity=>({opportunity:opportunity as Opportunity,asset:assetById.get((opportunity as Opportunity).asset_id)})).filter(({asset})=>Boolean(asset?.asking_price&&Number(asset.asking_price)>=MIN_PUBLIC_VALUE));
 
   const countries=[...new Set(rows.map(({asset})=>asset?.country_code).filter(Boolean) as string[])].sort();
