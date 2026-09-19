@@ -5,7 +5,7 @@ import { I18nText, useLocale } from '@/components/LocaleShell';
 import { translate } from '@/lib/i18n';
 import Image from 'next/image';
 
-type Image = { id: string; signed_url: string; sort_order: number; alt?: string | null };
+type Image = { id: string; src: string; sort_order: number; alt?: string | null };
 
 export default function PublicAssetGallery({ images }: { images: Image[] }) {
   const locale = useLocale();
@@ -16,7 +16,7 @@ export default function PublicAssetGallery({ images }: { images: Image[] }) {
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const touchStartX = useRef<number | null>(null);
   const lastTapAt = useRef(0);
-  const validImages = images.filter((image) => image.signed_url);
+  const validImages = images.filter((image) => image.src);
 
   const label = (key: string) => translate(key, locale);
 
