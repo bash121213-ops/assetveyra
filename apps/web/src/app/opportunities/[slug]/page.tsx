@@ -98,7 +98,7 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
 
   const { data: asset } = await s
     .from('public_assets')
-    .select('id,title,asset_type,country_code,region,city,area_sqm,currency,asking_price,public_summary,property_details')
+    .select('id,title,asset_type,country_code,region,city,area_sqm,currency,asking_price,public_summary')
     .eq('id', opportunity.asset_id)
     .maybeSingle();
   if (!asset || asset.asking_price === null || Number(asset.asking_price) < 100000) redirect('/opportunities');
@@ -212,7 +212,7 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
             )}
 
             {verification && (() => {
-              const granular = verificationState(asset.property_details);
+              const granular = verificationState(null);
               return (
                 <div className="verification-panel">
                   <div>
@@ -270,7 +270,15 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
               <input type="hidden" name="slug" value={slug} />
               <button className="button primary" type="submit"><I18nText id="Register interest" /></button>
             </form>
-            <a className="button secondary" href="/contact"><I18nText id="Contact us" /></a>
+            <a className="button secondary" href={`/contact?opportunity=${encodeURIComponent(asset.title)}`}><I18nText id="Contact us" /></a>
+            <div className="deal-gate-contact-options">
+              <div className="eyebrow"><I18nText id="Contact method" /></div>
+              <p><I18nText id="Choose the contact route that matches your request." /></p>
+              <div className="contact-methods">
+                <a className="text-button" href={`/contact?opportunity=${encodeURIComponent(asset.title)}&type=information`}><I18nText id="Request information" /></a>
+                <a className="text-button" href={`/contact?opportunity=${encodeURIComponent(asset.title)}&type=interest`}><I18nText id="Register interest" /></a>
+              </div>
+            </div>
             {location && <div className="deal-gate-location"><span><I18nText id="Location" /></span><strong>{location}</strong></div>}
           </aside>
         </div>
