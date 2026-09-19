@@ -2,6 +2,7 @@ import { notFound, redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { I18nText } from '@/components/LocaleShell';
 import PublicAssetGallery from '@/components/PublicAssetGallery';
+import { getPublicAssetImageUrl } from '@/lib/public-asset-image-url';
 import '../../opportunity-detail.css';
 
 const sectorKeys: Record<string, string> = {
@@ -151,9 +152,10 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
     })
     .slice(0, 3);
 
-  const gallery = await Promise.all((images ?? []).map(async (image) => {
-    const { data } = await s.storage.from('property-images').createSignedUrl(image.storage_path, 60 * 60);
-    return { id: image.id, sort_order: image.sort_order, signed_url: data?.signedUrl ?? '' };
+  const gallery = (images ?? []).map((image) => ({
+    id: image.id,
+    sort_order: image.sort_order,
+    src: getPublicAssetImageUrl(image.storage_path),
   }));
 
   const location = [asset.city, asset.region, asset.country_code].filter(Boolean).join(', ');
