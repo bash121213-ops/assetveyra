@@ -1,5 +1,6 @@
--- Public opportunity image access: allow metadata reads only for published public opportunities.
--- The storage bucket remains private; its existing public-published object policy controls signed URL creation/downloads.
+-- Reconcile and document the public metadata policy already required for published opportunity images.
+drop policy if exists "asset_images_public_select_published" on public.asset_images;
+
 create policy "asset_images_public_select_published"
 on public.asset_images
 for select
