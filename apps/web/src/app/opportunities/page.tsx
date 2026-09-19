@@ -98,7 +98,7 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
   const assetById=new Map(assets.map(asset=>[asset.id,asset]));
   const assetIds=[...assetById.keys()];
   const {data:assetImages}=assetIds.length
-    ? await s.from('asset_images').select('id,asset_id,storage_path,sort_order').in('asset_id',assetIds).order('sort_order',{ascending:true})
+    ? await s.from('published_asset_images').select('id,asset_id,storage_path,sort_order').in('asset_id',assetIds).order('sort_order',{ascending:true})
     : {data:[]};
   const firstImageByAsset=new Map<string,string>();
   await Promise.all((assetImages??[]).map(async (image:{id:string;asset_id:string;storage_path:string;sort_order:number|null})=>{
