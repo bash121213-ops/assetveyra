@@ -1,6 +1,6 @@
-import { TRANSLATIONS, type Locale } from '@/lib/i18n';
+import type { Locale } from '@/lib/i18n';
 
-const LEGAL_CONSULTATION_TRANSLATIONS: Record<string, Record<Locale, string>> = {
+export const LEGAL_CONSULTATION_TRANSLATIONS: Record<string, Record<Locale, string>> = {
   'ASSETVEYRA LEGAL': { en: 'ASSETVEYRA LEGAL', ar: 'ASSETVEYRA LEGAL', zh: 'ASSETVEYRA 法律服务', es: 'ASSETVEYRA LEGAL', fr: 'ASSETVEYRA JURIDIQUE' },
   'Request a legal consultation': { en: 'Request a legal consultation', ar: 'طلب استشارة قانونية', zh: '申请法律咨询', es: 'Solicitar una consulta jurídica', fr: 'Demander une consultation juridique' },
   'AssetVeyra can coordinate access to qualified legal professionals and established legal relationships for matters connected with real estate, investment transactions and related documentation.': { en: 'AssetVeyra can coordinate access to qualified legal professionals and established legal relationships for matters connected with real estate, investment transactions and related documentation.', ar: 'يمكن لـ AssetVeyra تنسيق الوصول إلى مختصين قانونيين مؤهلين وعلاقات قانونية قائمة للمسائل المرتبطة بالعقارات والمعاملات الاستثمارية والمستندات ذات الصلة.', zh: 'AssetVeyra 可根据房地产、投资交易及相关文件事项，协调联系合格的法律专业人士及现有法律合作关系。', es: 'AssetVeyra puede coordinar el acceso a profesionales jurídicos cualificados y relaciones jurídicas establecidas para asuntos relacionados con bienes inmuebles, operaciones de inversión y documentación conexa.', fr: 'AssetVeyra peut coordonner l’accès à des professionnels du droit qualifiés et à des relations juridiques établies pour les questions liées à l’immobilier, aux transactions d’investissement et aux documents associés.' },
@@ -32,7 +32,3 @@ const LEGAL_CONSULTATION_TRANSLATIONS: Record<string, Record<Locale, string>> = 
   'Your legal consultation request has been received. We will review it and contact you about the next step.': { en: 'Your legal consultation request has been received. We will review it and contact you about the next step.', ar: 'تم استلام طلب الاستشارة القانونية. سنراجعه ونتواصل معك بشأن الخطوة التالية.', zh: '我们已收到您的法律咨询请求。我们会审核请求并联系您说明下一步。', es: 'Hemos recibido su solicitud de consulta jurídica. La revisaremos y nos pondremos en contacto con usted sobre el siguiente paso.', fr: 'Votre demande de consultation juridique a été reçue. Nous l’examinerons et vous contacterons pour la prochaine étape.' },
   'Unable to submit the consultation request. Please try again.': { en: 'Unable to submit the consultation request. Please try again.', ar: 'تعذر إرسال طلب الاستشارة. يرجى المحاولة مرة أخرى.', zh: '无法提交咨询请求，请重试。', es: 'No se ha podido enviar la solicitud de consulta. Inténtelo de nuevo.', fr: 'Impossible d’envoyer la demande de consultation. Veuillez réessayer.' },
 };
-
-for (const [key, value] of Object.entries(LEGAL_CONSULTATION_TRANSLATIONS)) {
-  TRANSLATIONS[key] = value;
-}

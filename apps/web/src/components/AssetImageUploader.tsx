@@ -2,13 +2,17 @@
 
 import { ChangeEvent, DragEvent, useRef, useState } from 'react';
 import { I18nText } from '@/components/LocaleShell';
-import '@/lib/i18nAssetImages';
 
 const MAX_IMAGES = 20;
 const MAX_DIMENSION = 2000;
 const MAX_BYTES = 10 * 1024 * 1024;
 
 type PreparedImage = { file: File; preview: string; name: string; error?: string };
+
+type AssetImageUploaderProps = {
+  inputName?: string | null;
+  onPreparedFiles?: (files: File[]) => void;
+};
 
 function compressImage(file: File): Promise<File> {
   return new Promise((resolve, reject) => {
@@ -42,7 +46,7 @@ function compressImage(file: File): Promise<File> {
   });
 }
 
-export default function AssetImageUploader({ inputName = 'images' }: { inputName?: string }) {
+export default function AssetImageUploader({ inputName = 'images', onPreparedFiles }: AssetImageUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [images, setImages] = useState<PreparedImage[]>([]);
   const [busy, setBusy] = useState(false);
@@ -51,10 +55,13 @@ export default function AssetImageUploader({ inputName = 'images' }: { inputName
   const [dragging, setDragging] = useState(false);
 
   function sync(next: PreparedImage[]) {
-    if (!inputRef.current) return;
-    const dt = new DataTransfer();
-    next.filter((item) => !item.error).forEach((item) => dt.items.add(item.file));
-    inputRef.current.files = dt.files;
+    const validFiles = next.filter((item) => !item.error).map((item) => item.file);
+    if (inputRef.current) {
+      const dt = new DataTransfer();
+      validFiles.forEach((file) => dt.items.add(file));
+      inputRef.current.files = dt.files;
+    }
+    onPreparedFiles?.(validFiles);
   }
 
   async function prepareFiles(files: File[]) {
@@ -153,7 +160,7 @@ export default function AssetImageUploader({ inputName = 'images' }: { inputName
       >
         <input
           ref={inputRef}
-          name={inputName}
+          {...(inputName ? { name: inputName } : {})}
           type="file"
           accept="image/jpeg,image/png,image/webp"
           multiple

@@ -6,10 +6,25 @@ const ALLOWED_HOSTS = new Set([
   'assets.simpleviewinc.com',
   'www.smergers.com',
   'cdn.thinkwebcontent.com',
+  'dalsyria.com',
+  'img-2.aqarmap.com.eg',
+  'img-4.aqarmap.com.eg',
+  'yafaoffice.com',
+  'www.propertyfinder.ae',
+  'www.propertyfinder.eg',
+  'jo.opensooq.com',
 ]);
 
 function isAllowed(url: URL) {
   return url.protocol === 'https:' && ALLOWED_HOSTS.has(url.hostname);
+}
+
+function isAllowedImage(url: URL, source: URL) {
+  if (url.protocol !== 'https:') return false;
+  if (isAllowed(url)) return true;
+  const sourceRoot = source.hostname.split('.').slice(-2).join('.');
+  const imageRoot = url.hostname.split('.').slice(-2).join('.');
+  return sourceRoot === imageRoot;
 }
 
 function extractOgImage(html: string, baseUrl: URL) {
@@ -18,13 +33,14 @@ function extractOgImage(html: string, baseUrl: URL) {
   if (!match?.[1]) return null;
   try {
     const imageUrl = new URL(match[1], baseUrl);
-    return isAllowed(imageUrl) ? imageUrl : null;
+    return isAllowedImage(imageUrl, baseUrl) ? imageUrl : null;
   } catch {
     return null;
   }
 }
 
-async function fetchAllowed(url: URL) {
+async function fetchAllowed(url: URL, redirects = 0) {
+  if (redirects > 3) return null;
   const response = await fetch(url, {
     headers: { 'User-Agent': 'AssetVeyra/1.0 (+https://assetveyra.com)' },
     cache: 'no-store',
@@ -37,7 +53,7 @@ async function fetchAllowed(url: URL) {
     try {
       const redirected = new URL(location, url);
       if (!isAllowed(redirected)) return null;
-      return fetchAllowed(redirected);
+      return fetchAllowed(redirected, redirects + 1);
     } catch {
       return null;
     }
@@ -64,7 +80,7 @@ export async function GET(request: NextRequest) {
     if (!response) return new Response('Image unavailable', { status: 404 });
 
     const contentType = response.headers.get('content-type') ?? '';
-    if (response.ok && contentType.startsWith('image/')) {
+    if (response.ok && ['image/jpeg', 'image/png', 'image/webp', 'image/avif'].includes(contentType.split(';', 1)[0].toLowerCase())) {
       return new Response(response.body, {
         status: 200,
         headers: {
@@ -74,13 +90,13 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    if (target.hostname === 'www.luxuryestate.com' && response.ok && contentType.includes('text/html')) {
+    if (response.ok && contentType.includes('text/html')) {
       const html = await response.text();
       const imageUrl = extractOgImage(html, target);
       if (imageUrl) {
         const imageResponse = await fetchAllowed(imageUrl);
         const imageType = imageResponse?.headers.get('content-type') ?? '';
-        if (imageResponse?.ok && imageType.startsWith('image/')) {
+        if (imageResponse?.ok && ['image/jpeg', 'image/png', 'image/webp', 'image/avif'].includes(imageType.split(';', 1)[0].toLowerCase())) {
           return new Response(imageResponse.body, {
             status: 200,
             headers: {
