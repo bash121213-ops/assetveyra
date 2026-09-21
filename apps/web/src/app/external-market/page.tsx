@@ -1,5 +1,6 @@
 import ExternalMarketClient, { type ExternalListing } from './ExternalMarketClient';
 import { createClient } from '@/lib/supabase/server';
+import { AppChrome } from '@/components/SiteChrome';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,7 +17,7 @@ export default async function ExternalMarketPage() {
   ]);
 
   if (error) {
-    return <main className="app-shell"><section className="external-market-section"><div className="form-error">The external market is temporarily unavailable. Please try again shortly.</div></section></main>;
+    return <AppChrome links={[{ href: '/external-market', id: 'Institutional Land' }]}><section className="external-market-section"><div className="form-error">The external market is temporarily unavailable. Please try again shortly.</div></section></AppChrome>;
   }
 
   const listings = (data ?? []).map((item) => ({

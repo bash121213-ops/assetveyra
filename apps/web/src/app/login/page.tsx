@@ -3,6 +3,7 @@ import { FormEvent,useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { I18nText } from '@/components/LocaleShell';
+import SiteChrome from '@/components/SiteChrome';
 
 function safeReturnTo(value:string|null){
   if(!value || !value.startsWith('/') || value.startsWith('//')) return '/opportunities';
@@ -29,8 +30,9 @@ export default function LoginPage(){
     setBusy(false);
   }
 
-  return <main className="auth-page"><section className="auth-card">
-    <a className="brand" href="/">ASSETVEYRA</a>
+  return <SiteChrome>
+      <main className="auth-page"><section className="auth-card">
+    
     <div className="eyebrow"><I18nText id="SECURE ACCESS"/></div>
     <h1><I18nText id="Sign in"/></h1>
     <p><I18nText id="Access your investor, seller or operations workspace."/></p>
@@ -43,5 +45,6 @@ export default function LoginPage(){
     </form>
     <a className="text-button" href="/forgot-password"><I18nText id="Forgot password?"/></a>
     <a className="text-button" href="/signup"><I18nText id="Create account"/></a>
-  </section></main>;
+  </section></main>
+    </SiteChrome>;
 }

@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { I18nText } from '@/components/LocaleShell';
+import { AppChrome } from '@/components/SiteChrome';
 
 export default async function InterestsPage() {
   const s = await createClient();
@@ -23,17 +24,7 @@ export default async function InterestsPage() {
     ? await s.from('investor_interests').select('id,status,created_at,updated_at,investor_organization_id,opportunities(id,slug,owner_organization_id,investment_thesis,assets(title,city,country_code))').in('opportunity_id', ownedOppIds).order('updated_at', { ascending: false })
     : { data: [] as any[] };
 
-  return <main className="app-shell">
-    <header className="app-header">
-      <a className="brand" href="/">ASSETVEYRA</a>
-      <nav>
-        <a href="/workspace"><I18nText id="Overview"/></a>
-        <a href="/opportunities"><I18nText id="Marketplace"/></a>
-        <a href="/workspace/interests"><I18nText id="My Interests"/></a>
-        <a href="/workspace/deals"><I18nText id="Transactions"/></a>
-        <form action="/logout" method="post"><button className="text-button"><I18nText id="Sign out"/></button></form>
-      </nav>
-    </header>
+  return <AppChrome links={[{ href: '/workspace', id: 'Overview' }, { href: '/workspace/interests', id: 'My Interests' }, { href: '/workspace/deals', id: 'Transactions' }]}>
 
     <section className="page-head">
       <div className="eyebrow"><I18nText id="MY INTERESTS"/></div>
@@ -52,5 +43,5 @@ export default async function InterestsPage() {
     </section>}
 
     {!items?.length && !sellerItems?.length && <section className="panel"><div className="empty-state"><strong><I18nText id="No interests available for this account."/></strong><span><I18nText id="Interest records appear here when your organization participates in an opportunity."/></span><a className="button secondary" href="/opportunities"><I18nText id="Marketplace"/></a></div></section>}
-  </main>;
+  </AppChrome>;
 }

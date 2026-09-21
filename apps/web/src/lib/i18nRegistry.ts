@@ -4734,7 +4734,12 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   "Featured Opportunities": {"en":"Featured Opportunities","ar":"فرص مختارة","zh":"精选投资机会","es":"Oportunidades destacadas","fr":"Opportunités en vedette"},
   "Controlled Access": {"en":"Controlled Access","ar":"وصول منضبط","zh":"受控访问","es":"Acceso controlado","fr":"Accès contrôlé"},
   "International investment": {"en":"International investment","ar":"استثمار دولي","zh":"国际投资","es":"Inversión internacional","fr":"Investissement international"},
-  "Institutional-grade real-asset opportunities, presented through controlled access and documented verification.": {"en":"Institutional-grade real-asset opportunities, presented through controlled access and documented verification.","ar":"فرص أصول عقارية بمعايير مؤسسية، مقدَّمة عبر وصول منضبط وتحقق موثّق.","zh":"以受控访问与有据可查的核验流程，呈现机构级实物资产投资机会。","es":"Oportunidades de activos reales con estándar institucional, presentadas mediante acceso controlado y verificación documentada.","fr":"Des opportunités d'actifs réels de qualité institutionnelle, présentées via un accès contrôlé et une vérification documentée."}
+  "Institutional-grade real-asset opportunities, presented through controlled access and documented verification.": {"en":"Institutional-grade real-asset opportunities, presented through controlled access and documented verification.","ar":"فرص أصول عقارية بمعايير مؤسسية، مقدَّمة عبر وصول منضبط وتحقق موثّق.","zh":"以受控访问与有据可查的核验流程，呈现机构级实物资产投资机会。","es":"Oportunidades de activos reales con estándar institucional, presentadas mediante acceso controlado y verificación documentada.","fr":"Des opportunités d'actifs réels de qualité institutionnelle, présentées via un accès contrôlé et une vérification documentée."},
+  "Institutional Land": {"en":"Institutional Land","ar":"أراضٍ مؤسسية","zh":"机构土地","es":"Suelo institucional","fr":"Terrain institutionnel"},
+  "Buy an Asset": {"en":"Buy an Asset","ar":"شراء أصل","zh":"购买资产","es":"Comprar un activo","fr":"Acheter un actif"},
+  "Sell / Submit an Asset": {"en":"Sell / Submit an Asset","ar":"بيع / تقديم أصل","zh":"出售 / 提交资产","es":"Vender / Presentar un activo","fr":"Vendre / Soumettre un actif"},
+  "Submit an Asset": {"en":"Submit an Asset","ar":"تقديم أصل","zh":"提交资产","es":"Presentar un activo","fr":"Soumettre un actif"},
+  "More": {"en":"More","ar":"المزيد","zh":"更多","es":"Más","fr":"Plus"}
 };
 
 export const STATUS_TRANSLATIONS = {

@@ -1,6 +1,7 @@
 import { notFound, redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { I18nText } from '@/components/LocaleShell';
+import { AppChrome } from '@/components/SiteChrome';
 import { cookies } from 'next/headers';
 import { normalizeLocale, translate } from '@/lib/i18n';
 
@@ -379,8 +380,7 @@ export default async function InterestDetailPage({ params }: { params: Promise<{
   const dataRoomReady = Boolean(roomMembership && (!roomMembership.expires_at || new Date(roomMembership.expires_at) > new Date()));
 
   return (
-    <main className="app-shell">
-      <header className="app-header"><a className="brand" href="/">ASSETVEYRA</a><nav><a href="/workspace"><I18nText id="Workspace" /></a><a href="/opportunities"><I18nText id="Marketplace" /></a></nav></header>
+    <AppChrome links={[{ href: '/workspace/interests', id: 'My Interests' }]}>
       <section className="page-head"><div className="eyebrow"><I18nText id="Investment interest" /></div><h1>{(i as any).opportunities?.assets?.title || <I18nText id="Opportunity" />}</h1><p><I18nText id="Pipeline state" />: <strong>{i.status}</strong>. <I18nText id="Each transaction stage is gated by authorization and the required evidence." /></p></section>
 
       <section className="panel">
@@ -418,6 +418,6 @@ export default async function InterestDetailPage({ params }: { params: Promise<{
           </aside>
         </div>
       </section>
-    </main>
+    </AppChrome>
   );
 }

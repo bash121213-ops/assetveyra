@@ -2,11 +2,13 @@
 
 import { useLocale } from '@/components/LocaleShell';
 import { TERMS_COPY } from '@/lib/legalContent';
+import SiteChrome from '@/components/SiteChrome';
 export default function TermsPage() {
   const locale = useLocale();
   const copy = TERMS_COPY[locale];
   return (
-    <main className="app-shell">
+    <SiteChrome>
+      <main className="app-shell">
       <article className="form-page" style={{ maxWidth: 980, margin: '0 auto' }}>
         <div className="eyebrow">{copy.eyebrow}</div>
         <h1>{copy.title}</h1>
@@ -19,10 +21,11 @@ export default function TermsPage() {
             {section.bullets && <ul style={{ lineHeight: 1.8, paddingInlineStart: 24 }}>{section.bullets.map((b) => <li key={b}>{b}</li>)}</ul>}
           </section>
         ))}
-        <aside style={{ marginTop: 40, padding: 20, border: '1px solid var(--line)', borderRadius: 14, lineHeight: 1.8 }}>
+        <aside style={{ marginTop: 40, padding: 20, border: '1px solid var(--av-line)', borderRadius: 14, lineHeight: 1.8 }}>
           <strong>{copy.notice}</strong>
         </aside>
       </article>
     </main>
+    </SiteChrome>
   );
 }

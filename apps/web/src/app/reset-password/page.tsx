@@ -3,6 +3,7 @@
 import { FormEvent, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { I18nText } from '@/components/LocaleShell';
+import SiteChrome from '@/components/SiteChrome';
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('');
@@ -31,9 +32,10 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <main className="auth-page">
+    <SiteChrome>
+      <main className="auth-page">
       <section className="auth-card">
-        <a className="brand" href="/">ASSETVEYRA</a>
+        
         <div className="eyebrow"><I18nText id="SECURE ACCESS" /></div>
         <h1><I18nText id="Reset password" /></h1>
         <p><I18nText id="Choose a new password for your AssetVeyra account." /></p>
@@ -53,5 +55,6 @@ export default function ResetPasswordPage() {
         <a className="text-button" href="/login"><I18nText id="Sign in" /></a>
       </section>
     </main>
+    </SiteChrome>
   );
 }

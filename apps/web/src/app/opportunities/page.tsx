@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
 import { I18nText } from '@/components/LocaleShell';
+import SiteChrome from '@/components/SiteChrome';
 import { ExternalMarketText } from '@/components/ExternalMarketText';
 import MarketplaceSearch from '@/components/MarketplaceSearch';
 import OpportunityCard from '@/components/OpportunityCard';
@@ -172,8 +173,7 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
   const grouped=externalCountryOrder.map(code=>({code,listings:externalListings.filter(item=>item.country_code===code)})).filter(group=>group.listings.length);
   const initialParams=normalizedParams;
 
-  return <main className="app-shell">
-    <header className="app-header"><a className="brand" href="/">ASSETVEYRA</a><nav><a href="/opportunities"><I18nText id="Marketplace"/></a><a href="/workspace"><I18nText id="Overview"/></a>{user?<form action="/logout" method="post"><button className="text-button"><I18nText id="Sign out"/></button></form>:<a href="/login"><I18nText id="Sign in"/></a>}</nav></header>
+  return <SiteChrome>
     <section className="page-head"><div className="eyebrow"><I18nText id="Market"/></div><h1><I18nText id="Marketplace"/></h1><p><I18nText id="Curated opportunities for qualified investors worldwide."/></p></section>
     {error&&<div className="form-error" style={{maxWidth:1280,margin:'0 auto 30px',width:'88%'}}><I18nText id="The live marketplace could not be loaded. Please try again shortly."/></div>}
 
@@ -198,5 +198,5 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
 
     <section className="external-market-section"><div className="external-market-heading"><div><div className="eyebrow"><I18nText id="Market"/></div><h2><I18nText id="Marketplace"/></h2></div></div>
       {grouped.map(group=><section className="country-market" key={group.code}><div className="country-market-head"><h3>{group.listings[0].country_name}</h3><span>{group.listings.length} <ExternalMarketText id="listings"/></span></div><div className="external-listing-grid">{group.listings.map(item=><article className="external-listing-card" key={item.id}><div className="card-meta"><span>{externalTypeLabel(item.asset_type)}</span><span>{item.city||'—'}</span></div><h4>{item.title}</h4><p>{item.summary}</p><div className="external-facts">{item.area_sqm!==null&&<span><b><ExternalMarketText id="Area"/></b>{new Intl.NumberFormat('en-US',{maximumFractionDigits:0}).format(Number(item.area_sqm))} m²</span>}{item.rooms!==null&&<span><b><ExternalMarketText id="Rooms"/></b>{item.rooms}</span>}</div><div className="external-card-footer"><strong>{user?formatAmount(item.price_amount,item.currency):<span>Sign in to view pricing</span>}</strong><a href={user?`/contact?opportunity=\${encodeURIComponent(item.title)}&type=information`:'/login'}>{user?<I18nText id="Contact us"/>:<I18nText id="Sign in"/>}</a></div><small><I18nText id="Verification status"/>: <I18nText id="Pending"/></small></article>)}</div></section>)}</section>
-  </main>;
+  </SiteChrome>;
 }
