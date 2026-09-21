@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { I18nText } from '@/components/LocaleShell';
+import SiteHeader from '@/components/SiteHeader';
 
 export default async function InterestsPage() {
   const s = await createClient();
@@ -24,16 +25,7 @@ export default async function InterestsPage() {
     : { data: [] as any[] };
 
   return <main className="app-shell">
-    <header className="app-header">
-      <a className="brand" href="/">ASSETVEYRA</a>
-      <nav>
-        <a href="/workspace"><I18nText id="Overview"/></a>
-        <a href="/opportunities"><I18nText id="Marketplace"/></a>
-        <a href="/workspace/interests"><I18nText id="My Interests"/></a>
-        <a href="/workspace/deals"><I18nText id="Transactions"/></a>
-        <form action="/logout" method="post"><button className="text-button"><I18nText id="Sign out"/></button></form>
-      </nav>
-    </header>
+    <SiteHeader signedIn nav={[{href:'/workspace',label:'Overview'},{href:'/opportunities',label:'Marketplace'},{href:'/workspace/interests',label:'My Interests'},{href:'/workspace/deals',label:'Transactions'}]} />
 
     <section className="page-head">
       <div className="eyebrow"><I18nText id="MY INTERESTS"/></div>

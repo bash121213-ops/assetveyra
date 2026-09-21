@@ -1,11 +1,13 @@
 'use client';
 
 import { useLocale } from '@/components/LocaleShell';
+import SiteChrome from '@/components/SiteChrome';
 import { TERMS_COPY } from '@/lib/legalContent';
 export default function TermsPage() {
   const locale = useLocale();
   const copy = TERMS_COPY[locale];
   return (
+    <SiteChrome>
     <main className="app-shell">
       <article className="form-page" style={{ maxWidth: 980, margin: '0 auto' }}>
         <div className="eyebrow">{copy.eyebrow}</div>
@@ -24,5 +26,6 @@ export default function TermsPage() {
         </aside>
       </article>
     </main>
+    </SiteChrome>
   );
 }

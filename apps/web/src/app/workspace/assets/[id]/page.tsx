@@ -4,6 +4,7 @@ import { I18nText } from '@/components/LocaleShell';
 import AssetImageGallery from '@/components/AssetImageGallery';
 import AssetImageUploader from '@/components/AssetImageUploader';
 import { uploadAssetImages } from '@/app/workspace/assets/actions';
+import SiteHeader from '@/components/SiteHeader';
 
 export default async function AssetImageManagementPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -23,10 +24,7 @@ export default async function AssetImageManagementPage({ params }: { params: Pro
   async function handleUpload(formData: FormData) { 'use server'; await uploadAssetImages(assetId, formData); }
   return (
     <main className="app-shell">
-      <header className="app-header">
-        <a className="brand" href="/">ASSETVEYRA</a>
-        <nav><a href="/workspace/assets"><I18nText id="Assets" /></a><a href="/opportunities"><I18nText id="Marketplace" /></a></nav>
-      </header>
+      <SiteHeader signedIn nav={[{href:'/workspace/assets',label:'Assets'},{href:'/opportunities',label:'Marketplace'}]} />
       <section className="page-head">
         <div className="eyebrow"><I18nText id="ASSET MEDIA" /></div>
         <h1>{asset.title}</h1>

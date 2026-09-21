@@ -5,6 +5,7 @@ import '../external-market.css';
 import { ExternalMarketText } from '@/components/ExternalMarketText';
 import { useLocale } from '@/components/LocaleShell';
 import { useEffect, useMemo, useState } from 'react';
+import SiteHeader from '@/components/SiteHeader';
 
 export type ExternalListing = {
   id: string;
@@ -92,10 +93,7 @@ export default function ExternalMarketClient({ listings, authenticated }: { list
 
   return (
     <main className="app-shell">
-      <header className="app-header">
-        <a className="brand" href="/">ASSETVEYRA</a>
-        <nav><a href="/opportunities">Marketplace</a>{authenticated ? <a href="/workspace">Workspace</a> : <a href="/login">Sign in</a>}</nav>
-      </header>
+      <SiteHeader signedIn={authenticated} nav={[{href:'/opportunities',label:'Marketplace'}]} />
 
       <section className="external-market-section">
         <div className="external-market-heading">
