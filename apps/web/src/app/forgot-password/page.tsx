@@ -3,6 +3,7 @@
 import { FormEvent, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { I18nText } from '@/components/LocaleShell';
+import SiteChrome from '@/components/SiteChrome';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -23,9 +24,10 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <main className="auth-page">
+    <SiteChrome>
+      <main className="auth-page">
       <section className="auth-card">
-        <a className="brand" href="/">ASSETVEYRA</a>
+        
         <div className="eyebrow"><I18nText id="SECURE ACCESS" /></div>
         <h1><I18nText id="Reset password" /></h1>
         <p><I18nText id="Enter your email and we will send you a password reset link." /></p>
@@ -41,5 +43,6 @@ export default function ForgotPasswordPage() {
         <a className="text-button" href="/login"><I18nText id="Sign in" /></a>
       </section>
     </main>
+    </SiteChrome>
   );
 }

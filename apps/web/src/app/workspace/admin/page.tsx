@@ -1,3 +1,4 @@
+import { AppChrome } from '@/components/SiteChrome';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 
@@ -184,8 +185,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
   ]);
   const params = await searchParams;
 
-  return <main className="app-shell">
-    <header className="app-header"><a className="brand" href="/">ASSETVEYRA</a><nav><a href="/workspace">Workspace</a><a href="/workspace/review">Verification</a><a href="/opportunities">Marketplace</a></nav></header>
+  return <AppChrome links={[{ href: '/workspace', id: 'Overview' }, { href: '/workspace/review', id: 'Verification' }]}>
     <section className="page-head"><div className="eyebrow">OPERATIONS CONTROL</div><h1>Platform operations.</h1><p>Verification, compliance and publication are separate controlled gates. Contact requests are retained for operational follow-up.</p></section>
     {params.updated && <section className="panel"><strong>Change recorded.</strong></section>}
     {params.error && <section className="panel"><strong>Action blocked by the control gate.</strong></section>}
@@ -199,5 +199,5 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
       </div>
     </div>)}{!(opportunities?.length) && <div className="empty-state"><strong>No opportunities.</strong><span>Submitted assets will appear here after intake.</span></div>}</div></section>
     <section className="panel"><h2>Contact intake</h2><div className="table">{(contacts ?? []).map((c: any) => <div className="row" key={c.id} style={{display:'grid',gap:8}}><div><strong>{c.name}</strong><div style={{color:'var(--muted)',fontSize:11,marginTop:5}}>{c.email} · {c.interest} · {c.status}</div></div><span>{c.message}</span>{c.status !== 'resolved' && <form action={act}><input type="hidden" name="action" value="resolve_contact"/><input type="hidden" name="id" value={c.id}/><button className="button">Mark resolved</button></form>}</div>)}{!(contacts?.length) && <div className="empty-state"><strong>No contact requests.</strong><span>New requests are stored securely even before outbound email is configured.</span></div>}</div></section>
-  </main>;
+  </AppChrome>;
 }

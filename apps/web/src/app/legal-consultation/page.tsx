@@ -3,6 +3,7 @@
 import { FormEvent, useState } from 'react';
 import { I18nText, useLocale } from '@/components/LocaleShell';
 import { translate } from '@/lib/i18n';
+import SiteChrome from '@/components/SiteChrome';
 export default function LegalConsultationPage() {
   const locale = useLocale();
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
@@ -21,8 +22,7 @@ export default function LegalConsultationPage() {
   }
 
   return (
-    <main className="app-shell">
-      <header className="app-header"><a className="brand" href="/">ASSETVEYRA</a><nav><a href="/#opportunities"><I18nText id="Opportunities" /></a><a href="/#about"><I18nText id="About" /></a><a href="/login"><I18nText id="Sign in" /></a></nav></header>
+    <SiteChrome>
       <section className="form-page">
         <div className="eyebrow"><I18nText id="ASSETVEYRA LEGAL" /></div>
         <h1><I18nText id="Request a legal consultation" /></h1>
@@ -44,6 +44,6 @@ export default function LegalConsultationPage() {
           <div className="full"><button className="button primary" type="submit" disabled={status === 'sending'}>{status === 'sending' ? <I18nText id="Sending…" /> : <I18nText id="Submit consultation request" />}</button>{status === 'success' && <p role="status"><I18nText id="Your legal consultation request has been received. We will review it and contact you about the next step." /></p>}{status === 'error' && <p role="alert"><I18nText id="Unable to submit the consultation request. Please try again." /></p>}</div>
         </form>
       </section>
-    </main>
+    </SiteChrome>
   );
 }

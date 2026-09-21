@@ -1,5 +1,6 @@
 'use client';
 
+import SiteChrome from '@/components/SiteChrome';
 import '../av-final.css';
 import '../external-market.css';
 import { ExternalMarketText } from '@/components/ExternalMarketText';
@@ -91,11 +92,7 @@ export default function ExternalMarketClient({ listings, authenticated }: { list
   };
 
   return (
-    <main className="app-shell">
-      <header className="app-header">
-        <a className="brand" href="/">ASSETVEYRA</a>
-        <nav><a href="/opportunities">Marketplace</a>{authenticated ? <a href="/workspace">Workspace</a> : <a href="/login">Sign in</a>}</nav>
-      </header>
+    <SiteChrome>
 
       <section className="external-market-section">
         <div className="external-market-heading">
@@ -178,6 +175,6 @@ export default function ExternalMarketClient({ listings, authenticated }: { list
           </section>
         </div>
       )}
-    </main>
+    </SiteChrome>
   );
 }

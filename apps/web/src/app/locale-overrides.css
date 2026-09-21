@@ -44,7 +44,7 @@ html[data-locale='ar'] .form-grid {
 html[data-locale='ar'] .market-strip > div,
 html[data-locale='ar'] .stats div {
   border-right: 0;
-  border-left: 1px solid var(--line);
+  border-left: 1px solid var(--av-line);
 }
 
 html[data-locale='ar'] .market-strip > div:last-child,

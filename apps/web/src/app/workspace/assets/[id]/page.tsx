@@ -1,6 +1,7 @@
 import { notFound, redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { I18nText } from '@/components/LocaleShell';
+import { AppChrome } from '@/components/SiteChrome';
 import AssetImageGallery from '@/components/AssetImageGallery';
 import AssetImageUploader from '@/components/AssetImageUploader';
 import { uploadAssetImages } from '@/app/workspace/assets/actions';
@@ -22,11 +23,7 @@ export default async function AssetImageManagementPage({ params }: { params: Pro
   }));
   async function handleUpload(formData: FormData) { 'use server'; await uploadAssetImages(assetId, formData); }
   return (
-    <main className="app-shell">
-      <header className="app-header">
-        <a className="brand" href="/">ASSETVEYRA</a>
-        <nav><a href="/workspace/assets"><I18nText id="Assets" /></a><a href="/opportunities"><I18nText id="Marketplace" /></a></nav>
-      </header>
+    <AppChrome links={[{ href: '/workspace/assets', id: 'My Assets' }]}>
       <section className="page-head">
         <div className="eyebrow"><I18nText id="ASSET MEDIA" /></div>
         <h1>{asset.title}</h1>
@@ -47,6 +44,6 @@ export default async function AssetImageManagementPage({ params }: { params: Pro
           <AssetImageGallery assetId={assetId} initialImages={withUrls} />
         </div>
       </section>
-    </main>
+    </AppChrome>
   );
 }

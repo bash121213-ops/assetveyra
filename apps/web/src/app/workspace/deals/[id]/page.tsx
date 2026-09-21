@@ -1,6 +1,7 @@
 import { notFound, redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { I18nText } from '@/components/LocaleShell';
+import { AppChrome } from '@/components/SiteChrome';
 
 const STATUS_ORDER = ['initiated', 'nda', 'data_room', 'diligence', 'offer', 'negotiation', 'approval', 'contract', 'signing', 'closing', 'completed'];
 
@@ -44,11 +45,10 @@ export default async function DealDetailPage({ params }: { params: Promise<{ id:
   const nextStatus = STATUS_ORDER[currentIndex + 1];
   const asset = (deal as any).opportunities?.assets;
 
-  return <main className="app-shell">
-    <header className="app-header"><a className="brand" href="/">ASSETVEYRA</a><nav><a href="/workspace"><I18nText id="Overview"/></a><a href="/workspace/deals"><I18nText id="Transactions"/></a><a href="/opportunities"><I18nText id="Marketplace"/></a></nav></header>
+  return <AppChrome links={[{ href: '/workspace/deals', id: 'Transactions' }]}>
     <section className="page-head"><div className="eyebrow"><I18nText id="TRANSACTION"/></div><h1>{asset?.title || <I18nText id="Transaction"/>}</h1><p>{(deal as any).opportunities?.slug || <I18nText id="Transaction"/>} · {deal.status}</p></section>
     <section className="panel"><div className="facts"><div><span><I18nText id="Asset value"/></span><strong>{asset?.asking_price ? `${asset.currency || ''} ${Number(asset.asking_price).toLocaleString()}` : '—'}</strong></div><div><span><I18nText id="Target closing"/></span><strong>{deal.target_close_date || <I18nText id="Pending"/>}</strong></div><div><span><I18nText id="Accepted offer"/></span><strong>{deal.accepted_offer_id ? <I18nText id="Recorded"/> : <I18nText id="Pending"/>}</strong></div></div><div className="lifecycle" style={{ marginTop: 35 }}>{STATUS_ORDER.map((status, index) => <div className="lifecycle-step" key={status} style={{ opacity: index <= currentIndex ? 1 : .45 }}><span>{String(index + 1).padStart(2, '0')}</span><strong>{status.replace('_', ' ')}</strong></div>)}</div></section>
     <section className="panel" style={{ marginTop: 24 }}><div className="panel-title"><div><div className="eyebrow"><I18nText id="CONTROLLED ACCESS"/></div><h2><I18nText id="Data Rooms"/></h2></div></div><p><I18nText id="Confidential disclosure remains inside the transaction context. Access is controlled by the existing data-room and NDA rules."/></p><div className="table">{(rooms ?? []).map((room: any) => <a className="row" href={`/workspace/data-rooms/${room.id}`} key={room.id}><strong>{room.name}</strong><span>{room.status}</span><span>{room.nda_required ? <I18nText id="NDA required"/> : <I18nText id="NDA optional"/>}</span><span><I18nText id="Open Data Room →"/></span></a>)}{!rooms?.length && <div className="empty-state"><strong><I18nText id="No data room currently linked."/></strong><span><I18nText id="A controlled data room may be created when the transaction reaches the appropriate disclosure stage."/></span></div>}</div></section>
     <section className="detail-grid"><section className="panel"><div className="eyebrow"><I18nText id="TRANSACTION HISTORY"/></div><h2><I18nText id="Recorded transaction events"/></h2><div className="table" style={{ marginTop: 20 }}>{(events ?? []).map((event: any) => <div className="row" key={event.id}><strong>{event.event_type}</strong><span>{new Date(event.created_at).toLocaleString()}</span><span>{event.payload?.note || '—'}</span></div>)}{!(events?.length) && <div className="empty-state"><strong><I18nText id="No events recorded."/></strong></div>}</div></section><aside className="deal-gate"><div className="eyebrow"><I18nText id="NEXT CONTROLLED STEP"/></div><h2>{nextStatus ? nextStatus.replace('_', ' ') : <I18nText id="Completed"/>}</h2><p><I18nText id="Advance the transaction only when the current legal, diligence and commercial gate has been satisfied."/></p>{nextStatus && <form action={advanceDeal}><input type="hidden" name="deal_id" value={id}/><input type="hidden" name="status" value={nextStatus}/><label><I18nText id="Execution note"/><textarea name="note" rows={5} placeholder="Record the reason and evidence for advancing this transaction stage." required /></label><button className="button primary" type="submit"><I18nText id="Advance transaction"/></button></form>}</aside></section>
-  </main>;
+  </AppChrome>;
 }

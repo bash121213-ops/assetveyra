@@ -2,10 +2,13 @@
 
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { parsePropertyDetails } from '@/lib/propertyDetails';
 
 const SELLER_ROLES = ['seller_admin', 'seller_member', 'platform_admin', 'operations_admin'] as const;
 const MAX_IMAGES = 20;
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
+const MAX_SUMMARY_LENGTH = 4000;
+const CURRENCY_PATTERN = /^[A-Z]{3}$/;
 const ALLOWED_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
 
 type ImageUploadRequest = {
@@ -42,25 +45,48 @@ export async function createAssetSubmission(formData: FormData) {
   const title = String(formData.get('title') || '').trim();
   const type = String(formData.get('asset_type') || 'land');
   const country = String(formData.get('country_code') || '').toUpperCase();
+  const region = String(formData.get('region') || '').trim();
   const city = String(formData.get('city') || '').trim();
+  const addressPrivate = String(formData.get('address_private') || '').trim();
+  const latitudeRaw = formData.get('latitude');
+  const longitudeRaw = formData.get('longitude');
   const area = Number(formData.get('area_sqm') || 0);
   const price = Number(formData.get('asking_price') || 0);
+  const currency = String(formData.get('currency') || 'USD').toUpperCase();
   const summary = String(formData.get('public_summary') || '').trim();
 
-  if (!title || country.length !== 2 || !Number.isFinite(area) || area < 0 || !Number.isFinite(price) || price < 0 || summary.length > 4000) {
+  if (!title || country.length !== 2 || !Number.isFinite(area) || area < 0 || !Number.isFinite(price) || price < 0 || summary.length > MAX_SUMMARY_LENGTH) {
     throw new Error('invalid_input');
   }
+  if (!CURRENCY_PATTERN.test(currency)) throw new Error('invalid_input');
+
+  const hasLatitude = latitudeRaw !== null && String(latitudeRaw).trim() !== '';
+  const hasLongitude = longitudeRaw !== null && String(longitudeRaw).trim() !== '';
+  if (hasLatitude !== hasLongitude) throw new Error('coordinates_pair_required');
+  const latitude = hasLatitude ? Number(latitudeRaw) : null;
+  const longitude = hasLongitude ? Number(longitudeRaw) : null;
+  if ((latitude !== null && (!Number.isFinite(latitude) || latitude < -90 || latitude > 90))
+    || (longitude !== null && (!Number.isFinite(longitude) || longitude < -180 || longitude > 180))) {
+    throw new Error('invalid_input');
+  }
+
+  const propertyDetails = parsePropertyDetails(formData.get('property_details'), type);
 
   const { data: asset, error: assetError } = await s.from('assets').insert({
     organization_id: membership.organization_id,
     asset_type: type,
     title,
     country_code: country,
+    region: region || null,
     city,
+    address_private: addressPrivate || null,
+    latitude,
+    longitude,
     area_sqm: area || null,
     asking_price: price || null,
-    currency: String(formData.get('currency') || 'USD').toUpperCase(),
+    currency,
     public_summary: summary,
+    property_details: propertyDetails,
     created_by: user.id,
     status: 'submitted',
   }).select('id').single();
@@ -73,7 +99,7 @@ export async function createAssetSubmission(formData: FormData) {
     slug,
     status: 'submitted',
     visibility: 'private',
-    investment_thesis: summary,
+    investment_thesis: propertyDetails.common.description ?? summary,
   }).select('id').single();
   if (opportunityError) throw new Error(opportunityError.message);
 

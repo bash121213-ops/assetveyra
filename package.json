@@ -11,6 +11,7 @@
     "build": "npm --workspace @assetveyra/web run build",
     "lint": "npm --workspace @assetveyra/web run lint",
     "typecheck": "npm --workspace @assetveyra/web run typecheck",
+    "test": "node --experimental-strip-types --test apps/web/tests/*.test.ts",
     "i18n:check": "node scripts/check-i18n.mjs"
   },
   "dependencies": {

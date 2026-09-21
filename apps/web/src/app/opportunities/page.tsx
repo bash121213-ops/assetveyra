@@ -1,9 +1,10 @@
 import { cookies } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
 import { I18nText } from '@/components/LocaleShell';
+import SiteChrome from '@/components/SiteChrome';
 import { ExternalMarketText } from '@/components/ExternalMarketText';
 import MarketplaceSearch from '@/components/MarketplaceSearch';
-import Image from 'next/image';
+import OpportunityCard from '@/components/OpportunityCard';
 import { getPublicAssetImageUrl } from '@/lib/public-asset-image-url';
 
 type Opportunity = { id:string; slug:string; status:string; investment_thesis:string|null; structure:string|null; minimum_ticket:number|null; target_return:number|null; asset_id:string };
@@ -103,7 +104,7 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
     : {data:[]};
   const firstImageByAsset=new Map<string,string>();
   for(const image of (assetImages??[]) as {id:string;asset_id:string;storage_path:string;sort_order:number|null}[]){
-    if(firstImageByAsset.has(image.asset_id))return;
+    if(firstImageByAsset.has(image.asset_id))continue;
     firstImageByAsset.set(image.asset_id,getPublicAssetImageUrl(image.storage_path));
   }
   const rows=(opportunities??[]).map(opportunity=>({opportunity:opportunity as Opportunity,asset:assetById.get((opportunity as Opportunity).asset_id)})).filter(({asset})=>Boolean(asset?.asking_price&&Number(asset.asking_price)>=MIN_PUBLIC_VALUE));
@@ -172,8 +173,7 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
   const grouped=externalCountryOrder.map(code=>({code,listings:externalListings.filter(item=>item.country_code===code)})).filter(group=>group.listings.length);
   const initialParams=normalizedParams;
 
-  return <main className="app-shell">
-    <header className="app-header"><a className="brand" href="/">ASSETVEYRA</a><nav><a href="/opportunities"><I18nText id="Marketplace"/></a><a href="/workspace"><I18nText id="Overview"/></a>{user?<form action="/logout" method="post"><button className="text-button"><I18nText id="Sign out"/></button></form>:<a href="/login"><I18nText id="Sign in"/></a>}</nav></header>
+  return <SiteChrome>
     <section className="page-head"><div className="eyebrow"><I18nText id="Market"/></div><h1><I18nText id="Marketplace"/></h1><p><I18nText id="Curated opportunities for qualified investors worldwide."/></p></section>
     {error&&<div className="form-error" style={{maxWidth:1280,margin:'0 auto 30px',width:'88%'}}><I18nText id="The live marketplace could not be loaded. Please try again shortly."/></div>}
 
@@ -181,20 +181,22 @@ export default async function OpportunitiesPage({searchParams}:{searchParams:Pro
 
     <section className="marketplace-results-bar"><strong>{filteredRows.length}</strong><span>matching opportunities</span>{(q||country||region||city||type||min!==null||max!==null||areaMin!==null)&&<a href="/opportunities">Clear filters</a>}</section>
 
-    <section className="opportunity-grid">{filteredRows.map(({opportunity,asset,imageUrl},index)=>asset?<a className="opportunity-card" href={`/opportunities/${opportunity.slug}`} key={opportunity.id}>
-      <div className="opportunity-card-media">{imageUrl?<Image src={imageUrl} alt={asset.title} fill sizes="(max-width: 767px) 90vw, (max-width: 1024px) 45vw, 30vw" quality={75} priority={index < 3}/>:<div className="opportunity-card-placeholder"><I18nText id="No image available"/></div>}<span className="opportunity-card-status"><I18nText id="Published opportunity"/></span></div>
-      <div className="opportunity-card-body">
-        <div className="card-meta"><span>{sectorKeys[asset.asset_type]?<I18nText id={sectorKeys[asset.asset_type]}/>:asset.asset_type}</span><span>{asset.country_code?countryNames.of(asset.country_code):'—'}</span></div>
-        <h2>{asset.title}</h2>
-        <p>{asset.public_summary||opportunity.investment_thesis||<I18nText id="Investment opportunity"/>}</p>
-        <div className="card-location">{[asset.city,asset.region,asset.country_code].filter(Boolean).join(', ')||'—'}</div>
-        <div className="card-data"><span><I18nText id="Area m²"/></span><span>{formatArea(asset.area_sqm)}</span></div>
-        <div className="card-data card-price"><span><I18nText id="Asking price"/></span><strong>{formatAmount(Number(asset.asking_price),asset.currency)}</strong></div>
-        <div className="card-reference"><I18nText id="Reference"/>: {opportunity.slug}</div>
-      </div>
-    </a>:null)}{filteredRows.length===0&&<div className="empty-state wide"><strong>No matching opportunities</strong><span>Adjust your search or filters and try again.</span></div>}</section>
+    <section className="opportunity-grid">{filteredRows.map(({opportunity,asset,imageUrl},index)=>asset?<OpportunityCard key={opportunity.id} data={{
+      slug:opportunity.slug,
+      title:asset.title,
+      assetType:asset.asset_type,
+      countryCode:asset.country_code?(countryNames.of(asset.country_code)??asset.country_code):null,
+      location:[asset.city,asset.region,asset.country_code].filter(Boolean).join(', '),
+      summary:asset.public_summary||opportunity.investment_thesis,
+      areaSqm:asset.area_sqm,
+      askingPrice:asset.asking_price,
+      currency:asset.currency,
+      imageUrl,
+      statusLabel:'Published opportunity',
+      priority:index<3,
+    }}/>:null)}{filteredRows.length===0&&<div className="empty-state wide"><strong>No matching opportunities</strong><span>Adjust your search or filters and try again.</span></div>}</section>
 
     <section className="external-market-section"><div className="external-market-heading"><div><div className="eyebrow"><I18nText id="Market"/></div><h2><I18nText id="Marketplace"/></h2></div></div>
       {grouped.map(group=><section className="country-market" key={group.code}><div className="country-market-head"><h3>{group.listings[0].country_name}</h3><span>{group.listings.length} <ExternalMarketText id="listings"/></span></div><div className="external-listing-grid">{group.listings.map(item=><article className="external-listing-card" key={item.id}><div className="card-meta"><span>{externalTypeLabel(item.asset_type)}</span><span>{item.city||'—'}</span></div><h4>{item.title}</h4><p>{item.summary}</p><div className="external-facts">{item.area_sqm!==null&&<span><b><ExternalMarketText id="Area"/></b>{new Intl.NumberFormat('en-US',{maximumFractionDigits:0}).format(Number(item.area_sqm))} m²</span>}{item.rooms!==null&&<span><b><ExternalMarketText id="Rooms"/></b>{item.rooms}</span>}</div><div className="external-card-footer"><strong>{user?formatAmount(item.price_amount,item.currency):<span>Sign in to view pricing</span>}</strong><a href={user?`/contact?opportunity=\${encodeURIComponent(item.title)}&type=information`:'/login'}>{user?<I18nText id="Contact us"/>:<I18nText id="Sign in"/>}</a></div><small><I18nText id="Verification status"/>: <I18nText id="Pending"/></small></article>)}</div></section>)}</section>
-  </main>;
+  </SiteChrome>;
 }

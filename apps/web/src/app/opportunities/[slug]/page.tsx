@@ -1,6 +1,7 @@
 import { notFound, redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { I18nText } from '@/components/LocaleShell';
+import { AppChrome } from '@/components/SiteChrome';
 import PublicAssetGallery from '@/components/PublicAssetGallery';
 import { getPublicAssetImageUrl } from '@/lib/public-asset-image-url';
 import '../../opportunity-detail.css';
@@ -163,18 +164,7 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
   const currency = asset.currency || 'USD';
 
   return (
-    <main className="app-shell">
-      <header className="app-header">
-        <a className="brand" href="/">ASSETVEYRA</a>
-        <nav>
-          <a href="/opportunities"><I18nText id="Marketplace" /></a>
-          <a href="/workspace"><I18nText id="Overview" /></a>
-          <form action="/logout" method="post">
-            <button className="text-button" type="submit"><I18nText id="Sign out" /></button>
-          </form>
-        </nav>
-      </header>
-
+    <AppChrome links={[{ href: '/workspace', id: 'Overview' }]}>
       <article className="detail opportunity-detail-page">
         <a className="detail-back" href="/opportunities">← <I18nText id="Back to opportunities" /></a>
         <div className="eyebrow"><I18nText id="Published opportunity" /> · <I18nText id="Controlled access" /></div>
@@ -300,6 +290,6 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
           </section>
         )}
       </article>
-    </main>
+    </AppChrome>
   );
 }

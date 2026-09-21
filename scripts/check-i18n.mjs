@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const LOCALES = ['en', 'ar', 'zh', 'es', 'fr'];
-const INVARIANT_LOCALE_PAIRS = new Set(['Message|fr','Menu|fr','Contact|fr','ASSETVEYRA LEGAL|ar','ASSETVEYRA LEGAL|es','Important|fr','Standard|fr','Urgent|fr','Legal|es','Description|fr','Sector|es','ROI|es','ROI|fr','FAQ|fr','info@assetveyra.com|ar','info@assetveyra.com|zh','info@assetveyra.com|es','info@assetveyra.com|fr','+353 899 450 711|ar','+353 899 450 711|zh','+353 899 450 711|es','+353 899 450 711|fr','No|es','Transactions|fr','TRANSACTION|fr','Transaction|fr','TRANSACTIONS|fr','Qualification|fr','NDA / data room|fr','Due diligence|es','Due diligence|fr','Error|es','AML/KYC|ar','AML/KYC|zh','AML/KYC|es','AML/KYC|fr','Commercial|fr','Hotel|es','Industrial|es','Infrastructure|fr']);
+const INVARIANT_LOCALE_PAIRS = new Set(['Message|fr','Menu|fr','Contact|fr','ASSETVEYRA LEGAL|ar','ASSETVEYRA LEGAL|es','Important|fr','Standard|fr','Urgent|fr','Legal|es','Description|fr','Sector|es','ROI|es','ROI|fr','FAQ|fr','info@assetveyra.com|ar','info@assetveyra.com|zh','info@assetveyra.com|es','info@assetveyra.com|fr','+353 899 450 711|ar','+353 899 450 711|zh','+353 899 450 711|es','+353 899 450 711|fr','No|es','Transactions|fr','TRANSACTION|fr','Transaction|fr','TRANSACTIONS|fr','Qualification|fr','NDA / data room|fr','Due diligence|es','Due diligence|fr','Error|es','AML/KYC|ar','AML/KYC|zh','AML/KYC|es','AML/KYC|fr','Commercial|fr','Hotel|es','Industrial|es','Infrastructure|fr','Latitude|fr','Longitude|fr','images|fr','Gas|es','CAPITAL.|es','CAPITAL.|fr']);
 const REGISTRY_FILE = 'apps/web/src/lib/i18nRegistry.ts';
 
 const scanRoots = [
