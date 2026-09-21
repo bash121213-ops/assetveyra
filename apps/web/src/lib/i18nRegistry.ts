@@ -4725,7 +4725,16 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
     "Sewage": {"en":"Sewage","ar":"الصرف الصحي","zh":"排污","es":"Alcantarillado","fr":"Assainissement"},
     "Gas": {"en":"Gas","ar":"الغاز","zh":"燃气","es":"Gas","fr":"Gaz"},
     "Telecom": {"en":"Telecom","ar":"الاتصالات","zh":"电信","es":"Telecomunicaciones","fr":"Télécommunications"},
-    "images": {"en":"images","ar":"صور","zh":"张图片","es":"imágenes","fr":"images"}
+    "images": {"en":"images","ar":"صور","zh":"张图片","es":"imágenes","fr":"images"},
+  "LAND.": {"en":"LAND.","ar":"أراضٍ.","zh":"土地。","es":"SUELO.","fr":"TERRAIN."},
+  "CAPITAL.": {"en":"CAPITAL.","ar":"رأس مال.","zh":"资本。","es":"CAPITAL.","fr":"CAPITAL."},
+  "OPPORTUNITY.": {"en":"OPPORTUNITY.","ar":"فرصة.","zh":"机遇。","es":"OPORTUNIDAD.","fr":"OPPORTUNITÉ."},
+  "Explore Opportunities": {"en":"Explore Opportunities","ar":"استكشف الفرص","zh":"浏览投资机会","es":"Explorar oportunidades","fr":"Explorer les opportunités"},
+  "Submit an Opportunity": {"en":"Submit an Opportunity","ar":"قدّم فرصة","zh":"提交投资机会","es":"Presentar una oportunidad","fr":"Soumettre une opportunité"},
+  "Featured Opportunities": {"en":"Featured Opportunities","ar":"فرص مختارة","zh":"精选投资机会","es":"Oportunidades destacadas","fr":"Opportunités en vedette"},
+  "Controlled Access": {"en":"Controlled Access","ar":"وصول منضبط","zh":"受控访问","es":"Acceso controlado","fr":"Accès contrôlé"},
+  "International investment": {"en":"International investment","ar":"استثمار دولي","zh":"国际投资","es":"Inversión internacional","fr":"Investissement international"},
+  "Institutional-grade real-asset opportunities, presented through controlled access and documented verification.": {"en":"Institutional-grade real-asset opportunities, presented through controlled access and documented verification.","ar":"فرص أصول عقارية بمعايير مؤسسية، مقدَّمة عبر وصول منضبط وتحقق موثّق.","zh":"以受控访问与有据可查的核验流程，呈现机构级实物资产投资机会。","es":"Oportunidades de activos reales con estándar institucional, presentadas mediante acceso controlado y verificación documentada.","fr":"Des opportunités d'actifs réels de qualité institutionnelle, présentées via un accès contrôlé et une vérification documentée."}
 };
 
 export const STATUS_TRANSLATIONS = {
