@@ -47,3 +47,10 @@ Monorepo (npm workspaces; `pnpm-workspace.yaml` also present but root scripts us
 
 - UI-only changes: never touch migrations/RLS/auth logic/server actions/business logic.
 - Never fabricate data (counts, prices, VDR/verification states). Derive from real records or hide.
+
+## Verification tooling
+
+- No component/e2e test suite; CI runs `npm run typecheck` + `npm run build` only.
+- Headless Chromium is at `/usr/bin/chromium`; Playwright/Puppeteer are not installed. Node 22 has a global `WebSocket`, so CDP sweeps (overflow/console/RTL checks across viewports) can be scripted with a small throwaway
+  `node` script instead of adding a dependency.
+- Theme the locale by setting the `assetveyra-locale` cookie (`en|ar|zh|es|fr`) — SSR reads it in `layout.tsx`, so `curl -H "Cookie: assetveyra-locale=ar"` is enough to check real RTL output.
