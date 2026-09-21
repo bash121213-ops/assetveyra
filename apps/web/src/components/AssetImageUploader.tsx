@@ -92,8 +92,10 @@ export default function AssetImageUploader({ inputName = 'images', onPreparedFil
   }
 
   async function onChange(event: ChangeEvent<HTMLInputElement>) {
-    await prepareFiles(Array.from(event.target.files ?? []));
+    const files = Array.from(event.target.files ?? []);
+    // Clear the native selection first so sync() can rebuild it from the merged set.
     event.target.value = '';
+    await prepareFiles(files);
   }
 
   async function onDrop(event: DragEvent<HTMLDivElement>) {
