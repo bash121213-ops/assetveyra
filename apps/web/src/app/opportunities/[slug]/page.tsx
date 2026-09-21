@@ -4,6 +4,7 @@ import { I18nText } from '@/components/LocaleShell';
 import PublicAssetGallery from '@/components/PublicAssetGallery';
 import { getPublicAssetImageUrl } from '@/lib/public-asset-image-url';
 import '../../opportunity-detail.css';
+import SiteHeader from '@/components/SiteHeader';
 
 const sectorKeys: Record<string, string> = {
   land: 'Land',
@@ -164,16 +165,7 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
 
   return (
     <main className="app-shell">
-      <header className="app-header">
-        <a className="brand" href="/">ASSETVEYRA</a>
-        <nav>
-          <a href="/opportunities"><I18nText id="Marketplace" /></a>
-          <a href="/workspace"><I18nText id="Overview" /></a>
-          <form action="/logout" method="post">
-            <button className="text-button" type="submit"><I18nText id="Sign out" /></button>
-          </form>
-        </nav>
-      </header>
+      <SiteHeader nav={[{href:'/opportunities',label:'Available Opportunities'},{href:'/workspace',label:'Overview'}]} />
 
       <article className="detail opportunity-detail-page">
         <a className="detail-back" href="/opportunities">← <I18nText id="Back to opportunities" /></a>
@@ -181,7 +173,23 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
         <div className="detail-title-row">
           <div>
             <h1>{asset.title}</h1>
-            <div className="detail-reference"><I18nText id="Reference" />: {slug}</div>
+            <div className="detail-reference"><I18nText id="Reference" />: <span className="av-numeric">{slug}</span></div>
+          </div>
+        </div>
+
+        <div className="detail-keyfacts">
+          <div><span><I18nText id="Location" /></span><strong>{location || '—'}</strong></div>
+          <div><span><I18nText id="Area" /></span><strong className="av-numeric">{asset.area_sqm !== null ? `${formatNumber(asset.area_sqm)} m²` : '—'}</strong></div>
+          <div><span><I18nText id="Asking price" /></span><strong className="av-numeric">{currency} {formatNumber(Number(asset.asking_price))}</strong></div>
+          <div>
+            <span><I18nText id="Verification status" /></span>
+            <strong>
+              {verification?.status === 'approved'
+                ? <span className="av-badge av-badge-verified">✓ <I18nText id="Verified within documented scope" /></span>
+                : verification
+                  ? <span className="av-badge av-badge-amber"><I18nText id="Verification in progress" /></span>
+                  : <span className="av-badge"><I18nText id="Pending" /></span>}
+            </strong>
           </div>
         </div>
 

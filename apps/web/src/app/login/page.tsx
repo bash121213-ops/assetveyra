@@ -3,6 +3,7 @@ import { FormEvent,useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { I18nText } from '@/components/LocaleShell';
+import AuthShell from '@/components/AuthShell';
 
 function safeReturnTo(value:string|null){
   if(!value || !value.startsWith('/') || value.startsWith('//')) return '/opportunities';
@@ -29,11 +30,15 @@ export default function LoginPage(){
     setBusy(false);
   }
 
-  return <main className="auth-page"><section className="auth-card">
-    <a className="brand" href="/">ASSETVEYRA</a>
-    <div className="eyebrow"><I18nText id="SECURE ACCESS"/></div>
-    <h1><I18nText id="Sign in"/></h1>
-    <p><I18nText id="Access your investor, seller or operations workspace."/></p>
+  return <AuthShell
+    eyebrow="SECURE ACCESS"
+    title="Sign in"
+    intro="Access your investor, seller or operations workspace."
+    footer={<>
+      <a className="text-button" href="/forgot-password"><I18nText id="Forgot password?"/></a>
+      <a className="text-button" href="/signup"><I18nText id="Create Account"/></a>
+    </>}
+  >
     <form onSubmit={submit}>
       <label><I18nText id="Email"/><input required type="email" autoComplete="email" value={email} onChange={e=>setEmail(e.target.value)}/></label>
       <label><I18nText id="Password"/><input required minLength={8} type="password" autoComplete="current-password" value={password} onChange={e=>setPassword(e.target.value)}/></label>
@@ -41,7 +46,5 @@ export default function LoginPage(){
       {message&&<div className="form-success" role="status">{message}</div>}
       <button className="button primary" disabled={busy}>{busy?<I18nText id="Processing…"/>:<I18nText id="Sign in"/>}</button>
     </form>
-    <a className="text-button" href="/forgot-password"><I18nText id="Forgot password?"/></a>
-    <a className="text-button" href="/signup"><I18nText id="Create account"/></a>
-  </section></main>;
+  </AuthShell>;
 }

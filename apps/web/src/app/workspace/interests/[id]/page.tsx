@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { I18nText } from '@/components/LocaleShell';
 import { cookies } from 'next/headers';
 import { normalizeLocale, translate } from '@/lib/i18n';
+import SiteHeader from '@/components/SiteHeader';
 
 const SELLER_ROLES = ['seller_admin', 'operations_admin', 'deal_manager', 'platform_admin'] as const;
 
@@ -380,7 +381,7 @@ export default async function InterestDetailPage({ params }: { params: Promise<{
 
   return (
     <main className="app-shell">
-      <header className="app-header"><a className="brand" href="/">ASSETVEYRA</a><nav><a href="/workspace"><I18nText id="Workspace" /></a><a href="/opportunities"><I18nText id="Marketplace" /></a></nav></header>
+      <SiteHeader signedIn nav={[{href:'/workspace',label:'Workspace'},{href:'/opportunities',label:'Marketplace'}]} />
       <section className="page-head"><div className="eyebrow"><I18nText id="Investment interest" /></div><h1>{(i as any).opportunities?.assets?.title || <I18nText id="Opportunity" />}</h1><p><I18nText id="Pipeline state" />: <strong>{i.status}</strong>. <I18nText id="Each transaction stage is gated by authorization and the required evidence." /></p></section>
 
       <section className="panel">

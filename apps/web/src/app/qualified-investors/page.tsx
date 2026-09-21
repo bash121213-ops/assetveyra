@@ -4,6 +4,7 @@ import { FormEvent, useState } from 'react';
 import Link from 'next/link';
 import { I18nText, useLocale } from '@/components/LocaleShell';
 import { createClient } from '@/lib/supabase/client';
+import SiteHeader from '@/components/SiteHeader';
 const option = (value: string, label: string) => ({ value, label });
 
 const investorTypes = [
@@ -86,10 +87,7 @@ export default function QualifiedInvestorsPage() {
   }
 
   return <main className="app-shell qualified-page">
-    <header className="app-header">
-      <Link className="brand" href="/">ASSETVEYRA</Link>
-      <nav><Link href="/#opportunities"><I18nText id="Opportunities"/></Link><Link href="/#about"><I18nText id="About"/></Link><Link href="/login"><I18nText id="Sign in"/></Link></nav>
-    </header>
+    <SiteHeader nav={[{href:'/opportunities',label:'Opportunities'},{href:'/about',label:'About'}]} />
 
     <section className="qualified-hero">
       <div className="eyebrow"><I18nText id="Qualified Investors"/></div>

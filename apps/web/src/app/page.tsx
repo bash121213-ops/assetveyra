@@ -1,47 +1,239 @@
 import './av-final.css';
+import Image from 'next/image';
 import { createClient } from '@/lib/supabase/server';
 import { I18nText } from '@/components/LocaleShell';
 import SiteChrome from '@/components/SiteChrome';
+import { getPublicAssetImageUrl } from '@/lib/public-asset-image-url';
 
-type Opportunity={id:string;slug:string;status:string;visibility:string;investment_thesis:string|null;minimum_ticket:number|null;target_return:number|null;asset_id:string};
-type Asset={id:string;title:string;asset_type:string;country_code:string|null;region:string|null;area_sqm:number|null;currency:string|null;asking_price:number|null;public_summary:string|null};
-const FLAGS:Record<string,string>={ES:'🇪🇸',AE:'🇦🇪',CN:'🇨🇳',US:'🇺🇸',AU:'🇦🇺',FR:'🇫🇷',GB:'🇬🇧',IT:'🇮🇹',DE:'🇩🇪',SA:'🇸🇦',QA:'🇶🇦',JO:'🇯🇴'};
-const sectorLabels:Record<string,string>={land:'Land',residential:'Residential',commercial:'Commercial',hotel:'Hotel',hospitality:'Hospitality',industrial:'Industrial',mixed_use:'Mixed use',development_project:'Development project',infrastructure:'Infrastructure',renewable_energy:'Renewable energy',other:'Other'};
+const MIN_PUBLIC_VALUE = 100_000;
 
-async function getPublishedOpportunities(){
-  const supabase=await createClient();
-  const {data:opportunities,error:opportunityError}=await supabase.from('public_opportunities').select('id,slug,status,visibility,investment_thesis,minimum_ticket,target_return,asset_id').order('published_at',{ascending:false}).limit(6);
-  if(opportunityError||!opportunities?.length)return{rows:[],error:opportunityError};
-  const typed=opportunities as Opportunity[];
-  const assetIds=typed.map(x=>x.asset_id).filter(Boolean);
-  const {data:assets,error:assetError}=await supabase.from('public_assets').select('id,title,asset_type,country_code,region,area_sqm,currency,asking_price,public_summary').in('id',assetIds);
-  if(assetError)return{rows:[],error:assetError};
-  const byId=new Map(((assets??[]) as Asset[]).map(a=>[a.id,a]));
-  const rows=typed.map(opportunity=>({opportunity,asset:byId.get(opportunity.asset_id)})).filter(({asset})=>Boolean(asset));
-  return{rows,error:null};
+const sectorKeys: Record<string, string> = {
+  land: 'Land',
+  residential: 'Residential',
+  commercial: 'Commercial',
+  hotel: 'Hotel',
+  hospitality: 'Hospitality',
+  industrial: 'Industrial',
+  mixed_use: 'Mixed use',
+  development_project: 'Development project',
+  infrastructure: 'Infrastructure',
+  renewable_energy: 'Renewable energy',
+  other: 'Other',
+};
+
+type Opportunity = { id: string; slug: string; status: string; investment_thesis: string | null; asset_id: string };
+type Asset = {
+  id: string; title: string; asset_type: string; country_code: string | null;
+  region: string | null; city: string | null; area_sqm: number | null;
+  currency: string | null; asking_price: number | null; public_summary: string | null;
+};
+
+function formatAmount(value: number | null, currency: string | null) {
+  if (value === null) return '—';
+  return `${currency || 'USD'} ${new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(Number(value))}`;
+}
+function formatArea(value: number | null) {
+  if (value === null) return '—';
+  return `${new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(Number(value))} m²`;
 }
 
-export default async function HomePage(){
-  const {rows,error}=await getPublishedOpportunities();
-  return <SiteChrome><main id="home" className="av-final-home">
-    <section className="av-final-hero"><div className="av-final-hero-copy"><h1><I18nText id="Brokerage and transaction coordination for real estate deals at 1% from the seller and 1% from the buyer." as="span"/></h1><p><I18nText id="We are an intermediary and transaction coordinator."/> <I18nText id="We do not receive transaction funds."/> <I18nText id="We do not guarantee a sale or profit."/></p><div className="av-hero-actions"><a className="av-btn av-primary" href="/how-it-works"><I18nText id="How It Works"/></a><a className="av-btn av-outline" href="/submit"><I18nText id="Submit Your Request"/></a></div></div></section>
+/**
+ * Homepage data: only published opportunities that are publicly visible and
+ * meet the public-value threshold. No sample or fabricated inventory.
+ */
+async function getHomeData() {
+  const s = await createClient();
+  const { data: opportunities, error } = await s
+    .from('public_opportunities')
+    .select('id,slug,status,investment_thesis,asset_id')
+    .order('published_at', { ascending: false })
+    .limit(9);
 
-    <section className="av-trust"><div><I18nText id="1% seller + 1% buyer"/></div><div><I18nText id="We do not receive transaction funds."/></div><div><I18nText id="Commission on completion"/></div><div><I18nText id="Mr. Tariq Al-Zyoud"/></div></section>
+  if (error || !opportunities?.length) return { rows: [], error };
 
-    <section id="how-it-works" className="av-page"><div className="eyebrow"><I18nText id="How We Work"/></div><h2><I18nText id="How It Works"/></h2><p><I18nText id="How we work in four steps"/></p><div className="opportunity-grid"><div className="opportunity-card"><strong>01</strong><h3><I18nText id="Submit a request"/></h3><p><I18nText id="Submit your property or acquisition request"/></p></div><div className="opportunity-card"><strong>02</strong><h3><I18nText id="Review"/></h3><p><I18nText id="We review the request and applicable requirements"/></p></div><div className="opportunity-card"><strong>03</strong><h3><I18nText id="Verification"/></h3><p><I18nText id="Applicable property and document verification is coordinated"/></p></div><div className="opportunity-card"><strong>04</strong><h3><I18nText id="Transaction coordination"/></h3><p><I18nText id="Commercial terms are coordinated until the parties are ready to close"/></p></div></div><a className="av-btn av-primary" href="/how-it-works" style={{marginTop:28}}><I18nText id="How It Works"/></a></section>
+  const assetIds = (opportunities as Opportunity[]).map((item) => item.asset_id).filter(Boolean);
+  const { data: assets, error: assetError } = await s
+    .from('public_assets')
+    .select('id,title,asset_type,country_code,region,city,area_sqm,currency,asking_price,public_summary')
+    .in('id', assetIds);
+  if (assetError) return { rows: [], error: assetError };
 
-    <section id="fees" className="av-page"><div className="eyebrow"><I18nText id="Fees & Commissions"/></div><h2><I18nText id="Fees & Commissions"/></h2><div className="facts"><div><strong><I18nText id="1% from the seller + 1% from the buyer"/></strong><span><I18nText id="The commission is due on completion under the applicable written agreement."/></span></div><div><strong><I18nText id="Commission on completion"/></strong><span><I18nText id="We do not charge a fee solely for submitting an inquiry."/></span></div><div><strong><I18nText id="Legal coordination"/></strong><span><I18nText id="Legal advice is provided by the relevant legal professional under the applicable engagement."/></span></div><div><strong><I18nText id="Transaction funds"/></strong><span><I18nText id="No transaction funds are held by AssetVeyra."/></span></div></div><a className="av-btn av-primary" href="/fees" style={{marginTop:28}}><I18nText id="Fees & Commissions"/></a></section>
+  const assetById = new Map(((assets ?? []) as Asset[]).map((asset) => [asset.id, asset]));
+  const qualifying = (opportunities as Opportunity[])
+    .map((opportunity) => ({ opportunity, asset: assetById.get(opportunity.asset_id) }))
+    .filter((row): row is { opportunity: Opportunity; asset: Asset } =>
+      Boolean(row.asset && row.asset.asking_price !== null && Number(row.asset.asking_price) >= MIN_PUBLIC_VALUE));
 
-    <section id="why-trust-us" className="av-page"><div className="eyebrow"><I18nText id="Trust & Transparency"/></div><h2><I18nText id="Why Trust Us"/></h2><p><I18nText id="Our role and limits are stated clearly."/></p><div className="opportunity-grid"><div className="opportunity-card"><h3><I18nText id="We are an intermediary and transaction coordinator."/></h3></div><div className="opportunity-card"><h3><I18nText id="No transaction funds are held by AssetVeyra."/></h3></div><div className="opportunity-card"><h3><I18nText id="AssetVeyra does not guarantee completion, value or profit."/></h3></div><div className="opportunity-card"><h3><I18nText id="Independent legal advice remains available to each party."/></h3></div></div><a className="av-btn av-primary" href="/why-trust-us" style={{marginTop:28}}><I18nText id="Why Trust Us"/></a></section>
+  const ids = qualifying.map((row) => row.asset.id);
+  const { data: images } = ids.length
+    ? await s.from('published_asset_images').select('asset_id,storage_path,sort_order').in('asset_id', ids).order('sort_order', { ascending: true })
+    : { data: [] };
 
-    {rows.length>0 && <section id="opportunities" className="av-section"><div className="av-cards">{rows.length>0?rows.map(({opportunity,asset})=>asset?<article className="av-card" key={opportunity.id}><div className="av-card-top"><strong><span>{FLAGS[asset.country_code??'']??'🌐'}</span>{asset.country_code??'Global'}</strong><em className="verified"><I18nText id="Verified Opportunities"/></em></div><div className="av-amount">{asset.currency||'USD'} {Number(asset.asking_price).toLocaleString()}</div><div className="av-details"><div><span><I18nText id="Opportunity"/></span><strong>{asset.title}</strong></div><div><span><I18nText id="Sector"/></span><strong>{sectorLabels[asset.asset_type]?<I18nText id={sectorLabels[asset.asset_type]}/>:asset.asset_type}</strong></div><div><span><I18nText id="Size"/></span><strong>{asset.area_sqm?`${Number(asset.area_sqm).toLocaleString()} sqm`:'—'}</strong></div><div><span><I18nText id="ROI"/></span><strong>{opportunity.target_return!=null?`${Number(opportunity.target_return)}%`:'—'}</strong></div><div><span><I18nText id="Region"/></span><strong>{asset.region||'—'}</strong></div></div><a className="av-btn av-primary" href={`/opportunities/${opportunity.slug}`}><I18nText id="Request Access"/></a></article>:null):<div className="av-page" style={{gridColumn:'1/-1',margin:0}}><h2><I18nText id="Available Opportunities"/></h2><p><I18nText id="No published opportunities yet"/></p><a className="av-btn av-primary" href="/opportunities"><I18nText id="Available Opportunities"/></a>{error&&<p style={{marginTop:'12px',opacity:.7}}><I18nText id="No sample or fabricated inventory is displayed."/></p>}</div>}</div></section>}
+  const firstImage = new Map<string, string>();
+  for (const image of (images ?? []) as { asset_id: string; storage_path: string }[]) {
+    if (!firstImage.has(image.asset_id)) firstImage.set(image.asset_id, getPublicAssetImageUrl(image.storage_path));
+  }
 
-    <section id="legal-partners" className="av-page"><div className="eyebrow"><I18nText id="Legal Partners"/></div><h2><I18nText id="Legal Partners"/></h2><h3><I18nText id="Mr. Tariq Al-Zyoud"/></h3><p><I18nText id="AssetVeyra works with Mr. Tariq Al-Zyoud on relevant legal matters within the agreed scope."/></p><p><I18nText id="Independent legal advice remains available to each party."/></p><a className="av-btn av-primary" href="/legal-partners" style={{marginTop:18}}><I18nText id="Legal Partners"/></a></section>
+  const rows = qualifying.map((row) => ({ ...row, imageUrl: firstImage.get(row.asset.id) ?? null }));
 
-    <section id="faq" className="av-page"><div className="eyebrow"><I18nText id="FAQ"/></div><h2><I18nText id="FAQ"/></h2><details><summary><I18nText id="What does Verified mean?"/></summary><p><I18nText id="Verified means only that the stated verification workflow has been completed within its documented scope; it is not a guarantee of value, profit or closing."/></p></details><details><summary><I18nText id="Are external listings verified by AssetVeyra?"/></summary><p><I18nText id="No. External market listings are third-party references and must be independently verified before any commitment."/></p></details><details><summary><I18nText id="Does AssetVeyra hold transaction funds?"/></summary><p><I18nText id="No. AssetVeyra does not receive or hold the purchase price or transaction funds."/></p></details><details><summary><I18nText id="Who provides legal advice?"/></summary><p><I18nText id="The relevant legal professional provides legal advice under the applicable engagement."/></p></details><details><summary><I18nText id="Who manages AssetVeyra?"/></summary><p><I18nText id="AssetVeyra is managed by Bashar Kassab AlMasaeid."/></p></details></section>
+  // Real metrics only: counts derived from the actual published records.
+  const countryCount = new Set(rows.map((row) => row.asset.country_code).filter(Boolean)).size;
+  const totalArea = rows.reduce((sum, row) => sum + Number(row.asset.area_sqm ?? 0), 0);
+  const currency = rows.find((row) => row.asset.currency)?.asset.currency ?? 'USD';
+  const totalValue = rows.reduce((sum, row) => sum + Number(row.asset.asking_price ?? 0), 0);
 
-    <section id="contact" className="av-page"><div className="eyebrow"><I18nText id="Contact Us"/></div><h2><I18nText id="Contact Us"/></h2><p><I18nText id="info@assetveyra.com"/></p><p><I18nText id="+353 899 450 711"/></p><a className="av-btn av-primary" href="/submit"><I18nText id="Submit Your Request"/></a></section>
+  return {
+    rows: rows.slice(0, 6),
+    total: rows.length,
+    countryCount,
+    totalArea,
+    totalValue,
+    currency,
+    error: null,
+  };
+}
 
-    <section id="disclaimer" className="av-page"><div className="eyebrow"><I18nText id="Legal"/></div><h2><I18nText id="Short disclaimer"/></h2></section>
-  </main></SiteChrome>;
+export default async function HomePage() {
+  const data = await getHomeData();
+  const s = await createClient();
+  const { data: { user } } = await s.auth.getUser();
+
+  const stats = [
+    data.total ? { id: 'Published Opportunities', value: String(data.total), amber: true } : null,
+    data.countryCount ? { id: 'Countries Represented', value: String(data.countryCount), amber: false } : null,
+    data.totalArea ? { id: 'Total Land Area', value: `${new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(data.totalArea)} m²`, amber: false } : null,
+  ].filter(Boolean) as { id: string; value: string; amber: boolean }[];
+
+  return (
+    <SiteChrome signedIn={Boolean(user)}>
+      <main id="home" className="av-final-home">
+        <section className="av-hero">
+          <div className="av-hero-inner">
+            <span className="av-hero-eyebrow">
+              <span aria-hidden="true">🔒</span>
+              <I18nText id="A trusted platform for institutional investors and developers" />
+            </span>
+
+            <h1><I18nText id="LAND. CAPITAL. OPPORTUNITY." /></h1>
+
+            <p className="av-hero-lead">
+              <I18nText id="AssetVeyra connects serious land owners with global investors, developers, family offices and strategic buyers through a controlled verification and transaction workflow." />
+            </p>
+
+            <div className="av-hero-actions">
+              <a className="av-btn av-primary av-btn-lg" href="/opportunities">
+                <I18nText id="Explore Opportunities" />
+                <span aria-hidden="true" className="av-dir">→</span>
+              </a>
+              <a className="av-btn av-outline av-btn-lg" href="/submit">
+                <I18nText id="Submit an Asset" />
+              </a>
+            </div>
+
+            {stats.length > 0 && (
+              <div className="av-stats">
+                {stats.map((stat) => (
+                  <div className="av-stat" key={stat.id}>
+                    <span className={`av-stat-value av-numeric${stat.amber ? ' is-amber' : ''}`}>{stat.value}</span>
+                    <span className="av-stat-label"><I18nText id={stat.id} /></span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+
+        <section className="av-trust">
+          <div><I18nText id="Controlled verification" /></div>
+          <div><I18nText id="Confidential data room access" /></div>
+          <div><I18nText id="Institutional transaction workflow" /></div>
+          <div><I18nText id="Intermediary and transaction coordinator" /></div>
+        </section>
+
+        <section className="av-section">
+          <div className="av-section-title">
+            <div>
+              <span className="eyebrow"><I18nText id="Exclusive investment opportunity" /></span>
+              <h2><I18nText id="Available Opportunities" /></h2>
+            </div>
+            <a className="av-opp-cta" href="/opportunities"><I18nText id="View all" /> <span aria-hidden="true" className="av-dir">→</span></a>
+          </div>
+
+          <div className="av-cards">
+            {data.rows.length > 0 ? data.rows.map(({ opportunity, asset, imageUrl }) => (
+              <a className="av-opp-card" href={`/opportunities/${opportunity.slug}`} key={opportunity.id}>
+                <div className="av-opp-media">
+                  {imageUrl
+                    ? <Image src={imageUrl} alt={asset.title} fill sizes="(max-width: 768px) 92vw, (max-width: 1080px) 45vw, 30vw" quality={75} />
+                    : <div className="av-opp-media-placeholder"><span aria-hidden="true">◻</span><I18nText id="No image available" /></div>}
+                  <span className="av-opp-badge av-badge av-badge-verified">✓ <I18nText id="Published" /></span>
+                </div>
+                <div className="av-opp-body">
+                  <div className="av-opp-location">
+                    {[asset.city, asset.region, asset.country_code].filter(Boolean).join(', ') || <I18nText id="Location" />}
+                  </div>
+                  <h3>{asset.title}</h3>
+                  <p className="av-opp-summary">{asset.public_summary || opportunity.investment_thesis || <I18nText id="Investment opportunity" />}</p>
+                  <div className="av-opp-foot">
+                    <span><I18nText id="Area" />: <strong className="av-numeric">{formatArea(asset.area_sqm)}</strong></span>
+                  </div>
+                  <div className="av-opp-foot">
+                    <span className="av-numeric">{formatAmount(asset.asking_price, asset.currency)}</span>
+                    <strong className="av-opp-cta"><I18nText id="Request Access" /></strong>
+                  </div>
+                </div>
+              </a>
+            )) : (
+              <div className="av-empty">
+                <strong><I18nText id="No published opportunities yet" /></strong>
+                <span><I18nText id="No sample or fabricated inventory is displayed." /></span>
+                <a className="av-btn av-outline" href="/opportunities"><I18nText id="Available Opportunities" /></a>
+              </div>
+            )}
+          </div>
+        </section>
+
+        <section className="av-section av-section-tight">
+          <div className="av-card">
+            <div className="av-card-title">
+              <div>
+                <span className="eyebrow"><I18nText id="How We Work" /></span>
+                <h2><I18nText id="How It Works" /></h2>
+              </div>
+              <a className="av-opp-cta" href="/how-it-works"><I18nText id="How It Works" /> <span aria-hidden="true" className="av-dir">→</span></a>
+            </div>
+            <div className="av-grid av-grid-4">
+              {[
+                ['01', 'Submit a request', 'Submit your property or acquisition request'],
+                ['02', 'Review', 'We review the request and applicable requirements'],
+                ['03', 'Verification', 'Applicable property and document verification is coordinated'],
+                ['04', 'Transaction coordination', 'Commercial terms are coordinated until the parties are ready to close'],
+              ].map(([step, title, body]) => (
+                <div className="av-card av-card-pad-sm" key={step}>
+                  <span className="av-stat-value is-amber av-numeric">{step}</span>
+                  <h3><I18nText id={title} /></h3>
+                  <p className="av-caption"><I18nText id={body} /></p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="av-section av-section-tight">
+          <div className="av-grid av-grid-2">
+            <div className="av-card">
+              <h3><I18nText id="Why Trust Us" /></h3>
+              <p className="av-lead"><I18nText id="Our role and limits are stated clearly." /></p>
+              <a className="av-opp-cta" href="/why-trust-us"><I18nText id="Why Trust Us" /> <span aria-hidden="true" className="av-dir">→</span></a>
+            </div>
+            <div className="av-card">
+              <h3><I18nText id="Fees & Commissions" /></h3>
+              <p className="av-lead"><I18nText id="1% from the seller + 1% from the buyer" /></p>
+              <a className="av-opp-cta" href="/fees"><I18nText id="Fees & Commissions" /> <span aria-hidden="true" className="av-dir">→</span></a>
+            </div>
+          </div>
+        </section>
+      </main>
+    </SiteChrome>
+  );
 }

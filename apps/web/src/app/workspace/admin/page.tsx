@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import SiteHeader from '@/components/SiteHeader';
 
 const ADMIN_ROLES = ['platform_admin', 'operations_admin', 'compliance_officer'] as const;
 
@@ -185,7 +186,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
   const params = await searchParams;
 
   return <main className="app-shell">
-    <header className="app-header"><a className="brand" href="/">ASSETVEYRA</a><nav><a href="/workspace">Workspace</a><a href="/workspace/review">Verification</a><a href="/opportunities">Marketplace</a></nav></header>
+    <SiteHeader signedIn nav={[{href:'/workspace',label:'Workspace'},{href:'/workspace/review',label:'Verification'},{href:'/opportunities',label:'Marketplace'}]} />
     <section className="page-head"><div className="eyebrow">OPERATIONS CONTROL</div><h1>Platform operations.</h1><p>Verification, compliance and publication are separate controlled gates. Contact requests are retained for operational follow-up.</p></section>
     {params.updated && <section className="panel"><strong>Change recorded.</strong></section>}
     {params.error && <section className="panel"><strong>Action blocked by the control gate.</strong></section>}

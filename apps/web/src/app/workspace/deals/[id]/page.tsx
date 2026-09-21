@@ -1,6 +1,7 @@
 import { notFound, redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { I18nText } from '@/components/LocaleShell';
+import SiteHeader from '@/components/SiteHeader';
 
 const STATUS_ORDER = ['initiated', 'nda', 'data_room', 'diligence', 'offer', 'negotiation', 'approval', 'contract', 'signing', 'closing', 'completed'];
 
@@ -45,7 +46,7 @@ export default async function DealDetailPage({ params }: { params: Promise<{ id:
   const asset = (deal as any).opportunities?.assets;
 
   return <main className="app-shell">
-    <header className="app-header"><a className="brand" href="/">ASSETVEYRA</a><nav><a href="/workspace"><I18nText id="Overview"/></a><a href="/workspace/deals"><I18nText id="Transactions"/></a><a href="/opportunities"><I18nText id="Marketplace"/></a></nav></header>
+    <SiteHeader signedIn nav={[{href:'/workspace',label:'Overview'},{href:'/workspace/deals',label:'Transactions'},{href:'/opportunities',label:'Marketplace'}]} />
     <section className="page-head"><div className="eyebrow"><I18nText id="TRANSACTION"/></div><h1>{asset?.title || <I18nText id="Transaction"/>}</h1><p>{(deal as any).opportunities?.slug || <I18nText id="Transaction"/>} · {deal.status}</p></section>
     <section className="panel"><div className="facts"><div><span><I18nText id="Asset value"/></span><strong>{asset?.asking_price ? `${asset.currency || ''} ${Number(asset.asking_price).toLocaleString()}` : '—'}</strong></div><div><span><I18nText id="Target closing"/></span><strong>{deal.target_close_date || <I18nText id="Pending"/>}</strong></div><div><span><I18nText id="Accepted offer"/></span><strong>{deal.accepted_offer_id ? <I18nText id="Recorded"/> : <I18nText id="Pending"/>}</strong></div></div><div className="lifecycle" style={{ marginTop: 35 }}>{STATUS_ORDER.map((status, index) => <div className="lifecycle-step" key={status} style={{ opacity: index <= currentIndex ? 1 : .45 }}><span>{String(index + 1).padStart(2, '0')}</span><strong>{status.replace('_', ' ')}</strong></div>)}</div></section>
     <section className="panel" style={{ marginTop: 24 }}><div className="panel-title"><div><div className="eyebrow"><I18nText id="CONTROLLED ACCESS"/></div><h2><I18nText id="Data Rooms"/></h2></div></div><p><I18nText id="Confidential disclosure remains inside the transaction context. Access is controlled by the existing data-room and NDA rules."/></p><div className="table">{(rooms ?? []).map((room: any) => <a className="row" href={`/workspace/data-rooms/${room.id}`} key={room.id}><strong>{room.name}</strong><span>{room.status}</span><span>{room.nda_required ? <I18nText id="NDA required"/> : <I18nText id="NDA optional"/>}</span><span><I18nText id="Open Data Room →"/></span></a>)}{!rooms?.length && <div className="empty-state"><strong><I18nText id="No data room currently linked."/></strong><span><I18nText id="A controlled data room may be created when the transaction reaches the appropriate disclosure stage."/></span></div>}</div></section>

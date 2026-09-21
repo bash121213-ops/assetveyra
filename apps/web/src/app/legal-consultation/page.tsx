@@ -3,6 +3,7 @@
 import { FormEvent, useState } from 'react';
 import { I18nText, useLocale } from '@/components/LocaleShell';
 import { translate } from '@/lib/i18n';
+import SiteHeader from '@/components/SiteHeader';
 export default function LegalConsultationPage() {
   const locale = useLocale();
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
@@ -22,7 +23,7 @@ export default function LegalConsultationPage() {
 
   return (
     <main className="app-shell">
-      <header className="app-header"><a className="brand" href="/">ASSETVEYRA</a><nav><a href="/#opportunities"><I18nText id="Opportunities" /></a><a href="/#about"><I18nText id="About" /></a><a href="/login"><I18nText id="Sign in" /></a></nav></header>
+      <SiteHeader nav={[{href:'/opportunities',label:'Opportunities'},{href:'/about',label:'About'}]} />
       <section className="form-page">
         <div className="eyebrow"><I18nText id="ASSETVEYRA LEGAL" /></div>
         <h1><I18nText id="Request a legal consultation" /></h1>

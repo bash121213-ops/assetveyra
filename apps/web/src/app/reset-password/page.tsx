@@ -3,6 +3,7 @@
 import { FormEvent, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { I18nText } from '@/components/LocaleShell';
+import AuthShell from '@/components/AuthShell';
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('');
@@ -31,27 +32,25 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <main className="auth-page">
-      <section className="auth-card">
-        <a className="brand" href="/">ASSETVEYRA</a>
-        <div className="eyebrow"><I18nText id="SECURE ACCESS" /></div>
-        <h1><I18nText id="Reset password" /></h1>
-        <p><I18nText id="Choose a new password for your AssetVeyra account." /></p>
-        <form onSubmit={submit}>
-          <label>
-            <I18nText id="New password" />
-            <input required minLength={8} type="password" autoComplete="new-password" value={password} onChange={(event) => setPassword(event.target.value)} />
-          </label>
-          <label>
-            <I18nText id="Confirm password" />
-            <input required minLength={8} type="password" autoComplete="new-password" value={confirm} onChange={(event) => setConfirm(event.target.value)} />
-          </label>
-          {error && <div className="form-error" role="alert"><I18nText id={error === 'Passwords do not match.' ? error : 'Unable to update the password.'} /></div>}
-          {message && <div className="form-success" role="status"><I18nText id={message} /></div>}
-          <button className="button primary" disabled={busy}>{busy ? <I18nText id="Processing…" /> : <I18nText id="Reset password" />}</button>
-        </form>
-        <a className="text-button" href="/login"><I18nText id="Sign in" /></a>
-      </section>
-    </main>
+    <AuthShell
+      eyebrow="SECURE ACCESS"
+      title="Reset password"
+      intro="Choose a new password for your AssetVeyra account."
+      footer={<a className="text-button" href="/login"><I18nText id="Sign in" /></a>}
+    >
+      <form onSubmit={submit}>
+        <label>
+          <I18nText id="New password" />
+          <input required minLength={8} type="password" autoComplete="new-password" value={password} onChange={(event) => setPassword(event.target.value)} />
+        </label>
+        <label>
+          <I18nText id="Confirm password" />
+          <input required minLength={8} type="password" autoComplete="new-password" value={confirm} onChange={(event) => setConfirm(event.target.value)} />
+        </label>
+        {error && <div className="form-error" role="alert"><I18nText id={error === 'Passwords do not match.' ? error : 'Unable to update the password.'} /></div>}
+        {message && <div className="form-success" role="status"><I18nText id={message} /></div>}
+        <button className="button primary" disabled={busy}>{busy ? <I18nText id="Processing…" /> : <I18nText id="Reset password" />}</button>
+      </form>
+    </AuthShell>
   );
 }
