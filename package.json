@@ -12,7 +12,8 @@
     "lint": "npm --workspace @assetveyra/web run lint",
     "typecheck": "npm --workspace @assetveyra/web run typecheck",
     "test": "node --experimental-strip-types --test apps/web/tests/*.test.ts",
-    "i18n:check": "node scripts/check-i18n.mjs"
+    "i18n:check": "node scripts/check-i18n.mjs",
+    "validate:latakia": "node scripts/validate-latakia-package.mjs"
   },
   "dependencies": {
     "next": "^16.0.0",

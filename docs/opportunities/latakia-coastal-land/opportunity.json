@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1.0",
+  "reference": "latakia-coastal-land",
+  "title": "Investment Opportunity — Latakia Coastal Land",
+  "status": "draft",
+  "verificationStatus": "unverified",
+  "source": "seller_provided",
+  "asset": {
+    "assetType": "land",
+    "countryCode": "SY",
+    "region": "Latakia Governorate",
+    "city": "Latakia",
+    "coastal": true,
+    "area": { "statedValue": 8, "statedUnit": "dunum", "squareMeters": null },
+    "landUse": "commercial",
+    "planningStatus": "inside planned zoning — seller claim pending verification",
+    "titleClaim": "green title deed (طابو أخضر) — document review pending",
+    "askingPrice": { "amount": 2500000, "currency": "USD" }
+  },
+  "investmentThesis": "A coastal land opportunity in Latakia proposed for a hospitality, resort or tourism development concept. The opportunity is presented as a seller-provided starting point and must pass ownership, planning, site, sanctions/compliance and commercial review before any publication or investor access.",
+  "developmentConcept": ["Hotel or resort development", "Coastal tourism destination", "Hospitality-led mixed commercial concept subject to planning confirmation"],
+  "targetInvestorTypes": ["Real-estate developers", "Hospitality operators", "Tourism investors", "Family offices", "Appropriate investment funds"],
+  "highlights": ["Direct coastal setting as stated by seller", "Commercial land use as stated by seller", "Proposed hotel, resort or tourism development angle", "Indicative asking price of USD 2.5 million"],
+  "limitations": ["Not fully verified", "Area conversion from dunum to square metres is intentionally not assumed", "No projected returns, buildable area or approvals are asserted", "Investor outreach requires explicit owner approval", "Legal, sanctions, title and planning review are outstanding"],
+  "dueDiligence": [
+    { "id": "title-01", "category": "ownership", "item": "Obtain and review current green title deed and cadastral extract", "required": true, "status": "open", "owner": "seller" },
+    { "id": "title-02", "category": "ownership", "item": "Confirm seller identity, authority to sell and encumbrances", "required": true, "status": "open", "owner": "external_advisor" },
+    { "id": "planning-01", "category": "planning", "item": "Confirm zoning, permitted use, density, height and setbacks with competent authority", "required": true, "status": "open", "owner": "external_advisor" },
+    { "id": "site-01", "category": "site", "item": "Verify boundaries, coastal frontage, access and topography by survey/site visit", "required": true, "status": "open", "owner": "external_advisor" },
+    { "id": "utilities-01", "category": "infrastructure", "item": "Confirm road access and availability of water, power, sewage and telecom", "required": true, "status": "open", "owner": "seller" },
+    { "id": "legal-01", "category": "legal", "item": "Obtain local legal opinion on transferability, restrictions and transaction structure", "required": true, "status": "open", "owner": "external_advisor" },
+    { "id": "compliance-01", "category": "compliance", "item": "Complete sanctions, AML/KYC and cross-border transaction review", "required": true, "status": "open", "owner": "platform" },
+    { "id": "commercial-01", "category": "commercial", "item": "Validate asking price and prepare a feasibility study before presenting returns", "required": false, "status": "open", "owner": "external_advisor" }
+  ],
+  "dataRoom": { "ndaRequired": true, "accessMode": "controlled", "folders": ["00_Index_and_Disclaimers", "01_Ownership", "02_Planning_and_Zoning", "03_Site_and_Access", "04_Utilities_and_Studies", "05_Legal_and_Compliance", "06_Commercial_Information", "07_Communications_and_Offers"] },
+  "outreach": { "arSubject": "فرصة تطوير سياحي ساحلية في اللاذقية — 8 دونم", "enSubject": "Latakia Coastal Tourism Development Opportunity — 8 Dunums", "approvalRequiredBeforeSending": true }
+}
