@@ -5,6 +5,7 @@ import SiteChrome from '@/components/SiteChrome';
 import OpportunityCard, { formatAmount, formatArea, SECTOR_KEYS } from '@/components/OpportunityCard';
 import { EDITORIAL_IMAGES } from '@/lib/editorial-images';
 import { getPublicAssetImageUrl } from '@/lib/public-asset-image-url';
+import { isSuppressedLegacyOpportunity } from '@/lib/publicOpportunityPolicy';
 
 type Opportunity = { id: string; slug: string; status: string; visibility: string; investment_thesis: string | null; minimum_ticket: number | null; target_return: number | null; asset_id: string };
 type Asset = { id: string; title: string; asset_type: string; country_code: string | null; region: string | null; city: string | null; area_sqm: number | null; currency: string | null; asking_price: number | null; public_summary: string | null };
@@ -20,7 +21,7 @@ async function getPublishedOpportunities() {
     .limit(7);
   if (opportunityError || !opportunities?.length) return { rows: [], error: opportunityError };
 
-  const typed = opportunities as Opportunity[];
+  const typed = (opportunities as Opportunity[]).filter((opportunity) => !isSuppressedLegacyOpportunity(opportunity));
   const assetIds = typed.map((x) => x.asset_id).filter(Boolean);
   const { data: assets, error: assetError } = await supabase
     .from('public_assets')
@@ -69,6 +70,7 @@ export default async function HomePage() {
         {/* Hero — full-bleed photograph, restrained overlay, oversized type. */}
         <section className="av-final-hero">
           <div className="av-final-hero-copy">
+            <div className="av-hero-kicker"><span className="av-status-dot" aria-hidden="true" /><I18nText id="PRIVATE MARKETS / REAL ASSETS" /></div>
             <h1>
               <span><I18nText id="LAND." /></span>
               <span><I18nText id="CAPITAL." /></span>
@@ -80,6 +82,11 @@ export default async function HomePage() {
               <a className="av-btn av-outline" href="/submit"><I18nText id="Submit an Opportunity" /></a>
             </div>
           </div>
+          <aside className="av-hero-brief">
+            <span className="eyebrow"><I18nText id="THE INVESTOR BRIEF" /></span>
+            <strong><I18nText id="Private-market opportunities with a documented path from first review to closing." /></strong>
+            <a href="/how-it-works"><I18nText id="See how it works →" /></a>
+          </aside>
         </section>
 
         <section className="av-trust">
@@ -102,6 +109,14 @@ export default async function HomePage() {
               <p><I18nText id="The platform separates public discovery from sensitive transaction information and organization-scoped workflows." /></p>
             </div>
           </div>
+        </section>
+
+        <section className="av-marketplace-intro av-page">
+          <div>
+            <div className="eyebrow"><I18nText id="PUBLIC MARKETPLACE" /></div>
+            <h2><I18nText id="A focused view of opportunities ready for an initial investor review." /></h2>
+          </div>
+          <div className="av-marketplace-count"><span><I18nText id="Public briefs" /></span><strong>{rows.length}</strong><small><I18nText id="Published records currently available" /></small></div>
         </section>
 
         {/* Featured opportunities — image-led cards with an editorial rhythm. */}
@@ -240,14 +255,7 @@ export default async function HomePage() {
           <a className="av-btn av-primary" style={{ marginTop: 'var(--av-s5)' }} href="/submit"><I18nText id="Submit an Opportunity" /></a>
         </section>
 
-        {rows.length === 0 && (
-          <section className="av-page">
-            <h2><I18nText id="Available Opportunities" /></h2>
-            <p><I18nText id="No published opportunities yet" /></p>
-            <a className="av-btn av-primary" style={{ marginTop: 'var(--av-s5)' }} href="/opportunities"><I18nText id="Available Opportunities" /></a>
-            {error && <p style={{ marginTop: 'var(--av-s4)' }}><I18nText id="No sample or fabricated inventory is displayed." /></p>}
-          </section>
-        )}
+        {rows.length === 0 && <section className="av-page av-empty-market"><div className="eyebrow"><I18nText id="PUBLIC INVENTORY" /></div><h2><I18nText id="No published opportunities yet" /></h2><p><I18nText id="No sample or fabricated inventory is displayed." /></p><a className="av-btn av-primary" style={{ marginTop: 'var(--av-s5)' }} href="/opportunities"><I18nText id="Open Marketplace" /></a>{error && <p className="av-error-note"><I18nText id="The live marketplace could not be loaded. Please try again shortly." /></p>}</section>}
       </main>
     </SiteChrome>
   );

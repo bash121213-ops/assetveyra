@@ -4739,7 +4739,448 @@ export const CENTRAL_TRANSLATION_REGISTRY: Record<string, TranslationSet> = {
   "Buy an Asset": {"en":"Buy an Asset","ar":"شراء أصل","zh":"购买资产","es":"Comprar un activo","fr":"Acheter un actif"},
   "Sell / Submit an Asset": {"en":"Sell / Submit an Asset","ar":"بيع / تقديم أصل","zh":"出售 / 提交资产","es":"Vender / Presentar un activo","fr":"Vendre / Soumettre un actif"},
   "Submit an Asset": {"en":"Submit an Asset","ar":"تقديم أصل","zh":"提交资产","es":"Presentar un activo","fr":"Soumettre un actif"},
-  "More": {"en":"More","ar":"المزيد","zh":"更多","es":"Más","fr":"Plus"}
+  "More": {"en":"More","ar":"المزيد","zh":"更多","es":"Más","fr":"Plus"},
+  "1% + 1%": {
+    "en": "1% + 1%",
+    "ar": "١٪ + ١٪",
+    "zh": "1% + 1%",
+    "es": "1% + 1%",
+    "fr": "1 % + 1 %"
+  },
+  "A controlled transaction path from initial request to closing.": {
+    "en": "A controlled transaction path from initial request to closing.",
+    "ar": "مسار معاملات منضبط من الطلب الأولي حتى الإغلاق.",
+    "zh": "从初始请求到交割的受控交易路径。",
+    "es": "Un proceso de transacción controlado desde la solicitud inicial hasta el cierre.",
+    "fr": "Un parcours transactionnel contrôlé, de la demande initiale à la clôture."
+  },
+  "A transaction may stop before completion for several documented reasons.": {
+    "en": "A transaction may stop before completion for several documented reasons.",
+    "ar": "قد تتوقف المعاملة قبل الإتمام لعدة أسباب موثقة.",
+    "zh": "交易可能因若干已记录的原因在完成前停止。",
+    "es": "Una transacción puede detenerse antes de completarse por varias razones documentadas.",
+    "fr": "Une transaction peut s’arrêter avant sa finalisation pour plusieurs raisons documentées."
+  },
+  "Answers to the questions most relevant to using AssetVeyra.": {
+    "en": "Answers to the questions most relevant to using AssetVeyra.",
+    "ar": "إجابات عن الأسئلة الأكثر صلة باستخدام AssetVeyra.",
+    "zh": "解答使用 AssetVeyra 时最相关的问题。",
+    "es": "Respuestas a las preguntas más relevantes sobre el uso de AssetVeyra.",
+    "fr": "Réponses aux questions les plus pertinentes sur l’utilisation d’AssetVeyra."
+  },
+  "AssetVeyra connects property owners, sellers, buyers and investors and coordinates the applicable transaction workflow.": {
+    "en": "AssetVeyra connects property owners, sellers, buyers and investors and coordinates the applicable transaction workflow.",
+    "ar": "تربط AssetVeyra بين مالكي العقارات والبائعين والمشترين والمستثمرين وتنسق مسار المعاملة المعمول به.",
+    "zh": "AssetVeyra 连接业主、卖方、买方和投资者，并协调适用的交易流程。",
+    "es": "AssetVeyra conecta a propietarios, vendedores, compradores e inversores y coordina el flujo de transacción aplicable.",
+    "fr": "AssetVeyra met en relation propriétaires, vendeurs, acheteurs et investisseurs et coordonne le parcours transactionnel applicable."
+  },
+  "AssetVeyra does not receive or hold the purchase price or transaction funds.": {
+    "en": "AssetVeyra does not receive or hold the purchase price or transaction funds.",
+    "ar": "لا تتلقى AssetVeyra ثمن الشراء أو أموال المعاملة ولا تحتفظ بها.",
+    "zh": "AssetVeyra 不接收或持有购买价款或交易资金。",
+    "es": "AssetVeyra no recibe ni custodia el precio de compra ni los fondos de la transacción.",
+    "fr": "AssetVeyra ne reçoit ni ne détient le prix d’achat ni les fonds de la transaction."
+  },
+  "AssetVeyra’s standard transaction commission is 1% from the seller and 1% from the buyer upon completion, under the applicable written agreement.": {
+    "en": "AssetVeyra’s standard transaction commission is 1% from the seller and 1% from the buyer upon completion, under the applicable written agreement.",
+    "ar": "عمولة AssetVeyra القياسية هي 1٪ من البائع و1٪ من المشتري عند الإتمام، وفق الاتفاق الكتابي المعمول به.",
+    "zh": "根据适用的书面协议，AssetVeyra 的标准交易佣金为卖方 1%、买方 1%，在交易完成时支付。",
+    "es": "La comisión estándar de AssetVeyra es del 1% para el vendedor y del 1% para el comprador al completarse la operación, conforme al acuerdo escrito aplicable.",
+    "fr": "La commission standard d’AssetVeyra est de 1 % pour le vendeur et de 1 % pour l’acheteur à la finalisation, selon l’accord écrit applicable."
+  },
+  "Complaints should be submitted through the official contact channel with enough information to identify the matter and requested resolution.": {
+    "en": "Complaints should be submitted through the official contact channel with enough information to identify the matter and requested resolution.",
+    "ar": "ينبغي تقديم الشكاوى عبر قناة الاتصال الرسمية مع معلومات كافية لتحديد الموضوع والحل المطلوب.",
+    "zh": "投诉应通过官方联系渠道提交，并提供足以识别事项及所请求解决方案的信息。",
+    "es": "Las reclamaciones deben presentarse a través del canal oficial de contacto con información suficiente para identificar el asunto y la solución solicitada.",
+    "fr": "Les réclamations doivent être soumises par le canal de contact officiel avec suffisamment d’informations pour identifier le sujet et la solution demandée."
+  },
+  "Complete the transaction through the applicable legal, banking, registration or conveyancing process.": {
+    "en": "Complete the transaction through the applicable legal, banking, registration or conveyancing process.",
+    "ar": "أكمل المعاملة عبر الإجراءات القانونية أو المصرفية أو التسجيلية أو إجراءات نقل الملكية المعمول بها.",
+    "zh": "通过适用的法律、银行、登记或产权转让流程完成交易。",
+    "es": "Complete la transacción mediante el proceso legal, bancario, registral o de transmisión aplicable.",
+    "fr": "Finalisez la transaction selon le processus juridique, bancaire, d’enregistrement ou de transfert applicable."
+  },
+  "Core policies are published through the applicable legal and operational documents.": {
+    "en": "Core policies are published through the applicable legal and operational documents.",
+    "ar": "تُنشر السياسات الأساسية ضمن الوثائق القانونية والتشغيلية المعمول بها.",
+    "zh": "核心政策通过适用的法律和运营文件发布。",
+    "es": "Las políticas principales se publican mediante los documentos legales y operativos aplicables.",
+    "fr": "Les politiques essentielles sont publiées dans les documents juridiques et opérationnels applicables."
+  },
+  "Create an account and submit the required request.": {
+    "en": "Create an account and submit the required request.",
+    "ar": "أنشئ حسابًا وقدّم الطلب المطلوب.",
+    "zh": "创建账户并提交所需请求。",
+    "es": "Cree una cuenta y envíe la solicitud requerida.",
+    "fr": "Créez un compte et soumettez la demande requise."
+  },
+  "Legal, registration, valuation, inspection, travel, accommodation, transport and other third-party costs are separate unless expressly agreed otherwise.": {
+    "en": "Legal, registration, valuation, inspection, travel, accommodation, transport and other third-party costs are separate unless expressly agreed otherwise.",
+    "ar": "تكون تكاليف المحاماة والتسجيل والتقييم والمعاينة والسفر والإقامة والنقل وغيرها من تكاليف الأطراف الثالثة منفصلة ما لم يُتفق صراحة على خلاف ذلك.",
+    "zh": "法律、登记、估值、检查、旅行、住宿、运输及其他第三方费用另行承担，除非另有明确书面约定。",
+    "es": "Los costes legales, registrales, de valoración, inspección, viaje, alojamiento, transporte y demás costes de terceros son independientes salvo acuerdo expreso en contrario.",
+    "fr": "Les frais juridiques, d’enregistrement, d’évaluation, d’inspection, de voyage, d’hébergement, de transport et autres frais de tiers sont distincts, sauf accord exprès contraire."
+  },
+  "No fee is due solely because an inquiry was submitted. Any completion-based commission is governed by the applicable written agreement.": {
+    "en": "No fee is due solely because an inquiry was submitted. Any completion-based commission is governed by the applicable written agreement.",
+    "ar": "لا تستحق أي رسوم لمجرد تقديم استفسار. وتخضع أي عمولة مرتبطة بالإتمام للاتفاق الكتابي المعمول به.",
+    "zh": "仅提交询问不会产生费用。任何基于完成交易的佣金均受适用书面协议约束。",
+    "es": "No se debe ninguna tarifa únicamente por presentar una consulta. Cualquier comisión por cierre se rige por el acuerdo escrito aplicable.",
+    "fr": "Aucun frais n’est dû du seul fait d’une demande. Toute commission liée à la finalisation est régie par l’accord écrit applicable."
+  },
+  "Potential conflicts should be disclosed and handled according to the applicable agreement and circumstances.": {
+    "en": "Potential conflicts should be disclosed and handled according to the applicable agreement and circumstances.",
+    "ar": "ينبغي الإفصاح عن التعارضات المحتملة ومعالجتها وفق الاتفاق والظروف المعمول بها.",
+    "zh": "潜在冲突应予披露，并根据适用协议和具体情况处理。",
+    "es": "Los posibles conflictos deben comunicarse y gestionarse conforme al acuerdo aplicable y a las circunstancias.",
+    "fr": "Les conflits potentiels doivent être déclarés et traités conformément à l’accord applicable et aux circonstances."
+  },
+  "Proceed only when the applicable stage and required evidence are satisfied.": {
+    "en": "Proceed only when the applicable stage and required evidence are satisfied.",
+    "ar": "تابع فقط عند استيفاء المرحلة المعمول بها والأدلة المطلوبة.",
+    "zh": "仅在满足适用阶段和所需证据后继续。",
+    "es": "Proceda únicamente cuando se hayan cumplido la etapa aplicable y las pruebas requeridas.",
+    "fr": "Ne poursuivez que lorsque l’étape applicable et les justificatifs requis sont satisfaits."
+  },
+  "Role and limits": {
+    "en": "Role and limits",
+    "ar": "الدور والحدود",
+    "zh": "角色与边界",
+    "es": "Función y límites",
+    "fr": "Rôle et limites"
+  },
+  "See the published Privacy Policy for the current data-handling terms.": {
+    "en": "See the published Privacy Policy for the current data-handling terms.",
+    "ar": "راجع سياسة الخصوصية المنشورة للاطلاع على شروط معالجة البيانات الحالية.",
+    "zh": "请参阅已发布的隐私政策，了解当前的数据处理条款。",
+    "es": "Consulte la Política de privacidad publicada para conocer las condiciones vigentes de tratamiento de datos.",
+    "fr": "Consultez la Politique de confidentialité publiée pour connaître les conditions actuelles de traitement des données."
+  },
+  "See the published Terms & Conditions for the current platform and transaction-support terms.": {
+    "en": "See the published Terms & Conditions for the current platform and transaction-support terms.",
+    "ar": "راجع الشروط والأحكام المنشورة للاطلاع على شروط المنصة ودعم المعاملات الحالية.",
+    "zh": "请参阅已发布的条款与条件，了解当前的平台和交易支持条款。",
+    "es": "Consulte los Términos y condiciones publicados para conocer las condiciones vigentes de la plataforma y el apoyo transaccional.",
+    "fr": "Consultez les Conditions générales publiées pour connaître les conditions actuelles de la plateforme et de l’accompagnement transactionnel."
+  },
+  "Sensitive opportunity information can be subject to registration, qualification, confidentiality and controlled data-room access.": {
+    "en": "Sensitive opportunity information can be subject to registration, qualification, confidentiality and controlled data-room access.",
+    "ar": "قد تخضع معلومات الفرص الحساسة للتسجيل والتأهيل والسرية والوصول المنضبط إلى غرفة البيانات.",
+    "zh": "敏感的机会信息可能需要注册、资格审查、保密和受控的数据室访问。",
+    "es": "La información sensible de las oportunidades puede estar sujeta a registro, cualificación, confidencialidad y acceso controlado a la sala de datos.",
+    "fr": "Les informations sensibles sur les opportunités peuvent être soumises à l’inscription, à la qualification, à la confidentialité et à un accès contrôlé à la data room."
+  },
+  "The applicable written agreement identifies the completion event and payment timing. No fee is due solely because an inquiry was submitted.": {
+    "en": "The applicable written agreement identifies the completion event and payment timing. No fee is due solely because an inquiry was submitted.",
+    "ar": "يحدد الاتفاق الكتابي المعمول به واقعة الإتمام وتوقيت الدفع. لا تستحق أي رسوم لمجرد تقديم استفسار.",
+    "zh": "适用的书面协议规定交易完成事件和付款时间。仅提交询问不会产生费用。",
+    "es": "El acuerdo escrito aplicable identifica el evento de cierre y el momento del pago. No se debe ninguna tarifa únicamente por presentar una consulta.",
+    "fr": "L’accord écrit applicable précise l’événement de finalisation et le calendrier de paiement. Aucun frais n’est dû du seul fait d’une demande."
+  },
+  "The platform uses authentication, authorization, organization isolation, role-based access and auditability controls where applicable.": {
+    "en": "The platform uses authentication, authorization, organization isolation, role-based access and auditability controls where applicable.",
+    "ar": "تستخدم المنصة المصادقة والتفويض وعزل المؤسسات والوصول القائم على الأدوار وضوابط قابلية التدقيق حيثما ينطبق ذلك.",
+    "zh": "平台在适用情况下使用身份验证、授权、组织隔离、基于角色的访问和可审计控制。",
+    "es": "La plataforma utiliza autenticación, autorización, aislamiento de organizaciones, acceso basado en roles y controles de auditabilidad cuando corresponde.",
+    "fr": "La plateforme utilise, le cas échéant, l’authentification, l’autorisation, l’isolation des organisations, l’accès par rôle et des contrôles d’auditabilité."
+  },
+  "The relevant legal professional provides legal advice under the applicable engagement. Each party may obtain independent legal advice.": {
+    "en": "The relevant legal professional provides legal advice under the applicable engagement. Each party may obtain independent legal advice.",
+    "ar": "يقدم المحترف القانوني المعني المشورة القانونية ضمن نطاق التكليف المعمول به. ويجوز لكل طرف الحصول على مشورة قانونية مستقلة.",
+    "zh": "相关法律专业人士根据适用的委托提供法律建议。各方均可获得独立的法律建议。",
+    "es": "El profesional jurídico correspondiente presta asesoramiento legal conforme al encargo aplicable. Cada parte puede obtener asesoramiento jurídico independiente.",
+    "fr": "Le professionnel du droit concerné fournit des conseils juridiques dans le cadre de sa mission. Chaque partie peut obtenir un conseil juridique indépendant."
+  },
+  "We are an intermediary and transaction coordinator. We do not receive transaction funds and we do not guarantee a sale or profit.": {
+    "en": "We are an intermediary and transaction coordinator. We do not receive transaction funds and we do not guarantee a sale or profit.",
+    "ar": "نحن وسيط ومنسق للمعاملات. لا نتلقى أموال المعاملة ولا نضمن البيع أو الربح.",
+    "zh": "我们是中介和交易协调方。不接收交易资金，也不保证成交或获利。",
+    "es": "Somos intermediarios y coordinadores de transacciones. No recibimos fondos de la operación ni garantizamos la venta o el beneficio.",
+    "fr": "Nous sommes un intermédiaire et un coordinateur de transactions. Nous ne recevons pas les fonds de la transaction et ne garantissons ni la vente ni le profit."
+  },
+  "We are an intermediary and transaction coordinator. We do not receive transaction funds and we do not guarantee completion, value or profit.": {
+    "en": "We are an intermediary and transaction coordinator. We do not receive transaction funds and we do not guarantee completion, value or profit.",
+    "ar": "نحن وسيط ومنسق للمعاملات. لا نتلقى أموال المعاملة ولا نضمن الإتمام أو القيمة أو الربح.",
+    "zh": "我们是中介和交易协调方。不接收交易资金，也不保证完成、价值或获利。",
+    "es": "Somos intermediarios y coordinadores de transacciones. No recibimos fondos de la operación ni garantizamos el cierre, el valor o el beneficio.",
+    "fr": "Nous sommes un intermédiaire et un coordinateur de transactions. Nous ne recevons pas les fonds de la transaction et ne garantissons ni la finalisation, ni la valeur, ni le profit."
+  },
+  "Where verification is offered, the applicable scope and evidence are identified for the opportunity.": {
+    "en": "Where verification is offered, the applicable scope and evidence are identified for the opportunity.",
+    "ar": "عند توفير التحقق، يُحدد نطاقه والأدلة المعمول بها لكل فرصة.",
+    "zh": "在提供验证的情况下，将为该机会明确适用的范围和证据。",
+    "es": "Cuando se ofrece verificación, se identifican el alcance aplicable y las pruebas correspondientes a la oportunidad.",
+    "fr": "Lorsqu’une vérification est proposée, son périmètre et les justificatifs applicables sont identifiés pour l’opportunité."
+  },
+  "Loading marketplace": {
+    "en": "Loading marketplace",
+    "ar": "جارٍ تحميل السوق",
+    "zh": "正在加载市场",
+    "es": "Cargando el mercado",
+    "fr": "Chargement du marché"
+  },
+  "Loading opportunity": {
+    "en": "Loading opportunity",
+    "ar": "جارٍ تحميل الفرصة",
+    "zh": "正在加载机会",
+    "es": "Cargando la oportunidad",
+    "fr": "Chargement de l’opportunité"
+  },
+  "Loading workspace": {
+    "en": "Loading workspace",
+    "ar": "جارٍ تحميل مساحة العمل",
+    "zh": "正在加载工作区",
+    "es": "Cargando el espacio de trabajo",
+    "fr": "Chargement de l’espace de travail"
+  },
+  "Something went wrong": {
+    "en": "Something went wrong",
+    "ar": "حدث خطأ ما",
+    "zh": "出现问题",
+    "es": "Algo salió mal",
+    "fr": "Une erreur est survenue"
+  },
+  "Unable to load the marketplace. Please try again shortly.": {
+    "en": "Unable to load the marketplace. Please try again shortly.",
+    "ar": "تعذر تحميل السوق. يرجى المحاولة مرة أخرى بعد قليل.",
+    "zh": "无法加载市场，请稍后重试。",
+    "es": "No se pudo cargar el mercado. Inténtelo de nuevo en breve.",
+    "fr": "Impossible de charger le marché. Réessayez dans quelques instants."
+  },
+  "Unable to load this opportunity. Please try again shortly.": {
+    "en": "Unable to load this opportunity. Please try again shortly.",
+    "ar": "تعذر تحميل هذه الفرصة. يرجى المحاولة مرة أخرى بعد قليل.",
+    "zh": "无法加载此机会，请稍后重试。",
+    "es": "No se pudo cargar esta oportunidad. Inténtelo de nuevo en breve.",
+    "fr": "Impossible de charger cette opportunité. Réessayez dans quelques instants."
+  },
+  "Unable to load the workspace. Please try again shortly.": {
+    "en": "Unable to load the workspace. Please try again shortly.",
+    "ar": "تعذر تحميل مساحة العمل. يرجى المحاولة مرة أخرى بعد قليل.",
+    "zh": "无法加载工作区，请稍后重试。",
+    "es": "No se pudo cargar el espacio de trabajo. Inténtelo de nuevo en breve.",
+    "fr": "Impossible de charger l’espace de travail. Réessayez dans quelques instants."
+  },
+  "PRIVATE MARKETS / REAL ASSETS": {
+    "en": "PRIVATE MARKETS / REAL ASSETS",
+    "ar": "أسواق خاصة / أصول حقيقية",
+    "zh": "私募市场 / 实物资产",
+    "es": "MERCADOS PRIVADOS / ACTIVOS REALES",
+    "fr": "MARCHÉS PRIVÉS / ACTIFS RÉELS"
+  },
+  "TRANSACTION WORKSPACE": {
+    "en": "TRANSACTION WORKSPACE",
+    "ar": "مساحة عمل المعاملة",
+    "zh": "交易工作区",
+    "es": "ESPACIO DE TRANSACCIÓN",
+    "fr": "ESPACE DE TRANSACTION"
+  },
+  "THE INVESTOR BRIEF": {
+    "en": "THE INVESTOR BRIEF",
+    "ar": "الموجز الاستثماري",
+    "zh": "投资简报",
+    "es": "EL INFORME DEL INVERSOR",
+    "fr": "LA NOTE D’INVESTISSEMENT"
+  },
+  "Private-market opportunities with a documented path from first review to closing.": {
+    "en": "Private-market opportunities with a documented path from first review to closing.",
+    "ar": "فرص في الأسواق الخاصة بمسار موثق من المراجعة الأولى حتى الإغلاق.",
+    "zh": "从首次审阅到交割均有记录路径的私募市场机会。",
+    "es": "Oportunidades de mercados privados con un proceso documentado desde la primera revisión hasta el cierre.",
+    "fr": "Des opportunités de marchés privés avec un parcours documenté, de la première revue à la clôture."
+  },
+  "See how it works →": {
+    "en": "See how it works →",
+    "ar": "تعرّف على آلية العمل ←",
+    "zh": "了解运作方式 →",
+    "es": "Ver cómo funciona →",
+    "fr": "Voir comment cela fonctionne →"
+  },
+  "PUBLIC MARKETPLACE": {
+    "en": "PUBLIC MARKETPLACE",
+    "ar": "السوق العام",
+    "zh": "公开市场",
+    "es": "MERCADO PÚBLICO",
+    "fr": "MARCHÉ PUBLIC"
+  },
+  "A focused view of opportunities ready for an initial investor review.": {
+    "en": "A focused view of opportunities ready for an initial investor review.",
+    "ar": "عرض مركز للفرص الجاهزة للمراجعة الاستثمارية الأولية.",
+    "zh": "聚焦展示可供投资者初步审阅的机会。",
+    "es": "Una vista enfocada de oportunidades listas para una revisión inicial del inversor.",
+    "fr": "Une vue ciblée des opportunités prêtes pour une première revue par l’investisseur."
+  },
+  "Public briefs": {
+    "en": "Public briefs",
+    "ar": "الموجزات العامة",
+    "zh": "公开简报",
+    "es": "Informes públicos",
+    "fr": "Notes publiques"
+  },
+  "Published records currently available": {
+    "en": "Published records currently available",
+    "ar": "السجلات المنشورة المتاحة حاليًا",
+    "zh": "当前可用的已发布记录",
+    "es": "Registros publicados disponibles actualmente",
+    "fr": "Dossiers publiés actuellement disponibles"
+  },
+  "PUBLIC INVENTORY": {
+    "en": "PUBLIC INVENTORY",
+    "ar": "المخزون العام",
+    "zh": "公开库存",
+    "es": "INVENTARIO PÚBLICO",
+    "fr": "INVENTAIRE PUBLIC"
+  },
+  "Open Marketplace": {
+    "en": "Open Marketplace",
+    "ar": "فتح السوق",
+    "zh": "打开市场",
+    "es": "Abrir el mercado",
+    "fr": "Ouvrir le marché"
+  },
+  "Open brief →": {
+    "en": "Open brief →",
+    "ar": "فتح الموجز ←",
+    "zh": "打开简报 →",
+    "es": "Abrir informe →",
+    "fr": "Ouvrir la note →"
+  },
+  "matching opportunities": {
+    "en": "matching opportunities",
+    "ar": "فرصة مطابقة",
+    "zh": "个匹配机会",
+    "es": "oportunidades coincidentes",
+    "fr": "opportunités correspondantes"
+  },
+  "Clear filters": {
+    "en": "Clear filters",
+    "ar": "مسح الفلاتر",
+    "zh": "清除筛选",
+    "es": "Borrar filtros",
+    "fr": "Effacer les filtres"
+  },
+  "No matching opportunities": {
+    "en": "No matching opportunities",
+    "ar": "لا توجد فرص مطابقة",
+    "zh": "没有匹配的机会",
+    "es": "No hay oportunidades coincidentes",
+    "fr": "Aucune opportunité correspondante"
+  },
+  "Adjust your search or filters and try again.": {
+    "en": "Adjust your search or filters and try again.",
+    "ar": "عدّل البحث أو الفلاتر وحاول مرة أخرى.",
+    "zh": "调整搜索或筛选条件后重试。",
+    "es": "Ajuste la búsqueda o los filtros e inténtelo de nuevo.",
+    "fr": "Ajustez votre recherche ou vos filtres, puis réessayez."
+  },
+  "All countries": {
+    "en": "All countries",
+    "ar": "كل الدول",
+    "zh": "所有国家",
+    "es": "Todos los países",
+    "fr": "Tous les pays"
+  },
+  "All asset types": {
+    "en": "All asset types",
+    "ar": "كل أنواع الأصول",
+    "zh": "所有资产类型",
+    "es": "Todos los tipos de activos",
+    "fr": "Tous les types d’actifs"
+  },
+  "Close filters": {
+    "en": "Close filters",
+    "ar": "إغلاق الفلاتر",
+    "zh": "关闭筛选",
+    "es": "Cerrar filtros",
+    "fr": "Fermer les filtres"
+  },
+  "All regions": {
+    "en": "All regions",
+    "ar": "كل المناطق",
+    "zh": "所有地区",
+    "es": "Todas las regiones",
+    "fr": "Toutes les régions"
+  },
+  "All cities": {
+    "en": "All cities",
+    "ar": "كل المدن",
+    "zh": "所有城市",
+    "es": "Todas las ciudades",
+    "fr": "Toutes les villes"
+  },
+  "Applied filters": {
+    "en": "Applied filters",
+    "ar": "الفلاتر المطبقة",
+    "zh": "已应用筛选",
+    "es": "Filtros aplicados",
+    "fr": "Filtres appliqués"
+  },
+  "Title, location or reference": {
+    "en": "Title, location or reference",
+    "ar": "العنوان أو الموقع أو المرجع",
+    "zh": "标题、地点或参考编号",
+    "es": "Título, ubicación o referencia",
+    "fr": "Titre, emplacement ou référence"
+  },
+  "Min": {
+    "en": "Min",
+    "ar": "الأدنى",
+    "zh": "最低",
+    "es": "Mín.",
+    "fr": "Min."
+  },
+  "Max": {
+    "en": "Max",
+    "ar": "الأقصى",
+    "zh": "最高",
+    "es": "Máx.",
+    "fr": "Max."
+  },
+  "Marketplace search": {
+    "en": "Marketplace search",
+    "ar": "بحث السوق",
+    "zh": "市场搜索",
+    "es": "Búsqueda del mercado",
+    "fr": "Recherche du marché"
+  },
+  "Relevance": {
+    "en": "Relevance",
+    "ar": "الصلة",
+    "zh": "相关性",
+    "es": "Relevancia",
+    "fr": "Pertinence"
+  },
+  "Newest": {
+    "en": "Newest",
+    "ar": "الأحدث",
+    "zh": "最新",
+    "es": "Más recientes",
+    "fr": "Plus récentes"
+  },
+  "Price: low to high": {
+    "en": "Price: low to high",
+    "ar": "السعر: من الأقل إلى الأعلى",
+    "zh": "价格：从低到高",
+    "es": "Precio: de menor a mayor",
+    "fr": "Prix : du plus bas au plus élevé"
+  },
+  "Price: high to low": {
+    "en": "Price: high to low",
+    "ar": "السعر: من الأعلى إلى الأقل",
+    "zh": "价格：从高到低",
+    "es": "Precio: de mayor a menor",
+    "fr": "Prix : du plus élevé au plus bas"
+  },
+  "Largest area": {
+    "en": "Largest area",
+    "ar": "أكبر مساحة",
+    "zh": "面积最大",
+    "es": "Mayor superficie",
+    "fr": "Plus grande superficie"
+  }
 };
 
 export const STATUS_TRANSLATIONS = {

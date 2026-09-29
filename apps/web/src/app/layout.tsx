@@ -35,7 +35,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const detected = saved
     ? normalizeExtendedLocale(saved)
     : detectExtendedLocaleFromLanguages(acceptLanguage.split(',').map((part) => part.split(';')[0].trim()));
-  const initialLocale = detected === 'zh' ? 'en' : detected;
+  const initialLocale = detected;
 
   return (
     <html lang={initialLocale} dir={initialLocale === 'ar' ? 'rtl' : 'ltr'} suppressHydrationWarning>

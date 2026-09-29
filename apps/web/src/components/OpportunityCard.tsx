@@ -82,11 +82,11 @@ export default function OpportunityCard({ data }: { data: OpportunityCardData })
             <span><I18nText id="No image available" /></span>
           </div>
         )}
-        {data.statusLabel ? <span className="opportunity-card-status">{data.statusLabel}</span> : null}
+        {data.statusLabel ? <span className="opportunity-card-status"><I18nText id={data.statusLabel} /></span> : null}
       </div>
       <div className="opportunity-card-body">
         <div className="card-meta">
-          <span><SectorLabel assetType={data.assetType} /></span>
+          <span className="card-kicker"><SectorLabel assetType={data.assetType} /></span>
           <span>{data.countryCode || '—'}</span>
         </div>
         <h2>{data.title}</h2>
@@ -97,7 +97,7 @@ export default function OpportunityCard({ data }: { data: OpportunityCardData })
           <span><I18nText id="Asking price" /></span>
           <strong>{formatAmount(data.askingPrice, data.currency)}</strong>
         </div>
-        <div className="card-reference"><I18nText id="Reference" />: {data.slug}</div>
+        <div className="card-footer"><div className="card-reference"><I18nText id="Reference" />: {data.slug}</div><span className="card-open"><I18nText id="Open brief →" /></span></div>
       </div>
     </a>
   );

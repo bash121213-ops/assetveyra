@@ -7,10 +7,7 @@ export type ChromeLink = { href: string; id: string };
 
 /** Primary public navigation, shared by the desktop row and the mobile overlay. */
 export const PUBLIC_LINKS: ChromeLink[] = [
-  { href: '/external-market', id: 'Institutional Land' },
-  { href: '/opportunities', id: 'Opportunities' },
-  { href: '/qualified-investors', id: 'Buy an Asset' },
-  { href: '/submit', id: 'Sell / Submit an Asset' },
+  { href: '/opportunities', id: 'Marketplace' },
   { href: '/how-it-works', id: 'How It Works' },
   { href: '/about', id: 'About' },
   { href: '/contact', id: 'Contact' },
@@ -18,6 +15,9 @@ export const PUBLIC_LINKS: ChromeLink[] = [
 
 /** Secondary links kept in the mobile overlay so the policy set stays reachable. */
 const PUBLIC_MORE: ChromeLink[] = [
+  { href: '/external-market', id: 'Institutional Land' },
+  { href: '/qualified-investors', id: 'Buy an Asset' },
+  { href: '/submit', id: 'Sell / Submit an Asset' },
   { href: '/faq', id: 'FAQ' },
   { href: '/fees', id: 'Fees & Commissions' },
   { href: '/verification', id: 'Opportunity Verification' },
@@ -115,11 +115,15 @@ export default function SiteChrome({ children }: { children?: ReactNode }) {
   return (
     <>
       <header className="av-final-header">
-        <a className="av-final-brand" href="/">ASSETVEYRA</a>
+        <a className="av-final-brand" href="/" aria-label="AssetVeyra home">
+          <span className="av-brand-monogram" aria-hidden="true">AV</span>
+          <span className="av-brand-copy"><strong>ASSETVEYRA</strong><small><I18nText id="PRIVATE MARKETS / REAL ASSETS" /></small></span>
+        </a>
         <nav className="av-nav" aria-label="Primary navigation">
           {PUBLIC_LINKS.map((link) => <a key={link.href} href={link.href}><I18nText id={link.id} /></a>)}
         </nav>
         <div className="av-header-actions">
+          <div className="av-header-language"><LanguageSelect /></div>
           <nav className="av-nav" aria-label="Account">
             <a className="av-nav-signin" href="/login"><I18nText id="Sign in" /></a>
             <a href="/signup"><I18nText id="Create account" /></a>
@@ -145,12 +149,16 @@ export function AppChrome({ links, action, signOut = true, children }: { links: 
   return (
     <>
       <header className="av-final-header">
-        <a className="av-final-brand" href="/workspace">ASSETVEYRA</a>
+        <a className="av-final-brand" href="/workspace" aria-label="AssetVeyra workspace">
+          <span className="av-brand-monogram" aria-hidden="true">AV</span>
+          <span className="av-brand-copy"><strong>ASSETVEYRA</strong><small><I18nText id="TRANSACTION WORKSPACE" /></small></span>
+        </a>
         <nav className="av-nav" aria-label="Workspace navigation">
           {links.map((link) => <a key={link.href} href={link.href}><I18nText id={link.id} /></a>)}
           <a href="/opportunities"><I18nText id="Marketplace" /></a>
         </nav>
         <div className="av-header-actions">
+          <div className="av-header-language"><LanguageSelect /></div>
           <nav className="av-nav" aria-label="Account">
             {action && <a className="av-nav-cta" href={action.href}><I18nText id={action.id} /></a>}
             {signOut && <form action="/logout" method="post"><button className="av-header-signout" type="submit"><I18nText id="Sign out" /></button></form>}

@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  allowedDevOrigins: ['**.manuspre.computer', '127.0.0.1', 'localhost'],
   images: {
+    qualities: [65, 78, 82],
     remotePatterns: [
       {
         protocol: 'https',

@@ -136,3 +136,30 @@ html.rtl .similar-property-card { direction: rtl; text-align: right; }
 @media (prefers-reduced-motion: reduce) {
   .similar-property-card, .public-gallery-arrow, .public-gallery-open { transition: none; }
 }
+
+
+/* ---------- Phase 2: investment brief treatment ---------- */
+.opportunity-detail-page { max-width: 1440px; }
+.opportunity-detail-page .detail-back { margin-bottom: var(--av-s7); }
+.opportunity-detail-page > .eyebrow { display: flex; align-items: center; gap: 8px; color: var(--av-quiet); }
+.detail-title-row { align-items: end; padding-bottom: var(--av-s6); border-bottom: 1px solid var(--av-line); }
+.detail-title-row h1 { max-width: 980px; font-size: clamp(48px, 7vw, 92px); letter-spacing: -0.06em; }
+.detail-reference { margin-bottom: 0; }
+.public-gallery { margin-top: var(--av-s7); }
+.public-gallery-main { border-color: var(--av-charcoal); }
+.public-gallery-count { padding: 8px 12px; letter-spacing: 0.08em; }
+.detail-grid { grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr); gap: clamp(40px, 7vw, 108px); }
+.section-heading { display: grid; gap: 6px; }
+.section-heading h2 { font-size: clamp(32px, 4vw, 58px); }
+.detail-information { margin-top: var(--av-s7); }
+.detail-information-block { padding: clamp(24px, 3vw, 42px); }
+.verification-panel { margin-top: var(--av-s7); background: var(--av-surface); }
+.deal-gate { top: calc(84px + var(--av-s5)); border-top: 3px solid var(--av-charcoal); background: var(--av-charcoal); color: var(--av-white); }
+.deal-gate p, .deal-gate-location span { color: rgba(255, 255, 255, 0.64); }
+.deal-gate-location { border-top-color: rgba(255, 255, 255, 0.22); }
+.deal-gate-location strong { color: var(--av-white); }
+.deal-gate .button.primary { background: var(--av-white); color: var(--av-charcoal); border-color: var(--av-white); }
+.deal-gate .button.primary:hover { background: var(--av-surface); }
+.similar-properties { margin-top: clamp(80px, 10vw, 150px); }
+@media (max-width: 900px) { .detail-title-row h1 { font-size: clamp(42px, 9vw, 70px); } .deal-gate { border-top-width: 2px; } }
+@media (max-width: 640px) { .opportunity-detail-page .detail-back { margin-bottom: var(--av-s5); } .detail-title-row { padding-bottom: var(--av-s5); } .detail-title-row h1 { font-size: clamp(40px, 13vw, 60px); } .public-gallery { margin-top: var(--av-s5); } }

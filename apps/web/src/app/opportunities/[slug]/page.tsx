@@ -1,9 +1,10 @@
 import { notFound, redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { I18nText } from '@/components/LocaleShell';
-import { AppChrome } from '@/components/SiteChrome';
+import SiteChrome from '@/components/SiteChrome';
 import PublicAssetGallery from '@/components/PublicAssetGallery';
 import { getPublicAssetImageUrl } from '@/lib/public-asset-image-url';
+import { isSuppressedLegacyOpportunity } from '@/lib/publicOpportunityPolicy';
 import '../../opportunity-detail.css';
 
 const sectorKeys: Record<string, string> = {
@@ -97,7 +98,7 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
     .select('id,slug,status,investment_thesis,structure,minimum_ticket,target_return,asset_id')
     .eq('slug', slug)
     .maybeSingle();
-  if (!opportunity) notFound();
+  if (!opportunity || isSuppressedLegacyOpportunity(opportunity)) notFound();
 
   const { data: asset } = await s
     .from('public_assets')
@@ -164,7 +165,7 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
   const currency = asset.currency || 'USD';
 
   return (
-    <AppChrome links={[{ href: '/workspace', id: 'Overview' }]}>
+    <SiteChrome>
       <article className="detail opportunity-detail-page">
         <a className="detail-back" href="/opportunities">← <I18nText id="Back to opportunities" /></a>
         <div className="eyebrow"><I18nText id="Published opportunity" /> · <I18nText id="Controlled access" /></div>
@@ -290,6 +291,6 @@ export default async function OpportunityPage({ params }: { params: Promise<{ sl
           </section>
         )}
       </article>
-    </AppChrome>
+    </SiteChrome>
   );
 }

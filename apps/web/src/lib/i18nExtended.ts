@@ -1,10 +1,9 @@
 import { translate, type Locale } from '@/lib/i18n';
 
-export const EXTENDED_LOCALES = ['en','ar','es','fr','de','pt'] as const;
+export const EXTENDED_LOCALES = ['en','ar','zh','es','fr'] as const;
 // Keep the legacy Locale type for compatibility with existing non-RC surfaces.
-// German and Portuguese are runtime-supported extended locales and are normalized/cast at the boundary.
 export type ExtendedLocale = Locale;
-export const EXTENDED_LOCALE_LABELS: Record<string,string> = { en:'English', ar:'العربية', es:'Español', fr:'Français', de:'Deutsch', pt:'Português' };
+export const EXTENDED_LOCALE_LABELS: Record<string,string> = { en:'English', ar:'العربية', zh:'中文', es:'Español', fr:'Français' };
 export const EXTENDED_RTL_LOCALES = new Set<string>(['ar']);
 
 const RC_TRANSLATIONS: Record<string, Partial<Record<'de'|'pt', string>>> = {
