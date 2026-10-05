@@ -301,7 +301,7 @@ html.av-nav-open, html.av-nav-open body { overflow: hidden; }
 /* ---------- Info pages ---------- */
 .av-final-home { width: 100%; min-height: 100vh; background: var(--av-white); color: var(--av-charcoal); }
 .av-info-page { max-width: 1120px; margin: 0 auto; padding: var(--av-s9) var(--av-gutter) var(--av-s8); }
-.av-info-page h1 { margin-bottom: var(--av-s5); font-size: clamp(38px, 6vw, 78px); }
+.av-info-page h1 { margin-bottom: var(--av-s5); font-size: var(--av-h1); }
 .av-info-intro { max-width: 820px; margin-bottom: var(--av-s8); color: var(--av-muted); font-size: var(--av-text-lg); }
 .av-info-block { max-width: 900px; padding: var(--av-s6) 0; border-top: 1px solid var(--av-line); }
 .av-info-block h2 { margin-bottom: var(--av-s3); font-size: 26px; }
