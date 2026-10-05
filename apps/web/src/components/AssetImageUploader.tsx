@@ -147,7 +147,7 @@ export default function AssetImageUploader({ inputName = 'images', onPreparedFil
         style={{
           position: 'relative',
           border: `1px dashed ${dragging ? 'var(--text)' : 'var(--border)'}`,
-          borderRadius: 20,
+          borderRadius: 'var(--av-radius)',
           padding: '34px 24px',
           minHeight: 220,
           display: 'grid',
@@ -178,7 +178,7 @@ export default function AssetImageUploader({ inputName = 'images', onPreparedFil
             style={{
               width: 58,
               height: 58,
-              borderRadius: 16,
+              borderRadius: 'var(--av-radius)',
               border: '1px solid var(--border)',
               display: 'grid',
               placeItems: 'center',
@@ -204,7 +204,7 @@ export default function AssetImageUploader({ inputName = 'images', onPreparedFil
               minHeight: 32,
               padding: '0 11px',
               border: '1px solid var(--border)',
-              borderRadius: 999,
+              borderRadius: 'var(--av-radius-pill)',
               color: 'var(--muted)',
               fontSize: 12,
             }}
@@ -257,7 +257,7 @@ export default function AssetImageUploader({ inputName = 'images', onPreparedFil
               style={{
                 overflow: 'hidden',
                 border: `1px solid ${index === 0 ? 'var(--text)' : 'var(--border)'}`,
-                borderRadius: 18,
+                borderRadius: 'var(--av-radius)',
                 background: 'var(--surface)',
               }}
             >
@@ -282,7 +282,7 @@ export default function AssetImageUploader({ inputName = 'images', onPreparedFil
                     top: 10,
                     insetInlineStart: 10,
                     padding: '5px 8px',
-                    borderRadius: 999,
+                    borderRadius: 'var(--av-radius-pill)',
                     background: 'var(--surface)',
                     border: '1px solid var(--border)',
                     fontSize: 10,

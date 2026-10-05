@@ -36,6 +36,7 @@
   --av-s10: 128px;
 
   /* Type scale */
+  --av-h1: clamp(40px, 5.4vw, 72px);
   --av-text-xs: 11px;
   --av-text-sm: 13px;
   --av-text-base: 15px;
@@ -49,6 +50,7 @@
   --av-page: 1360px;
   --av-gutter: 5vw;
   --av-radius: 2px;
+  --av-radius-pill: 999px;
   --av-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --av-shadow: 0 18px 50px rgba(0, 0, 0, 0.07);
 }
@@ -87,32 +89,20 @@ p { margin: 0; }
 /* ---------- Shared shell ---------- */
 .app-shell { min-height: 100vh; background: var(--av-white); color: var(--av-charcoal); }
 
-.app-header {
-  position: sticky; top: 0; z-index: 200;
-  display: flex; align-items: center; justify-content: space-between;
-  gap: var(--av-s5); min-height: 68px;
-  padding: var(--av-s4) var(--av-gutter);
-  background: var(--av-white);
-  border-bottom: 1px solid var(--av-line);
-}
-.app-header .brand {
-  color: var(--av-charcoal); font-size: 17px; font-weight: 700;
-  letter-spacing: 0.14em; text-decoration: none; white-space: nowrap;
-}
-.app-header nav { display: flex; align-items: center; justify-content: flex-end; gap: var(--av-s5); flex-wrap: wrap; }
-.app-header nav a,
-.app-header .text-button {
+/* Standalone quiet action (forgot password, marketplace resets). Defined once so
+   every non-primed action reads the same regardless of which shell renders it. */
+.text-button {
+  display: inline-block;
   color: var(--av-muted); font-size: var(--av-text-sm); text-decoration: none;
   background: transparent; border: 0; cursor: pointer; padding: 0;
   transition: color 0.25s var(--av-ease);
 }
-.app-header nav a:hover,
-.app-header .text-button:hover { color: var(--av-charcoal); }
+.text-button:hover { color: var(--av-charcoal); }
 
 .page-head,
 .dashboard-head { max-width: var(--av-page); margin: 0 auto; padding: var(--av-s9) var(--av-gutter) var(--av-s7); }
 .page-head h1,
-.dashboard-head h1 { margin: var(--av-s4) 0; font-size: clamp(38px, 5vw, 68px); }
+.dashboard-head h1 { margin: var(--av-s4) 0; font-size: var(--av-h1); }
 .page-head p,
 .dashboard-head p { max-width: 760px; color: var(--av-muted); font-size: var(--av-text-base); }
 .dashboard-head { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--av-s6); }
@@ -123,19 +113,20 @@ p { margin: 0; }
   .dashboard-head .button { width: 100%; margin-top: var(--av-s5); }
 }
 @media (max-width: 640px) {
-  .app-header { min-height: 60px; padding: var(--av-s3) var(--av-gutter); gap: var(--av-s4); flex-wrap: wrap; }
-  .app-header nav { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--av-s2); }
-  .app-header nav a, .app-header .text-button { padding: var(--av-s2) 0; text-align: left; }
+  .text-button { padding: var(--av-s2) 0; }
 }
 
 /* ---------- Buttons ---------- */
+/* One button geometry for the whole product — `.button` (shell pages) and
+   `.av-btn` (public editorial layer) share identical metrics, so a primary
+   action looks and feels the same on every route. */
 .button {
   display: inline-flex; align-items: center; justify-content: center;
-  min-height: 46px; padding: var(--av-s3) var(--av-s5);
+  min-height: 50px; padding: var(--av-s4) var(--av-s6);
   border: 1px solid var(--av-charcoal); border-radius: var(--av-radius);
   background: transparent; color: var(--av-charcoal);
   font-size: var(--av-text-sm); font-weight: 600; text-decoration: none; cursor: pointer;
-  transition: background-color 0.3s var(--av-ease), color 0.3s var(--av-ease), border-color 0.3s var(--av-ease), transform 0.3s var(--av-ease);
+  transition: background-color 0.35s var(--av-ease), color 0.35s var(--av-ease), border-color 0.35s var(--av-ease), transform 0.35s var(--av-ease);
 }
 .button.primary { background: var(--av-charcoal); color: var(--av-white); }
 .button.primary:hover { background: var(--av-black); transform: translateY(-1px); }
@@ -149,8 +140,25 @@ select:focus-visible, textarea:focus-visible, summary:focus-visible {
 
 /* ---------- Forms ---------- */
 .form-page, .detail { max-width: 1160px; margin: 0 auto; padding: var(--av-s9) var(--av-gutter) var(--av-s8); }
-.form-page h1, .detail h1 { font-size: clamp(36px, 4.5vw, 60px); }
+.form-page h1, .detail h1 { font-size: var(--av-h1); }
 .form-page > p { max-width: 680px; margin-top: var(--av-s4); color: var(--av-muted); }
+
+/* Long-form rhythm for every text page (legal, policy, security, contact,
+   submit). Keeps one cadence of headings, paragraphs, lists and notices across
+   shells instead of per-page inline spacing. */
+.form-page h2 { margin: var(--av-s6) 0 var(--av-s3); font-size: 26px; font-weight: 500; }
+.form-page h3 { margin: var(--av-s5) 0 var(--av-s2); font-size: 20px; font-weight: 500; }
+.form-page p { max-width: 760px; margin-top: var(--av-s4); color: var(--av-muted); line-height: 1.8; }
+.form-page p + p { margin-top: var(--av-s4); }
+.form-page ul, .form-page ol { margin: var(--av-s3) 0 0; padding-inline-start: var(--av-s5); color: var(--av-muted); line-height: 1.8; }
+.form-page li { margin-top: var(--av-s2); }
+.form-page section { margin-top: var(--av-s6); }
+.form-page aside {
+  max-width: 760px; margin-top: var(--av-s7); padding: var(--av-s5);
+  border: 1px solid var(--av-line); border-radius: var(--av-radius);
+  background: var(--av-surface); color: var(--av-charcoal); line-height: 1.8;
+}
+.form-page aside strong { font-weight: 600; }
 .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--av-s5); margin-top: var(--av-s6); }
 .form-grid .full { grid-column: 1 / -1; }
 .form-grid label, .auth-card label { display: grid; gap: var(--av-s2); color: var(--av-charcoal); font-size: var(--av-text-sm); font-weight: 600; }
@@ -206,7 +214,7 @@ a.row:hover { background: var(--av-surface-2); }
 .auth-card { width: min(100%, 520px); padding: var(--av-s7); background: var(--av-white); border: 1px solid var(--av-line); box-shadow: var(--av-shadow); }
 .auth-card .brand { display: inline-block; color: var(--av-charcoal); font-size: 17px; font-weight: 700; letter-spacing: 0.14em; text-decoration: none; }
 .auth-card .eyebrow { margin-top: var(--av-s6); }
-.auth-card h1 { margin: var(--av-s3) 0; font-size: 40px; }
+.auth-card h1 { margin: var(--av-s3) 0; font-size: clamp(32px, 4vw, 44px); }
 .auth-card > p { margin: 0 0 var(--av-s6); color: var(--av-muted); font-size: var(--av-text-sm); }
 .auth-card form { display: grid; gap: var(--av-s4); }
 .auth-card .button { width: 100%; }

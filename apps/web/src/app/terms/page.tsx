@@ -9,19 +9,19 @@ export default function TermsPage() {
   return (
     <SiteChrome>
       <main className="app-shell">
-      <article className="form-page" style={{ maxWidth: 980, margin: '0 auto' }}>
+      <article className="form-page">
         <div className="eyebrow">{copy.eyebrow}</div>
         <h1>{copy.title}</h1>
-        <p style={{ opacity: 0.7 }}>{copy.updated}</p>
-        <p style={{ fontSize: '1.05rem', lineHeight: 1.8 }}>{copy.intro}</p>
+        <p>{copy.updated}</p>
+        <p>{copy.intro}</p>
         {copy.sections.map((section) => (
-          <section key={section.title} style={{ marginTop: 32 }}>
+          <section key={section.title}>
             <h2>{section.title}</h2>
-            {section.paragraphs?.map((p) => <p key={p} style={{ lineHeight: 1.8 }}>{p}</p>)}
-            {section.bullets && <ul style={{ lineHeight: 1.8, paddingInlineStart: 24 }}>{section.bullets.map((b) => <li key={b}>{b}</li>)}</ul>}
+            {section.paragraphs?.map((p) => <p key={p}>{p}</p>)}
+            {section.bullets && <ul>{section.bullets.map((b) => <li key={b}>{b}</li>)}</ul>}
           </section>
         ))}
-        <aside style={{ marginTop: 40, padding: 20, border: '1px solid var(--av-line)', borderRadius: 14, lineHeight: 1.8 }}>
+        <aside>
           <strong>{copy.notice}</strong>
         </aside>
       </article>
