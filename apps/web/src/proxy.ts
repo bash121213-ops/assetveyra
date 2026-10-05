@@ -5,7 +5,9 @@ import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from './lib/supabase/config';
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
 
-  const protectedPath = /^\/(dashboard|onboarding|submit|account|data-room|deals|investor|seller|operations)(\/|$)/.test(request.nextUrl.pathname);
+  // Every authenticated area must be listed here so unauthenticated requests are
+  // rejected at the edge, before any page or server action runs its own guard.
+  const protectedPath = /^\/(dashboard|onboarding|submit|account|data-room|deals|investor|seller|operations|workspace)(\/|$)/.test(request.nextUrl.pathname);
 
   if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
     if (protectedPath) return NextResponse.redirect(new URL('/login', request.url));
